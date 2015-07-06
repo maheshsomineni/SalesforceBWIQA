@@ -1,0 +1,93 @@
+<apex:component layout="none" controller="awduplicate2.AWComponentInputField">
+	<apex:attribute name="oName" type="String" description="Object Name" assignTo="{!objectName}" required="true" />
+	<apex:attribute name="fName" type="String" description="Field Name" assignTo="{!fieldName}" required="true" />
+	<apex:attribute name="oValue" type="Sobject" description="Object Value" assignTo="{!objectValue}" required="true" />
+	<apex:attribute name="filter" type="awduplicate2.AWBatchDeduplicationFilter" description="filter Object" assignTo="{!filterObject}" required="false" />
+	
+	
+	<apex:outputPanel layout="none" rendered="{!updateAble}">
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'MULTIPICKLIST'}">
+			<apex:selectList value="{!objectValue[fieldName]}" multiselect="true" size="1">
+				<apex:selectOptions value="{!PickListValue}" />
+			</apex:selectList>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'PICKLIST'}">
+			<apex:selectList value="{!objectValue[fieldName]}" multiselect="false" size="1">
+				<apex:selectOptions value="{!PickListValue}" />
+			</apex:selectList>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!NOT(OR(FieldType = 'PICKLIST',FieldType = 'MULTIPICKLIST'))}">
+			<apex:inputField value="{!objectValue[fieldName]}" required="false" />
+		</apex:outputPanel>
+	</apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="{!NOT(updateAble)}">
+
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'MULTIPICKLIST'}">
+			<apex:selectList value="{!filter.stringValue}" multiselect="true" size="1">
+				<apex:selectOptions value="{!PickListValue}" />
+			</apex:selectList>
+		</apex:outputPanel>
+
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'PICKLIST'}">
+			<apex:selectList value="{!filter.stringValue}" multiselect="false" size="1">
+				<apex:selectOptions value="{!PickListValue}" />
+			</apex:selectList>
+		</apex:outputPanel>
+
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'STRING'}">
+			<apex:inputText maxlength="{!$ObjectType[oName].fields[fname].Length}" value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'EMAIL'}">
+			<apex:inputText maxlength="{!$ObjectType[oName].fields[fname].Length}" value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'BOOLEAN'}">
+			<apex:inputCheckbox value="{!filter.booleanValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'TEXTAREA'}">
+			<apex:inputTextarea value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		
+		
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'CURRENCY'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'DOUBLE'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'INTEGER'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'PERCENT'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'PHONE'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'URL'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'BASE64'}">
+			<apex:inputTextarea value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'DATE'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'DATETIME'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'TIME'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'ID'}">
+			<apex:inputText value="{!filter.stringValue}" maxlength="18"/>
+		</apex:outputPanel>
+		<apex:outputPanel layout="none" rendered="{!FieldType = 'ENCRYPTEDSTRING'}">
+			<apex:inputText value="{!filter.stringValue}"/>
+		</apex:outputPanel>
+		
+
+	</apex:outputPanel>
+
+</apex:component>

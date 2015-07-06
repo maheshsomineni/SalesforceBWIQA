@@ -1,0 +1,11 @@
+<apex:component >
+<!-- Attribute Definitions -->
+    <apex:attribute name="imgLink" type="String" required="true" description="link to image"/>
+    <apex:attribute name="imgClasses" type="String" required="false" description="Style Classes attribute"/>
+    <apex:attribute name="labelNotificationLO" type="String" required="true" description="Lable Email Notification settings"/>
+    
+	<apex:outputPanel >
+		<img src="{!imgLink}" title="{!labelNotificationLO}" class="{!imgClasses}"/>
+		<apex:outputLabel value="{!labelNotificationLO}" />
+	</apex:outputPanel>
+</apex:component>

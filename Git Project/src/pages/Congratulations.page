@@ -1,0 +1,67 @@
+<apex:page renderas="pdf" controller="Biosense_CongratulationsController">
+<html>
+<head>
+<!-- <apex:stylesheet value="{!$Page.}" />-->
+<title>{!$Label.lmscons__Training_Certificate}</title>
+<apex:variable var="CertVarSig" value="{!CertSig}" />
+<apex:variable var="CertVarLogo" value="{!CertLogo}" />
+<link rel="stylesheet" href="{!URLFOR($Resource.Biosense_Certificates, 'css/app.certificate.css')}" />
+<style>
+    @page { size:landscape; margin:0; padding:0;}
+    *{margin:0; padding:0;}
+</style>
+</head>
+<body>
+    <div class="c-container">
+        <div class="header-image__c">
+            <img src="{!URLFOR($Resource.Biosense_Certificates, 'images/header-image.jpg')}"  alt="" />
+        </div>
+        <table class="c-table">
+            <tr>
+                <td>
+                    <div class="logotype-image__c">
+                        <img class="logotype__img" src="{!URLFOR($Resource.Biosense_Certificates, 'images/logotype.jpg')}"  />
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="uppercase italic">This certification is awarded to</td>
+            </tr>
+            <tr>
+                <td class="large-font bordered">
+                    {!UserName}
+                </td>
+            </tr>
+            <tr class="block">
+                <td class="uppercase italic">
+                    In recognition of the successful completion of
+                </td>
+            </tr>
+            <tr>
+                <td class="large-font bordered">
+                    {!Title}
+                </td>
+            </tr>
+            <tr>
+                <td class="course-name-desc">
+                    <div>
+                        This program consists of 80 hours of classroom instruction in Biosense Product Training, cardiac physiology, anatomy and introduction to general concepts in Electrophysiology.
+                    </div>
+                </td>
+            </tr>
+            <tr class="block">
+                <td class="uppercase italic">Dated</td>
+            </tr>
+            <tr>
+                <td class="uppercase large-font bordered">
+                    <c:Biosense_CertificationDate rendered="{!showDateComponentOnPage}" componentValue="{!CompletionDate}"/>
+                </td>
+            </tr>
+        </table>
+        <div class="footer-image__c">
+            <img src="{!URLFOR($Resource.Biosense_Certificates, 'images/footer-image.jpg')}" />
+        </div>
+    </div>
+</body>
+</html>
+</apex:page>

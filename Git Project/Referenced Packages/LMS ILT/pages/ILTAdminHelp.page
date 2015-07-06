@@ -1,0 +1,87 @@
+<apex:page standardController="lmscons__LMS_Consumer_Settings__c" extensions="lmsilt.ILT_AdminHelp" tabStyle="lmscons__LMS_Consumer_Settings__tab" showHeader="false" sidebar="false">
+<apex:form >
+<apex:actionPoller action="{!statusUpdating}" rerender="pageMessages" interval="5" id="batchStatus" Enabled="{!isStop}"/>
+	<apex:pageBlock rendered="{!isConsumerAndAdminUser}">
+		<apex:pageBlockSection id="GTT" columns="2" title="{!$Label.AHSN_Default_GTT_Account}">
+			<script>
+				var showGtt = '{!NOT(showGtt)}';
+				if (showGtt == 'true') {
+					twistSection(document.getElementById('{!$Component.GTT}').getElementsByTagName('img')[0]);
+				}
+			</script>
+			<apex:outputtext />
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.Help_Text}" />
+				<apex:outputText value="{!$Label.AHHT_GTT_text}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:commandButton action="{!updateGTTsessions}"  styleClass="btn" value="{!$Label.AHB_Update_Default_GTT_Account}"   disabled="{!isStop}"/>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection id="WEBEX" columns="2" title="{!$Label.AHSN_Default_Webex_Account}">
+			<script>
+				var showWebEx = '{!NOT(showWebEx)}';
+				if (showWebEx == 'true') {
+					twistSection(document.getElementById('{!$Component.WEBEX}').getElementsByTagName('img')[0]);
+				}
+			</script>
+			<apex:outputtext />
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.Help_Text}" />
+				<apex:outputText value="{!$Label.AHHT_Admin_Help_WebEx_Text}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:commandButton action="{!updateWebExsessions}"  styleClass="btn" value="{!$Label.AHB_Update_Default_Webex_Account}"   disabled="{!isStop}"/>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection id="Learning" columns="2" title="{!$Label.AHSN_Required_Learning_Object}">
+			<script>
+				var showLearning = '{!NOT(showLearning)}';
+				if (showLearning == 'true') {
+					twistSection(document.getElementById('{!$Component.Learning}').getElementsByTagName('img')[0]);
+				}
+			</script>
+			<apex:outputtext />
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.Help_Text}" />
+				<apex:outputText value="{!$Label.AHHT_Required_Learning_Help_Text}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:commandButton action="{!updateLearning}" styleClass="btn" value="{!$Label.AHB_Update_Required_Learning_Object}" disabled="{!isStop}" onclick="if(confirm('{!JSENCODE($Label.AH_Confirmation_Required)}')) {} else {return false;}"/>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection id="Activity" columns="2" title="{!$Label.AHSN_Required_Activity_Object}">
+			<script>
+				var showActivity = '{!NOT(showActivity)}';
+				if (showActivity == 'true') {
+					twistSection(document.getElementById('{!$Component.Activity}').getElementsByTagName('img')[0]);
+				}
+			</script>
+			<apex:outputtext />
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.Help_Text}" />
+				<apex:outputText value="{!$Label.AHHT_Required_Activity_Help_Text}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:commandButton action="{!updateActivity}" styleClass="btn" value="{!$Label.AHB_Update_Required_Activity_Object}" disabled="{!isStop}" onclick="if(confirm('{!JSENCODE($Label.AH_Confirmation_Required)}')) {} else {return false;}"/>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection id="Session" columns="2" title="{!$Label.AHSN_Update_the_Timezone_Value}">
+			<script>
+				var showSessions = '{!NOT(showSessions)}';
+				if (showSessions == 'true') {
+					twistSection(document.getElementById('{!$Component.Session}').getElementsByTagName('img')[0]);
+				}
+			</script>
+			<apex:outputtext />
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="{!$Label.Help_Text}" />
+				<apex:outputText value="{!$Label.AHHT_Update_the_Timezone_Value}" />
+			</apex:pageBlockSectionItem>
+			<apex:pageBlockSectionItem >
+				<apex:commandButton action="{!updateSessions}" styleClass="btn" value="{!$Label.AHB_Update_the_Timezone_Value}" disabled="{!isStop}"/>
+			</apex:pageBlockSectionItem>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

@@ -1,0 +1,53 @@
+<apex:page showHeader="fasle" sidebar="false" controller="lmsilt.AddClassPopUpController">
+	<apex:includeScript value="{!URLFOR($Resource.lmscons__MyTeam, 'js/jquery-1.6.4.js')}"/>
+	<script>
+		jQuery.noConflict();
+		var selectedClass;
+		function setSelectedClass(classID) {
+			selectedClass = classID;
+		}
+
+		function saveResult() {
+			if(undefined != selectedClass) {
+				parent.setClassID('{!currentEventID}' + ',' + selectedClass);
+				parent.closeEventDetail();
+			} else {
+				alert('You should select one of displayed classes.');
+			}
+
+		}
+		
+		function selectedRadioButton(buttonId) {
+			if(undefined != selectedClass && selectedClass != buttonId) {
+				jQuery('#'+selectedClass).prop('checked', false);
+			} 
+			selectedClass = buttonId;
+		}
+	</script>
+
+	<apex:form >
+		<apex:pageblock id="allcons" title="Available Classes">
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="{!$Label.ilt_AssignModule_HeaderValue_Select}" onclick="saveResult();return false"/>
+				<apex:commandButton value="{!$Label.Batch_Configuration_Cancel}" onclick="parent.closeEventDetail();return false"/>
+			</apex:pageBlockButtons>
+              <apex:pageblocktable id="allcons" value="{!Classes}" var="allcon">
+                   <apex:column headervalue="{!$Label.Action}">                    
+                      	 <input type="radio" id="{!allcon.Id}" onclick="selectedRadioButton('{!allcon.Id}')"/>                                          
+                   </apex:column>    
+                   <apex:column headervalue="{!$Label.ilt_message_Title}">
+                   		<apex:outputField value="{!allcon.Name}"/>
+                   </apex:column> 
+                   <apex:column headervalue="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Start_Date__c.label}">
+                   		<apex:outputField value="{!allcon.lmsilt__Start_Date__c}"/>
+                   </apex:column> 
+                   <apex:column headervalue="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__End_Date__c.label}">
+                   		<apex:outputField value="{!allcon.lmsilt__End_Date__c}"/>
+                   </apex:column> 
+                   <apex:column headervalue="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Location__c.label}">
+                   		<apex:outputField value="{!allcon.lmsilt__Location__c}"/>
+                   </apex:column> 
+               </apex:pageblocktable>
+		</apex:pageblock> 
+	</apex:form>
+</apex:page>

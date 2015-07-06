@@ -1,0 +1,2 @@
+<apex:page controller="lmsilt.SearchCatalog" showHeader="false" sideBar="false">
+</apex:page>

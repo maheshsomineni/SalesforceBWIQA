@@ -1,0 +1,210 @@
+<apex:page standardController="lmsilt__Development_Plan__c" extensions="lmsilt.AssignDevPlanExt">
+	<apex:includeScript value="{!URLFOR($Resource.lmsilt__devplan, 'js/jquery-1.6.4.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.lmsilt__devplan, 'js/tablednd.js')}"/>
+	<apex:stylesheet value="{!URLFOR($Resource.lmsilt__devplan, 'css/lightbox.css')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.lmsilt__lmslightbox, 'js/init.js')}"/>
+	<apex:outputPanel id="pageMessages">
+		<apex:pageMessages />
+	</apex:outputPanel>
+	<!-- light box -->
+	<div class="b-overlay"></div>
+	<div class="b-lightbox">
+	<apex:outputpanel id="lightboxes" layout="block">
+		<div class="b-title-bar">
+			<div class="b-title">{!$Label.Update_Assignments}</div>
+			<div class="b-close-btn"><a href="javascript:void(0)">{!$Label.Close}</a></div>
+		</div>
+		<apex:outputpanel layout="block" styleclass="b-content">
+			<apex:outputpanel layout="block">
+				<div id="popup_content"></div>
+			</apex:outputpanel>
+		</apex:outputpanel>
+	</apex:outputPanel>
+	</div>
+	<!-- Enhanced Action Status -->
+	<apex:actionStatus id="loadStatus">
+	<apex:facet name="start">
+		<c:EnhancedActionStatus BackColor="#efefef" borderColor="#336699" borderSize="1" height="50px" width="120px" ImageUrl="/img/loading.gif" Message="{!$Label.Loading}" messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/>
+	</apex:facet>
+	</apex:actionStatus>
+
+	<apex:form >
+		<apex:actionPoller action="{!statusUpdating}" rerender="pageMessages" interval="5" id="batchStatus" Enabled="{!isStop}"/>
+
+		<apex:actionFunction name="addToMyTraining" action="{!addToMyTraining}" rerender="pageMessages, tlr"  status="loadStatus" />
+		<apex:actionFunction name="SaveSequence" action="{!saveSequence}" rerender="pageMessages, tlr"  status="loadStatus">
+			<apex:param name="SaveSequence" assignTo="{!Sequences}" value="" />
+		</apex:actionFunction>
+
+		<apex:actionFunction name="saveEditedSequence" action="{!saveEditedSequence}" status="loadStatus" rerender="none" oncomplete="redirme()">
+			<apex:param name="SequencedArray" assignTo="{!SequencedArray}" value="" />
+			<apex:param name="developPlanId" assignTo="{!developPlanId}" value="{!lmsilt__Development_Plan__c.id}" />
+		</apex:actionFunction>
+	</apex:form>
+
+	<apex:detail title="false"  />
+	<apex:outputPanel id="panelForStatus">
+		<input type="hidden" id="bstatus" name="BatchStatus" value="{!STATUS}"/>
+	</apex:outputPanel>
+	<script>
+		function UpdateDataAssignments() {
+			jQuery.noConflict();
+			jQuery('#popup_content').html('<iframe id="mytrainingframe" name="mytrainingframe" frameborder="0" height="350" src="{!$Page.ILT_Update_Learning}?Id={!Development_Plan__c.Id}" width="100%"></iframe>');
+			Lightbox();
+			return false;
+		}
+		jQuery.noConflict();
+		jQuery(document).ready(function () {
+			initItemSequence();
+			if({!isUpdateDataAssignemts}!=true){
+				jQuery('input[name*=update_data_assignments]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+			}
+
+			if ({!isConsumerUser} != 1) {
+				jQuery('input[name*=update_data_assignments]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+				jQuery('input[name*=assign]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+				jQuery('input[name*=add_to_my_training]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+
+			}
+		});
+
+		var blockTmp;
+		var intervalP;
+		var ItemSeq = new Object();
+		var EditAccess = false;
+
+		function SearchAllBlockCourseItems(o) {
+			blockTmp = jQuery("H3:contains('{!$ObjectType.Activity__c.LabelPlural}')").parent().parent().parent().parent().parent().parent().parent();
+			return blockTmp
+		}
+
+		function createObj(o) {
+			for (var k = 0; k < o.length; ++k) {
+				if (o.eq(k).text() == 'Edit') {
+					EditAccess = true;
+				}
+			}
+		}
+
+		function getUrlVars(url) {
+			var vars = [],
+				hash;
+			var hashes = url.slice(url.indexOf('?') + 1).split('&');
+			for (var i = 0; i < hashes.length; i++) {
+				hash = hashes[i].split('=');
+				vars.push(hash[0]);
+				vars[hash[0]] = hash[1];
+			}
+			return vars;
+		}
+
+		function updatedDataAssignments() {
+			var status = jQuery('#bstatus').val();
+			if(status == 'false'){
+				jQuery('input[name*=update_data_assignments]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+			}
+		}
+
+	// --- edit_sequence ------
+	var seqdepth = 0;
+	var titledepth = 0;
+	var sequenceEnforced = false;
+	var cancelArray = [];
+	var resultArray = [];
+
+	function initItemSequence() {
+		var rlistHasTitle = false;
+		var rlistHasSequence = false;
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.headerRow').children().each(function(index){
+			if(jQuery(this).text()=='Sequence' || jQuery(this).text()=='{!JSENCODE($ObjectType.Activity__c.fields.Sequence__c.Label)}') {
+				seqdepth = index;
+				rlistHasSequence = true;
+			}
+			if(jQuery(this).text()=='Title' || jQuery(this).text()=='{!JSENCODE($ObjectType.Activity__c.fields.Name.Label)}') {
+				rlistHasTitle = true;
+				titledepth = index;
+			}
+		});
+		if (rlistHasSequence == true && rlistHasTitle == true) {
+			sequenceEnforced = true;
+		} else {
+			sequenceEnforced = false;
+		}
+		if (sequenceEnforced == false){
+			jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+		}
+	}
+
+	function enableEdit() {
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.dataRow').each(function(index){
+			jQuery(this).children().each(function(index1){
+				if (index1 == seqdepth) {
+					var sact = jQuery(this).text();
+					cancelArray[index] = sact;
+					jQuery(this).contents().replaceWith('<input type="text" style="text-align: right; width:25px">');
+					jQuery(this).contents().val(sact);
+				}
+			});
+		});
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.pShowMore').css('visibility', 'hidden');
+		var buttonSave = '<input type="button" value="Save" id="saveButton" class="btn" onclick="saveSeq()" />';
+		var buttonCancel = '<input type="button" value="Cancel" id="cancelButton" class="btn" onclick="cancelSeq()" />';
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parent().append(buttonSave + buttonCancel);
+		jQuery('input[value$="New Activity"]').css('visibility', 'hidden');
+		jQuery('input[vname*="edit_sequence"], input[name$="edit_sequence"]').css('visibility', 'hidden');
+	}
+
+	function saveSeq() {
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.dataRow').each(function(index){
+			var loId;
+			var loSeq;
+			jQuery(this).children().each(function(index1){
+				if (index1 == titledepth) {
+					loId = jQuery(this).children().attr('href');
+					loId = loId.slice(28,44);
+				}
+				if (index1 == seqdepth) {
+					loSeq = jQuery(this).contents().val();
+					loSeq = loSeq.replace(/[\xA0]/,'');
+					jQuery(this).contents().remove();
+					jQuery(this).append(loSeq);
+				}
+			});
+
+			resultArray[index] = loId + '::' + loSeq;
+		});
+
+		saveEditedSequence(getSequencedArray());
+		jQuery('#cancelButton').remove();
+		jQuery('#saveButton').remove();
+		jQuery('input[value$="New Activity"]').css('visibility','visible');
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').css('visibility','visible');
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.pShowMore').css('visibility', 'visible');
+	}
+
+	function getSequencedArray() {
+		var serialized = resultArray.join(";;");
+		return serialized;
+	}
+
+	function cancelSeq() {
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.dataRow').each(function(index){
+			jQuery(this).children().each(function(index1){
+				if (index1 == seqdepth) {
+					jQuery(this).contents().remove();
+					jQuery(this).append(cancelArray[index]);
+				}
+			});
+		});
+		jQuery('#cancelButton').remove();
+		jQuery('#saveButton').remove();
+		jQuery('input[value$="New Activity"]').css('visibility','visible');
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').css('visibility','visible');
+		jQuery('input[name*="edit_sequence"], input[name$="edit_sequence"]').parents('.bPageBlock').find('.pShowMore').css('visibility', 'visible');
+	}
+
+	function redirme(){
+		window.location = window.location.href;
+	}
+	</script>
+</apex:page>

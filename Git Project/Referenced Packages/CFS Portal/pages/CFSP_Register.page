@@ -1,0 +1,151 @@
+<apex:page controller="cfsp.CFSP_RegisterController" showheader="false" standardStylesheets="{!IF(NOT(ISBLANK($CurrentPage.parameters.sss)),'true','false')}" cache="false" docType="html-5.0">
+	<apex:composition template="{!DynamicTemplate}">
+		<apex:define name="body">
+			<style>
+				.form-horizontal .control-label {
+					padding-top: 0px;
+				}
+				.errorMsg {
+					color: red;
+				}
+				.required-input-field {
+					border-left: solid 3px red !important;
+				}
+			</style>
+			<script>
+				var labelPlaceholder = '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_LABEL_USERNAME_PLACEHOLDER)}';
+				$(function() {
+					jQuery('input[id*="username"]').attr('placeholder',labelPlaceholder);
+				});
+
+				function validationAndErrorHandling() {
+					var errorString1 = '<table role="alert"><tbody>';
+					var errorString2 = '<div class="container-fluid"><div class="row-fluid"><div class="alert alert-error span12"><table role="alert"><tbody>';
+					var hasErrors1 = false;
+					var hasErrors2 = false;
+					var counter = 0;
+					$('.required-input-field').each(function() {
+						var x = $(this).val().trim();
+						if (x==null || x=="") {
+							var labelText = $(this).parent().prev().text();
+							if (labelText == "") {
+								labelText = $(this).parent().parent().prev().text()
+							}
+							errorString2 += '<tr><td>' + labelText + '</td></tr>';
+							hasErrors1 = true;
+						}
+						else if (counter == 3 && !matcher(x)) {
+							errorString1 += '<tr><td>' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_ERROR_EMAIL_INVALID)}' + '</td></tr>';
+							hasErrors2 = true;
+						}
+						else if (counter == 4 && x.length > 80) {
+							errorString1 += '<tr><td>' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_ERROR_USERNAME_INVALID)}' + ' ' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_ERROR_USERNAME_LENGTH_EXCEEDED)}' + '</td></tr>';
+							hasErrors2 = true;
+						}
+						else if (counter == 4 && x.length <= 80 && !matcher(x)) {
+							errorString1 += '<tr><td>' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_ERROR_USERNAME_INVALID)}' + ' ' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_LABEL_USERNAME_TITLE)}' + ': ' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_LABEL_USERNAME_PLACEHOLDER)}' + '</td></tr>';
+							hasErrors2 = true;
+						}
+						counter++;
+					});
+					errorString1 += '</tbody></table>' + (hasErrors1 && hasErrors2 ? '</br>' : '');
+					errorString2 += '</tbody></table></div></div></div>';
+					if (hasErrors1 || hasErrors2) {
+						if (!hasErrors1) {
+							errorString2 = errorString2.replace('<table role="alert"><tbody></tbody></table>', errorString1);
+						}
+						else {
+							errorString2 = errorString2.replace('<table role="alert"><tbody>', errorString1 + '<table role="alert"><tbody><tr><td>' + '{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_ERROR_ADDITIONAL_FIELD_REQUIRED)}' + '</td></tr>');
+						}
+						var element = $('div#jsErrorMessage');
+						if(element.length == 0) {
+							$('div.container div.container-fluid').parent().prepend('<div id = "jsErrorMessage">'+errorString2 + '</div>');
+						}
+						else {
+							element.html(errorString2);
+						}
+						element.next('div.container-fluid').hide();
+					}
+					else {
+						registerUser();
+					}
+				}
+				function matcher(text) {
+					return (new RegExp('([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})')).test(text);
+				}
+			</script>
+			<apex:outputPanel layout="block" styleClass="container pad">
+
+				<!-- ApexMessages Container -->
+				<apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+					<apex:outputPanel layout="block" styleClass="row-fluid">
+						<apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+							<apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+								<apex:messages layout="table" id="pageMessages"/>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</apex:outputPanel>
+
+				<apex:outputPanel layout="block" styleClass="row" rendered="{!NOT(hideAllControls)}">
+					<apex:outputPanel layout="block" styleClass="span11">
+						<apex:form forceSSL="true" styleClass="form-horizontal">
+							<apex:actionFunction name="registerUser" action="{!registerUser}" />
+							<table style = "float:right;"><tbody><tr><td style = "background-color:red; width:1px;"></td><td>&nbsp;= {!$Label.CFSP_PAGE_ACCOUNT_REQUIRED_FIELDS}</td></tr></tbody></table>
+							<apex:outputPanel layout="block" styleClass="form-signin m-register">
+								<apex:outputPanel layout="block" styleClass="">
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_FIRST_NAME}" for="firstname"/>
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:inputText styleClass="input-block-level required-input-field" value="{!firstName}" id="firstname"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_LAST_NAME}" for="lastname"/>
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:inputText styleClass="input-block-level required-input-field" value="{!lastName}" id="lastname"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_COMPANY}" for="company"/>
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:inputText styleClass="input-block-level required-input-field" value="{!company}" id="company"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_EMAIL_ADDRESS}" for="email"/>
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:inputText styleClass="input-block-level required-input-field" value="{!email}" id="email"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_USERNAME}" for="username"/>
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:inputText styleClass="input-block-level required-input-field" value="{!username}" id="username" title="{!$Label.CFSP_PAGE_ACCOUNT_LABEL_USERNAME_TITLE}"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(registerSettings))}">
+										<apex:repeat value="{!registerSettings}" var="field">
+											<apex:outputPanel layout="block" styleClass="control-group">
+												<apex:outputLabel styleClass="control-label" value="{!field.label}" for="field-{!field.field}"/>
+												<apex:outputPanel layout="block" styleClass="controls">
+													<apex:inputField styleClass="input-block-level {!IF(field.required, 'required-input-field', '')}" value="{!field.instance.value[field.field]}" />
+												</apex:outputPanel>
+											</apex:outputPanel>
+										</apex:repeat>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" styleClass="control-group">
+										<apex:outputPanel layout="block" styleClass="controls">
+											<apex:commandButton onclick="javasript:validationAndErrorHandling()" styleClass="btn btn-primary" value="{!$Label.CFSP_PAGE_ACCOUNT_BUTTON_CREATE_AN_ACCOUNT}" rerender="none"/>
+										</apex:outputPanel>
+									</apex:outputPanel>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:form>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:outputPanel>
+
+		</apex:define>
+	</apex:composition>
+</apex:page>

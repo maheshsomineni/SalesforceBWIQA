@@ -1,0 +1,7 @@
+<messaging:emailTemplate subject="{!$Label.lmscons__Subject_Content_Assigned}" recipientType="User" relatedToType="lmsilt__Development_Plan_Assignment__c">
+<messaging:plainTextEmailBody >
+{!$Label.lmscons__Hello} {!recipient.FirstName},
+
+{!$Label.lmscons__You_have_been_assigned_learning} {!relatedTo.lmsilt__Development_Plan__r.Name} - {!relatedTo.lmsilt__Development_Plan__r.lmsilt__Description__c}.
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,58 @@
+<apex:page docType="html-5.0" controller="CustomLoginController" showHeader="false" sidebar="false" standardStylesheets="false">
+
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap-responsive.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/nested-table.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-responsive.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/hacks.css')}"/>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css' />
+    <apex:stylesheet value="{!URLFOR($Resource.CFSP_Biosense_assets,'css/BS_login.css')}"/>
+
+    <body class="background">
+        <apex:outputPanel layout="block" styleClass="container pad">
+        <div class="container">
+            <div class="row top">
+                    <img src="{!URLFOR($Resource.CFSP_Biosense_assets,'images/Login_Photos.png')}" class="img-responsive" />
+            </div>
+            <div class="row logo">
+                <img src="{!URLFOR($Resource.CFSP_Biosense_assets,'images/footer.png')}" alt="" />
+            </div>
+        </div>
+
+        <!-- ApexMessages Container -->
+        <apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+            <apex:outputPanel layout="block" styleClass="row-fluid">
+                <apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+                    <apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+                        <apex:messages layout="table" id="pageMessages"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:outputPanel layout="block" styleClass="row">
+            <apex:outputPanel layout="block" styleClass="span12">
+                <apex:form forceSSL="true">
+                    <apex:outputPanel layout="block" styleClass="form-signin">
+                        <!-- <apex:outputLabel styleClass="legend" value="Biosense Learning Portal"/> -->
+                        <!-- <apex:outputLabel value="Learning the world's most advanced analytics and desicion tools are just a click away." /> -->
+                        <!-- <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_USERNAME}:"> -->
+                            <apex:inputText id="username" styleClass="input-block-level" html-placeholder="username" value="{!username}" />
+                        <!-- </apex:outputLabel> -->
+                        <!--<apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_PASSWORD}">-->
+                            <apex:inputSecret id="password" styleClass="input-block-level" html-placeholder="password" value="{!password}" />
+                        <!--</apex:outputLabel>-->
+                        <apex:outputLink styleClass="link" value="/secur/forgotpassword.jsp">{!$Label.cfsp__CFSP_PAGE_ACCOUNT_LINK_FORGOT_PASSWORD}</apex:outputLink>
+                        <apex:commandButton action="{!Login}" styleClass="btn btn-primary" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_BUTTON_SIGN_IN}" />
+                        <hr/>
+                        <p class="ques">{!$Label.cfsp__CFSP_PAGE_ACCOUNT_LINK_REGISTRATION}<a class="link" href="{!$Page.Biosense_Register}">{!$Label.cfsp__CFSP_PAGE_ACCOUNT_LINK_SIGN_UP}</a>
+                        </p>
+                    </apex:outputPanel>
+                </apex:form>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        </apex:outputPanel>
+    </body>
+
+</apex:page>

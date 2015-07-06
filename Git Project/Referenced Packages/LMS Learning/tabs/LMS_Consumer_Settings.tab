@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <icon>LMS_Consumer_Documents/ico_preferences.png</icon>
+    <label>Learning Settings</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom163: TV Widescreen</motif>
+    <page>ConsumerSettings</page>
+</CustomTab>

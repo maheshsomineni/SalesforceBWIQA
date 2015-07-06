@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Class__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Class</label>
+        <referenceTo>Class__c</referenceTo>
+        <relationshipName>GoToTraining_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Error__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Error</label>
+        <length>500</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Event__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Event</label>
+        <referenceTo>Event__c</referenceTo>
+        <relationshipName>GoToTraining_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>JoinUrl__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Join Url</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Note__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Note</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Registered__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Registered</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Roster__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Roster</label>
+        <referenceTo>Roster__c</referenceTo>
+        <relationshipName>GoToTraining_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Session__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Session</label>
+        <referenceTo>Session__c</referenceTo>
+        <relationshipName>GoToTraining_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Attended</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Not Attended</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>TimeInSession__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Time In Session</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>GoToTraining_Sessions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>confirmationUrl__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Confirmation Url</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>registrantKey__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Registrant Key</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Roster Session</label>
+    <nameField>
+        <displayFormat>RS {0}</displayFormat>
+        <label>Roster Session Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Roster Sessions</pluralLabel>
+    <searchLayouts>
+        <listViewButtons>Manage_Rosters_Session</listViewButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Manage_Rosters_Session</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Manage Roster</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>top.window.location = &apos;/apex/lmsilt__ManageSessionRoster?classId={!Class__c.Id}&amp;sessionID={!Session__c.Id}&amp;rosterID={!Roster__c.Id}&apos;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Retrieve_Attendance</fullName>
+        <availability>online</availability>
+        <description>Retrieving attendance status from GTT/WebEx services</description>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Retrieve Attendance</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>//don`t forget to add prefix &quot;lmsilt__&quot; to jQuery resource name before commit to SVN
+{!REQUIRESCRIPT(&apos;/resource/lmsilt__jquery152min&apos;)}
+{!REQUIRESCRIPT(&apos;/soap/ajax/26.0/connection.js&apos;)}
+{!REQUIRESCRIPT(&apos;/soap/ajax/26.0/apex.js&apos;)}
+
+var overlay;
+if(window.parent.document.getElementById(&apos;overlay&apos;) == null){
+	overlay = window.parent.jQuery(&apos;&lt;div&gt;&lt;/div&gt;&apos;).css({	&quot;position&quot;: &quot;fixed&quot;,
+											&quot;height&quot;:&quot;100%&quot;,
+											&quot;width&quot;:&quot;100%&quot;, 
+											&quot;background&quot;:&quot;#000&quot;,
+											&quot;opacity&quot;:&quot;0.6&quot;,
+											&quot;filter&quot;:&quot;alpha(opacity=80)&quot;,
+											&quot;z-index&quot;:&quot;300&quot;
+										}).prependTo(&apos;body&apos;).attr(&apos;id&apos;, &apos;overlay&apos;);
+
+}else{
+	overlay = window.parent.jQuery(&apos;#overlay&apos;);
+	overlay.show();
+}
+
+
+var currentSessionID = &apos;{!Session__c.Id}&apos;;
+//don`t forget to add prefix &quot;lmsilt.&quot; to webservise class name before commit to SVN
+var result = sforce.apex.execute(
+				&quot;lmsilt.VILTIntegrationWebServices&quot; , 
+				&quot;retrieveAttendanceStatus&quot;, 
+				{sessionID : currentSessionID}
+			);
+
+var isSuccess = false;
+result = result.toString();
+var startIndexOfSuccessFlag = result.indexOf(&apos;XXX_SUCCESS_XXX&apos;);
+if(startIndexOfSuccessFlag != -1){
+	isSuccess = true;
+	result = result.substr(0, startIndexOfSuccessFlag); 
+}
+
+alert(result);
+	
+if(isSuccess){
+	window.parent.document.location.reload(true);
+}
+
+overlay.hide();</url>
+    </webLinks>
+</CustomObject>

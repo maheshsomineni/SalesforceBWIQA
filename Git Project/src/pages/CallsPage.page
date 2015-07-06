@@ -1,0 +1,188 @@
+<apex:page standardcontroller="Call__c" extensions="CallController" sidebar="false" id="mypage">
+<script>
+  function setFocusOnLoad() {}
+</script>
+   
+
+  <apex:form id="myform">
+
+  <apex:pageMessages showDetail="false"></apex:pageMessages>
+ <script type="text/javascript"> 
+
+ 
+ 
+        function setFocus() {
+     
+            document.getElementById("mypage:myform:pb:pbs4:pbsi4").focus();
+           
+  
+    } 
+ 
+   function checkMe2(){
+         checkMe();  
+    }
+      function openPage(pageId){
+    
+        var newWindow = window.open('/apex/' + pageId , pageId,'height=400,width=800,scrollbars=1,status=0,toolbar=0,menubar=0,location=0');
+        if (window.focus){newWindow.focus()}
+     }
+    
+     function openPage2(pageId){
+        
+         var act = document.getElementById('mypage:myform:pb:pbs3:pbsi:acc_name').value;
+        
+       var accountId = document.getElementById('mypage:myform:pb:pbs7:pbsi7:AId').value; 
+     
+       
+        var newWindow = window.open('/apex/' + pageId +'?hospName=' +act +'&accid='+ accountId, pageId,'height=400,width=800,scrollbars=1,status=0,toolbar=0,menubar=0,location=0');
+
+        if (window.focus){newWindow.focus()}
+     }
+  </script>
+      <apex:actionFunction action="{!showTextBox}" name="checkMe" reRender="pbs7"/>
+      
+  
+        <apex:pageblock id="pb" >
+       
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!save}" value="Confirm" id="save"/>
+                 <apex:commandButton action="{!Savenew}" value="Confirm & New" id="saveAndNew" />
+                  <apex:commandButton action="{!cancel}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            
+          <apex:pageblocksection title="Information" showHeader="true" columns="2" id="pbs1">                         
+                <apex:inputField value="{!clls.Actual_Start_Date__c}" id="demo"  onclick="DatePicker.pickDate(false, this.id, true);" onchange="checkDateFormatt(this.id);" required="true"/>
+                <apex:inputField value="{!clls.Travel_Time_HRS__c}" id="tt" />
+                <apex:inputField value="{!clls.Case_Type__c}" required="true"/>
+                <apex:inputField value="{!clls.Case_Sub_Type__c}" required="true"/>
+          </apex:pageblockSection>
+            
+     <apex:pageblocksection columns="1"  id="pbs3">
+          <apex:pageBlockSectionItem id="pbsi">
+             <apex:panelGroup >                     
+               <apex:outputLabel value="Hospital" />    
+             </apex:panelGroup> 
+                       
+              <apex:panelGroup id="pg"> 
+                <apex:panelGrid columns="2" id="pgr">
+                 <apex:inputField value="{!clls.Accounts__c}" style="width: 680px; height: 18px;"  label="" id="acc_name" required="true"/>                                       
+                       <apex:commandlink onclick="openPage('HospitalsSearch')" rerender="dummy">
+                       <apex:image id="img1" value="{!$Resource.HospitalNew}" width="20" height="18"  title="Hospitals Search"/> 
+                       </apex:commandlink>
+                      </apex:panelGrid>
+                    </apex:panelGroup>
+                 </apex:pageBlockSectionItem>  
+                  
+
+                        
+            </apex:pageblocksection>
+                <apex:pageblocksection columns="2" id="pbs4">
+                <apex:pageBlockSectionItem id="pbsi4">
+                <apex:outputLabel value="Physician" />
+                <apex:panelGroup >
+                    <apex:panelGrid columns="2">
+                        <apex:inputField value="{!clls.Physicians__c}"  label="" id="phy" required="true"/>
+                        <apex:commandlink onclick="openPage2('PhysicianSearch')" rerender="dummy">
+                      <apex:image id="img1" value="{!$Resource.Physicians}" width="20" height="18"  title="Physicians Search"/> 
+                        </apex:commandlink>
+                     </apex:panelGrid>
+                </apex:panelGroup>
+             </apex:pageBlockSectionItem>
+                <apex:inputField id="Referring" value="{!clls.Referring_Physician__c}" />
+            </apex:pageblocksection>
+            
+            <apex:pageblocksection columns="2" id="pbsFellow">
+                <apex:pageBlockSectionItem id="pbsiFellow">
+                <apex:outputLabel value="Fellow" />
+                <apex:panelGroup >
+                    <apex:panelGrid columns="2">
+                        <apex:inputField value="{!clls.Fellow__c}"  label="" id="fellow"/>
+                        <apex:commandlink onclick="openPage2('FellowSearch')" rerender="dummy">
+                      <apex:image id="img2" value="{!$Resource.Physicians}" width="20" height="18"  title="Fellow Search"/> 
+                        </apex:commandlink>
+                     </apex:panelGrid>
+                </apex:panelGroup>
+             </apex:pageBlockSectionItem>
+                <apex:inputfield value="{!clls.Xarelto_Discussion__c}" id="xarelto"/>
+            </apex:pageblocksection>
+            
+            
+             <apex:pageblocksection columns="2" id="pbs5">
+              <apex:pageBlockSectionItem >
+                <apex:outputLabel ><b>Technology Type</b></apex:outputLabel>
+            
+                <apex:selectList value="{!selectedTechs}" multiselect="true" size="5">
+                    <apex:selectOptions value="{!techs}"/>
+                </apex:selectList>
+                </apex:pageBlockSectionItem>
+                </apex:pageblocksection>
+
+                         
+            <apex:pageblocksection columns="2" id="pbs6">
+            <apex:inputField value="{!clls.Call_Outcome__c}"/>
+             <apex:inputField value="{!clls.Procedure_Time_HRS__c}"/>                            
+            </apex:pageblocksection>
+
+            <apex:pageblocksection columns="2" id="pbs9" >
+
+                <apex:pageBlockSectionItem id="pbsi9">
+                    <apex:outputLabel value="External Resource Used" />
+                    <apex:selectList value="{!resourceSelected}" size="1"  onchange="checkMe2();">
+                        <apex:selectOptions value="{!resources}"/>
+                    </apex:selectList>
+                 </apex:pageBlockSectionItem>
+                 <apex:inputField value="{!clls.JDE_JJHCS_Number__c}" id="jde"/>
+             </apex:pageblocksection>
+            
+               <apex:pageBlockSection columns="2" id="pbsnew1" rendered="{!IF($Profile.Name=='System Administrator', true, false)}">
+            <apex:inputCheckbox value="{!clls.Call_Credit__c}" rendered="{!hideCallCredit}" disabled="{!IF($Profile.Name!='System Administrator', true, false)}">
+            <apex:actionSupport event="onclick" reRender="op" />
+            </apex:inputCheckbox>
+            </apex:pageBlockSection>
+            <apex:outputPanel id="op" rendered="{!IF($Profile.Name=='System Administrator', true, false)}">
+            <apex:pageBlockSection id="pbsnew2"  rendered="{!clls.Call_Credit__c==true}"  >       
+             <apex:outputField value="{!clls.Call_Credit_Date_Time__c}"/>
+            <apex:outputField value="{!clls.Call_Credit_User__c}" />
+            </apex:pageBlockSection>
+            </apex:outputPanel>
+                                           
+            
+            
+                 <apex:pageblocksection id="pbs7" columns="1">
+             
+                    <apex:inputField value="{!clls.Resource_Name__c}"  rendered="{!showPerDiem}"/>
+
+            
+  
+            <Apex:pageBlockSectionitem id="pbsi7">               
+            <apex:inputField value="{!clls.PhysicianId__c}"  style="display:none;" id="pId"/>
+            <apex:inputField value="{!clls.AccountId__c}" style="display:none;" id="AId"/>
+            </Apex:pageBlockSectionitem>
+             <Apex:pageBlockSectionitem id="pbsFellowId">  
+       <apex:inputField value="{!clls.FellowId__c}" style="display:none;" id="FId"/>
+       </Apex:pageBlockSectionitem>
+             </apex:pageblocksection>
+        <apex:pageblocksection title="Products Used" showHeader="true" columns="2" id="pbs8">
+                
+            <apex:outputLabel ><b>BWI Ablation Catheter</b></apex:outputLabel>
+            <apex:outputLabel ><b>Other BWI Catheter</b></apex:outputLabel>
+                
+            <apex:selectList value="{!selectedBWIProds}" multiselect="true"  size="5">
+                <apex:selectOptions value="{!bwiProds}"/>
+            </apex:selectList>
+            <apex:selectList value="{!selectedOtherProds}" multiselect="true" size="5">
+                <apex:selectOptions value="{!otherProds}"/>
+            </apex:selectList>
+            
+            <apex:outputLabel ><b>Competitive Products</b></apex:outputLabel>
+            <apex:outputLabel ><b></b></apex:outputLabel>
+            
+            <apex:selectList value="{!selectedCompProds}" multiselect="true" size="5">
+                <apex:selectOptions value="{!compProds}"/>
+            </apex:selectList>                 
+            
+        </apex:pageblocksection>
+
+    </apex:pageblock>
+</apex:form>
+</apex:page>

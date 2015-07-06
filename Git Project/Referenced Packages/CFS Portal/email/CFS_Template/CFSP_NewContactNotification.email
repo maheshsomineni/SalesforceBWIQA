@@ -1,0 +1,11 @@
+<messaging:emailTemplate subject="New Contact has been registered" recipientType="Contact" relatedToType="Account">
+<messaging:plainTextEmailBody >
+Dear {!relatedTo.Owner.FirstName} {!relatedTo.Owner.LastName},
+
+New Contact has been registered.
+
+Name: {!recipient.FirstName} {!recipient.LastName}
+Email: mailto:{!recipient.email}
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,9 @@
+<messaging:emailTemplate subject="New Lead has been created." recipientType="User" relatedToType="Lead">
+<messaging:plainTextEmailBody >
+New Lead has been registered.
+
+Name: {!relatedTo.FirstName} {!relatedTo.LastName}
+Email: mailto:{!relatedTo.email}
+
+</messaging:plainTextEmailBody>
+</messaging:emailTemplate>

@@ -1,0 +1,277 @@
+<apex:page standardController="Contact" extensions="cls_ext_UpdateContactNew" >
+  
+  <apex:form >
+          <apex:pageBlock rendered="{!!IsContactDetailsVisible }" >
+    <br/>
+    <b>Insufficient Privileges</b>
+    <br/>
+    <br/>
+    You do not have the level of access neccessary to perform the operation you requested. Please contact owner of the record or your administrator if access is neccessary.
+</apex:pageBlock>
+  
+          <apex:pageBlock rendered="{!IsContactDetailsVisible }">
+          <apex:pageMessages ></apex:pageMessages>
+              <apex:pageBlockButtons >
+                  <apex:commandButton value="Save"  action="{!SaveCustom}" />
+                  <apex:commandButton value="Cancel"  action="{!Cancel}" />
+              </apex:pageBlockButtons>
+          
+          
+              <!-- Section for General field-->
+              <apex:pageBlockSection rendered="{!IsFellowVisible }" columns="2"  title="Contact Detail">
+              
+                  <apex:inputField value="{!objContact['Salutation']}" />
+                  <apex:inputField value="{!objContact['Title']}" />
+                  <apex:inputField value="{!objContact['FirstName']}" />
+                  <apex:inputField value="{!objContact['LastName']}" />
+                  <apex:inputField value="{!objContact['AccountId']}" />
+                 <apex:outputField value="{!objContact['RecordTypeId']}" />
+                 <apex:inputField value="{!objContact['MobilePhone']}" />
+                 <apex:inputField value="{!objContact['Department']}" />
+                 <apex:inputField value="{!objContact['Email']}" />  
+                 <apex:inputField value="{!objContact['Phone']}" />                
+                 <apex:inputField value="{!objContact['AssistantName']}" />
+                 <apex:inputField value="{!objContact['AssistantPhone']}" />
+                 <apex:inputField value="{!objContact['Email_Status__c']}" />
+                 <apex:inputField value="{!objContact['NPI__c']}"/>
+                 <apex:inputField value="{!objContact['BWI_Training_Received__c']}"/><br/>
+                                  
+                 <apex:inputField value="{!objContact['External_Id__c']}" />
+                 <apex:inputField value="{!objContact['LinkedIn__c']}"/> 
+                  <apex:inputField value="{!objContact['Practice_Name__c']}" /> 
+                  <apex:inputField value="{!objContact['Cardiology_Fellowship_Program__c']}" />
+                 
+                 <apex:inputField value="{!objContact['LastCURequestDate']}"/> 
+                 
+                 <apex:inputField value="{!objContact['LastCUUpdateDate']}"/>
+                 
+                                                                                                          
+                  <br/>                  
+           </apex:pageBlockSection>       
+           
+                     
+           <apex:pageBlockSection rendered="{!IsEPVisible }" columns="2"  title="Contact Detail">
+              
+                  <apex:inputField value="{!objContact['Salutation']}" />
+                
+                  <apex:inputField value="{!objContact['FirstName']}" />
+                  <apex:inputField value="{!objContact['LastName']}" />
+                  <apex:outputField value="{!objContact['RecordTypeId']}" />
+                  <apex:inputField value="{!objContact['AccountId']}" />
+                
+                 <apex:inputField value="{!objContact['Department']}" />
+                 <apex:inputField value="{!objContact['MobilePhone']}" />
+                 <apex:inputField value="{!objContact['Phone']}" />
+                 <apex:inputField value="{!objContact['Email']}" /> 
+                 <apex:inputField value="{!objContact['AssistantPhone']}" />
+                 <apex:inputField value="{!objContact['AssistantName']}" />
+                  <apex:inputField value="{!objContact['NPI__c']}"/>
+                 <apex:inputField value="{!objContact['Email_Status__c']}" /> <br/>
+                
+                 <apex:inputField value="{!objContact['BWI_Training_Received__c']}"/> <br/>              
+               
+                 <apex:inputField value="{!objContact['External_Id__c']}" />
+                   <apex:inputField value="{!objContact['LinkedIn__c']}"/> 
+                     <apex:inputField value="{!objContact['Practice_Name__c']}" />  
+                 <apex:inputField value="{!objContact['Cardiology_Fellowship_Program__c']}" />
+                 
+                 <apex:inputField value="{!objContact['LastCURequestDate']}"/> 
+                 <apex:inputField value="{!objContact['LastCUUpdateDate']}"/>
+                 
+                                   
+                  <br/>                 
+           </apex:pageBlockSection>    
+                                                                                                                             
+                 
+           <apex:pageBlockSection rendered="{!IsCardioVisible }" columns="2"  title="Contact Detail">
+              
+                  <apex:inputField value="{!objContact['Salutation']}" />
+                  <apex:inputField value="{!objContact['Title']}" />
+                  <apex:inputField value="{!objContact['FirstName']}" />
+                  <apex:inputField value="{!objContact['LastName']}" />
+                  <apex:inputField value="{!objContact['AccountId']}" />
+                 <apex:outputField value="{!objContact['RecordTypeId']}" />
+                  <apex:inputField value="{!objContact['MobilePhone']}" />
+                 <apex:inputField value="{!objContact['Department']}" />
+                 <apex:inputField value="{!objContact['Email']}" /> 
+                 <apex:inputField value="{!objContact['Phone']}" />
+                 
+                 <apex:inputField value="{!objContact['AssistantName']}" />
+                 <apex:inputField value="{!objContact['AssistantPhone']}" />
+                 <apex:inputField value="{!objContact['Email_Status__c']}" />
+                 <apex:inputField value="{!objContact['NPI__c']}"/>
+                 <apex:inputField value="{!objContact['BWI_Training_Received__c']}"/> <br/>                
+                  <apex:inputField value="{!objContact['External_Id__c']}" />
+                <apex:inputField value="{!objContact['LinkedIn__c']}"/> 
+                <apex:inputField value="{!objContact['Practice_Name__c']}" /> 
+                <apex:inputField value="{!objContact['Cardiology_Fellowship_Program__c']}" />  
+                 <apex:inputField value="{!objContact['LastCURequestDate']}"/>                   
+                 <apex:inputField value="{!objContact['LastCUUpdateDate']}"/>
+                 
+                                                                                                          
+                  <br/>                  
+           </apex:pageBlockSection>    
+           
+                          
+             <apex:pageBlockSection rendered="{!IsOtherVisible}" columns="2"  title="Contact Detail">
+              
+                  <apex:inputField value="{!objContact['Salutation']}" />
+                  <apex:inputField value="{!objContact['Title']}" />
+                  <apex:inputField value="{!objContact['FirstName']}" />
+                  <apex:inputField value="{!objContact['LastName']}" />
+                  <apex:inputField value="{!objContact['AccountId']}" />            
+                              
+                 <apex:inputField value="{!objContact['Department']}" />
+                 <apex:inputField value="{!objContact['MobilePhone']}" />
+                 <apex:inputField value="{!objContact['Phone']}" />                
+                 <apex:inputField value="{!objContact['AssistantName']}" />
+                 <apex:inputField value="{!objContact['AssistantPhone']}" />
+                 <apex:inputField value="{!objContact['Email_Status__c']}" />  
+                  <apex:inputField value="{!objContact['Email']}" />               
+                 <apex:inputField value="{!objContact['Contact_Type__c']}" /> <br/>   
+                                 
+                   <apex:inputField value="{!objContact['External_Id__c']}" /><br/>   
+                   <apex:inputField value="{!objContact['Practice_Name__c']}" /><br/>       
+                 <apex:inputField value="{!objContact['LastCURequestDate']}"/>   
+                 <apex:inputField value="{!objContact['LastCUUpdateDate']}"/>
+                 
+                
+                 
+        </apex:pageBlockSection>                                                       
+                               
+              
+              <apex:pageBlockSection rendered="{!IsEPVisible }" columns="2"  title="EP Details">
+              
+                  <apex:inputField value="{!objContact['Proctor__c']}" />
+                  <apex:inputField value="{!objContact['EP_Employment_Type__c']}" />
+                  <apex:inputField value="{!objContact['Title']}" />
+                  <apex:inputField value="{!objContact['Year_started_AFIB__c']}" />
+                   <apex:inputField value="{!objContact['EP_Profile__c']}" />
+                  <apex:inputField value="{!objContact['Year_started_EP__c']}" />
+                </apex:pageBlockSection>
+                
+           <apex:pageBlockSection rendered="{!IsEPVisible }" columns="2"  title="Fellow Details">              
+                  <apex:inputField value="{!objContact['Program_Start_Date__c']}" />
+                  <apex:inputField value="{!objContact['Program_EndDate__c']}" />
+                  <apex:inputField value="{!objContact['Program_Name__c']}" />            
+                  <apex:inputField value="{!objContact['Fellowship_Status__c']}" />                                  
+                   </apex:pageBlockSection>
+                 
+            
+              <apex:pageBlockSection rendered="{!IsFellowVisible }" columns="2"  title="Fellow Details">
+              
+                  <apex:inputField value="{!objContact['Program_Start_Date__c']}" />
+                  <apex:inputField value="{!objContact['Program_EndDate__c']}" />
+                  <apex:inputField value="{!objContact['Program_Name__c']}" />                  
+                  <apex:inputField value="{!objContact['Fellowship_Status__c']}" />
+                                     
+          
+              </apex:pageBlockSection>
+            
+            
+                       
+              
+               <apex:pageBlockSection rendered="{!IsCardioVisible }" columns="2"  title="Fellow Details">
+                  <apex:inputField value="{!objContact['Program_Start_Date__c']}" />
+                  <apex:inputField value="{!objContact['Program_EndDate__c']}" />   
+                  <apex:inputField value="{!objContact['Program_Name__c']}" />                                              
+                  <apex:inputField value="{!objContact['Fellowship_Status__c']}" />                  
+           
+              </apex:pageBlockSection>
+              
+              
+                 
+                 
+                   <apex:pageBlockSection rendered="{!IsFellowVisible }" columns="2"  title="Privacy and Opt-in">         
+                  <apex:inputField value="{!objContact['Privacy_Consent__c']}" />                                   
+                  <apex:inputField value="{!objContact['Educational_Opportunities__c']}" /> 
+                  <apex:inputField value="{!objContact['SAFE_HARBOR__c']}" />
+                  <apex:inputField value="{!objContact['Market_Research_Opportunities__c']}" />
+                  <apex:inputField value="{!objContact['Opt_In__c']}" />
+                  <apex:inputField value="{!objContact['New_Product_Releases__c']}" /> <br/>                   
+                  <apex:inputField value="{!objContact['Marketing_Sales_Programs__c']}" /> 
+                 
+                   </apex:pageBlockSection>
+            
+                               
+                 
+                  <apex:pageBlockSection rendered="{!IsFellowVisible }" columns="2"  title="Methods of Contact">         
+                  <apex:inputField value="{!objContact['Email__c']}" />
+                  <apex:inputField value="{!objContact['Mail__c']}" />
+                  <apex:inputField value="{!objContact['Text__c']}" /> 
+                   </apex:pageBlockSection>
+                         
+ 
+                 <apex:pageBlockSection rendered="{!IsEPVisible }" columns="2"  title="Privacy and Opt-in">         
+                  <apex:inputField value="{!objContact['Privacy_Consent__c']}" />                                   
+                  <apex:inputField value="{!objContact['Educational_Opportunities__c']}" /> 
+                  <apex:inputField value="{!objContact['SAFE_HARBOR__c']}" />
+                  <apex:inputField value="{!objContact['Market_Research_Opportunities__c']}" />
+                  <apex:inputField value="{!objContact['Opt_In__c']}" />
+                  <apex:inputField value="{!objContact['New_Product_Releases__c']}" /> <br/>                  
+                  <apex:inputField value="{!objContact['Marketing_Sales_Programs__c']}" /> 
+                 
+                   </apex:pageBlockSection>
+                                
+                 
+                  <apex:pageBlockSection rendered="{!IsEPVisible }" columns="2"  title="Methods of Contact">         
+                  <apex:inputField value="{!objContact['Email__c']}" />
+                  <apex:inputField value="{!objContact['Mail__c']}" />
+                  <apex:inputField value="{!objContact['Text__c']}" /> 
+                   </apex:pageBlockSection>
+            
+             <apex:pageBlockSection rendered="{!IsCardioVisible }" columns="2"  title="Privacy and Opt-in">         
+                  <apex:inputField value="{!objContact['Privacy_Consent__c']}" />                                   
+                  <apex:inputField value="{!objContact['Educational_Opportunities__c']}" /> 
+                  <apex:inputField value="{!objContact['SAFE_HARBOR__c']}" />
+                  <apex:inputField value="{!objContact['Market_Research_Opportunities__c']}" />
+                  <apex:inputField value="{!objContact['Opt_In__c']}" />
+                  <apex:inputField value="{!objContact['New_Product_Releases__c']}" /> <br/>                 
+                  <apex:inputField value="{!objContact['Marketing_Sales_Programs__c']}" /> 
+                 
+                   </apex:pageBlockSection>
+                                                                           
+                  <apex:pageBlockSection rendered="{!IsCardioVisible }" columns="2"  title="Methods of Contact">         
+                  <apex:inputField value="{!objContact['Email__c']}" />
+                  <apex:inputField value="{!objContact['Mail__c']}" />
+                  <apex:inputField value="{!objContact['Text__c']}" /> 
+                   </apex:pageBlockSection>
+                        
+              
+              
+               <apex:pageBlockSection columns="2"  title="Address Information">
+              
+                  <apex:inputField value="{!objContact['MailingStreet']}" />
+                  <apex:inputField value="{!objContact['OtherStreet']}" />
+                  <apex:inputField value="{!objContact['MailingCity']}" />
+                  <apex:inputField value="{!objContact['OtherCity']}" />
+                  <apex:inputField value="{!objContact['MailingState']}" />
+                  <apex:inputField value="{!objContact['OtherState']}" />
+                  <apex:inputField value="{!objContact['MailingCountry']}" />
+                  <apex:inputField value="{!objContact['OtherCountry']}" />    
+                   <apex:inputField value="{!objContact['MailingPostalCode']}" />
+                  <apex:inputField value="{!objContact['OtherPostalCode']}" />  
+                    </apex:pageBlockSection>
+                  
+              
+                  
+                       <apex:pageBlockSection title="Description Information" >
+                        <apex:inputField value="{!objContact['Description']}" style="width:400px;height:100px"/>
+                        </apex:pageBlockSection>      
+                                                   
+                      
+                 <apex:pageBlockSection columns="2"  title="System Information">   
+     <apex:inputField value="{!objContact['CreatedById']}" /> 
+     <apex:inputField value="{!objContact['LastModifiedById']}" />     
+     </apex:pageBlockSection> 
+      
+            
+       
+                 
+              
+              <!-- End of Section for General Field-->
+          
+              
+          </apex:pageBlock>
+  </apex:form>
+</apex:page>

@@ -1,0 +1,155 @@
+<apex:page standardController="lmscons__Quiz__c" extensions="lmsconsQuizDetailExt_ctrl">
+<script>
+//added by JG to remove the inline query parameter
+if (location.href.match(/inline=1/)) window.top.location=location.href.replace(/inline=1/, '');
+</script>
+    <apex:includeScript value="{!URLFOR($Resource.lmscons__jquery152min)}" />
+    <apex:includeScript value="{!URLFOR($Resource.lmscons__lmslightbox, 'js/jquery.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.lmscons__lmslightbox, 'js/init.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.lmscons__lmslightbox, 'css/lms-lightbox.css')}"/>
+ 
+        <!-- light box -->
+
+        <div class="b-overlay"></div> 
+        <div class="b-lightbox">
+            <div class="b-title-bar">
+                <div class="b-title" id='TitleUp'>Title</div>
+                <div class="b-close-btn"><a href="#" onclick="">Close</a></div>
+            </div>
+            <div class="b-content" id="iframeForm">
+
+            </div>
+        </div>
+        <!-- Light box -->
+
+    <apex:actionStatus id="loadStatus">
+    <apex:facet name="start">
+    <c:EnhancedActionStatusQuiz BackColor="#efefef" borderColor="#336699"
+                        borderSize="1" height="50px" width="120px" ImageUrl="/img/loading.gif"
+                        Message="Loading..." messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/>
+    </apex:facet>
+    </apex:actionStatus>
+
+    <apex:form >
+        <apex:outputPanel id="pageMessages">
+            <apex:pageMessages />
+        </apex:outputPanel>
+
+        <apex:actionFunction name="addToMyTraining" action="{!addToMyTraining}" rerender="pageMessages"  status="loadStatus" /> 
+        <apex:actionFunction name="AddPageBreak" action="{!AddPageBreak}"  status="loadStatus" />
+
+    </apex:form>
+<!--using detail to display standard detail page for a Quiz object-->
+     <apex:detail />
+
+
+<script> 
+
+    jQuery.noConflict();
+
+    jQuery('[name*=add_page_break]').click(function() {
+        jQuery(this).attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    });
+
+    if(({!Module.lmscons__verified__c}!=1)||({!isConsumerUser}!=1)){
+    jQuery('input[name*=assign_quiz]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery('input[name*=add_to_my_training]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery('input[name*=add_quiz_to_course]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery('input[name*=add_quiz_to_learning_path]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery('input[name*=add_quiz_to_curriculum]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery('input[value*=Prerequisites]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    jQuery("[title$='{!$ObjectType.lmscons__Catalog_Quiz__c.label}']").attr('class', 'btnDisabled').attr('disabled', 'disabled');
+
+    }
+    if({!isAdminUser}!=1){
+        jQuery('input[value*=Prerequisite]').attr('class', 'btnDisabled').attr('disabled', 'disabled');
+        };
+
+    jQuery(document).ready(function(){
+
+                overlay = jQuery('.b-overlay');
+                lightbox = jQuery('.b-lightbox');
+                closelightbox = jQuery('.b-lightbox .b-close-btn');
+
+                closelightbox.click( function() {
+                    lightbox.fadeOut('fast');
+                    overlay.fadeOut('fast');
+                });
+
+                /*CYBCORLMSI-359*/
+                jQuery('.ptBreadcrumb').html('&nbsp;?&nbsp; <a href="#">Back to List</a>');
+                jQuery('.ptBreadcrumb a').attr('href','{!URLFOR($Action.lmscons__Quiz__c.List, $ObjectType.lmscons__Quiz__c)}');
+                /*             */
+                });
+
+    jQuery("div.bRelatedList:contains('{!$ObjectType.lmscons__Quiz_Question__c.LabelPlural}')").mouseover(function(event){
+        jQuery("div.bRelatedList:contains('{!$ObjectType.lmscons__Quiz_Question__c.LabelPlural}')").find("th.dataCell").find("a").each(
+            function() {
+                if (this.href.indexOf("qid") == -1) {
+                    this.href = this.href+'?qid={!lmscons__Quiz__c.id}';
+                }
+            }
+        );
+    });
+
+    jQuery("div.bRelatedList:contains('{!$ObjectType.lmscons__Quiz_Question__c.LabelPlural}')").find("th.dataCell").find("a").each(
+        function() {
+            this.href = this.href+'?qid={!lmscons__Quiz__c.id}';
+        }
+    );
+
+
+    jQuery("[title$='{!$ObjectType.lmscons__Catalog_Quiz__c.label}']").val('Add to Catalog');
+    jQuery("H3:contains('{!$ObjectType.lmscons__Catalog_Quiz__c.LabelPlural}')").text('Associated Catalogs');
+    /* CYBCORLMSI-359 */
+    /*jQuery("H3:contains('{!$ObjectType.lmscons__Quiz_Question__c.LabelPlural}')").text('Associated Quizzes');*/
+    jQuery("H3:contains('{!$ObjectType.lmscons__Quiz_Question__c.LabelPlural}')").text('Associated Questions');
+    /**************************************************************************************************/
+    jQuery("[name *= 'add_quiz_to_course']").val('Add to Course');
+    jQuery("H3:contains('{!$ObjectType.lmscons__Training_Path_Item__c.Label}')").text('Associated Courses');
+    jQuery("[name *= 'add_quiz_to_learning_path']").val('Add to Learning Path');
+    jQuery("H3:contains('{!$ObjectType.lmscons__Learning_Path_Item__c.LabelPlural}')").text('Associated Learning Paths');
+    jQuery("[name *= 'add_quiz_to_curriculum']").val('Add to Curriculum');
+    jQuery("H3:contains('{!$ObjectType.lmscons__Curriculum_Item__c.LabelPlural}')").text('Associated Curriculums');
+    if(!{!hasQuizQuestions}){
+        jQuery("[title$='{!$ObjectType.lmscons__Catalog_Quiz__c.Label}']").attr('class', 'btnDisabled').attr('disabled', 'disabled');
+        jQuery("[name *= 'add_quiz_to_course']").attr('class', 'btnDisabled').attr('disabled', 'disabled');;
+        jQuery("[name *= 'add_quiz_to_learning_path']").attr('class', 'btnDisabled').attr('disabled', 'disabled');
+        jQuery("[name *= 'add_quiz_to_curriculum']").attr('class', 'btnDisabled').attr('disabled', 'disabled');
+    }
+
+    function OpenAddQuestionWindow (){
+        height = 500;
+        width = 800;
+        centeredY = (screen.height - height)/2;
+        centeredX = (screen.width - width)/2;
+        window.open('{!$Page.NewQuizAddQuestion}?Id={!quiz.Id}','AnswersWindow','width=' + width + ', height=' + height + ', left=' + centeredX +', top=' + centeredY+', scrollbars=yes').focus();
+        return false;
+    }
+    /*function NewQuestion(id) {
+        alert('{!URLFOR($Action.lmscons__Question__c.New)}');
+    }*/
+    function RefreshPage() {
+        lightbox.fadeOut('fast');
+        overlay.fadeOut('fast');
+        window.location.reload();
+    }
+
+    function ClosePage() {
+        lightbox.fadeOut('fast');
+        overlay.fadeOut('fast');
+    }
+    function GotoQuestion(url){
+        window.location = '/'+url+'?qid={!lmscons__Quiz__c.id}';
+    }
+    function NewQuestionWindow (){
+        Lightbox();
+        height = 500;
+        width = 800;
+        jQuery('#TitleUp').html('New Question');
+        jQuery('#iframeForm').html('<iframe id="newQuestion" name="newQuestion" frameborder="0" height="'+height+'px"  src="{!$Page.NewNewQuestion}?qid={!quiz.id}&new=1" width="100%"></iframe>');
+    }
+
+</script>
+
+</apex:page>

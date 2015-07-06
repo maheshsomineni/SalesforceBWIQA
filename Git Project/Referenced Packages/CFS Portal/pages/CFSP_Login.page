@@ -1,0 +1,47 @@
+<apex:page controller="cfsp.CFSP_LoginController" showHeader="false" standardStylesheets="false" cache="false" docType="html-5.0">
+    <apex:composition template="{!dynamicTemplate}">
+        <apex:define name="body">
+            <style>
+                .form-signin {
+                    *max-width:350px;
+                }
+            </style>
+
+            <apex:outputPanel layout="block" styleClass="container pad">
+
+                <!-- ApexMessages Container -->
+                <apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+                    <apex:outputPanel layout="block" styleClass="row-fluid">
+                        <apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+                            <apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+                                <apex:messages layout="table" id="pageMessages"/>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <apex:outputPanel layout="block" styleClass="row">
+                    <apex:outputPanel layout="block" styleClass="span12">
+                        <apex:form forceSSL="true">
+                            <apex:outputPanel layout="block" styleClass="form-signin">
+                                <apex:outputLabel styleClass="legend" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_SIGN_IN_HEADER}"/>
+                                <apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_USERNAME}:">
+                                    <apex:inputText id="username" styleClass="input-block-level" value="{!username}" />
+                                </apex:outputLabel>
+                                <apex:outputLabel styleClass="control-label" value="{!$Label.CFSP_PAGE_ACCOUNT_TITLE_PASSWORD}">
+                                    <apex:inputSecret id="password" styleClass="input-block-level" value="{!password}" />
+                                </apex:outputLabel>
+                                <apex:outputLink styleClass="link" value="{!$Page.CFSP_ForgotPassword}">{!$Label.CFSP_PAGE_ACCOUNT_LINK_FORGOT_PASSWORD}</apex:outputLink>
+                                <apex:commandButton action="{!Login}" styleClass="btn btn-primary" value="{!$Label.CFSP_PAGE_ACCOUNT_BUTTON_SIGN_IN}" />
+                                <hr/>
+                                <p class="ques">{!$Label.CFSP_PAGE_ACCOUNT_LINK_REGISTRATION}<a class="link" href="{!$Page.CFSP_Register}">{!$Label.CFSP_PAGE_ACCOUNT_LINK_SIGN_UP}</a>
+                                </p>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+        </apex:define>
+    </apex:composition>
+</apex:page>

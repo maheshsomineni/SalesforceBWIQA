@@ -1,0 +1,20 @@
+<apex:component controller="lmscons.LMS_Certification_Date">
+
+	<apex:attribute name="componentValue" type="Date" description="Date for composing" assignTo="{!certificationDate}"/>
+	
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 1}" > <apex:param name="month" value="{!$Label.January}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 2}" > <apex:param name="month" value="{!$Label.February}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 3}" > <apex:param name="month" value="{!$Label.March}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 4}" > <apex:param name="month" value="{!$Label.April}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 5}" > <apex:param name="month" value="{!$Label.May}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 6}" > <apex:param name="month" value="{!$Label.June}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 7}" > <apex:param name="month" value="{!$Label.July}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 8}" > <apex:param name="month" value="{!$Label.August}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 9}" > <apex:param name="month" value="{!$Label.September}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 10}"> <apex:param name="month" value="{!$Label.October}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 11}"> <apex:param name="month" value="{!$Label.November}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 12}"> <apex:param name="month" value="{!$Label.December}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+
+
+
+</apex:component>

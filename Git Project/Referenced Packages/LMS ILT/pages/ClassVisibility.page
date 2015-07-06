@@ -1,0 +1,290 @@
+<apex:page standardController="lmsilt__Event_Catalog__c" extensions="lmsilt.ClassVisibility" >
+<apex:includeScript value="{!URLFOR($Resource.lmsilt__jquery, 'jquery-1.7.min.js')}" />
+
+<script>
+
+	function deleteOption(object,index) {
+		object.options[index] = null;
+	}
+
+
+	function addOption(object,text,value) {
+		//var defaultSelected = true;
+		//var selected = true;
+		var optionName = new Option(text, value)
+		object.options[object.length] = optionName;
+	}
+
+
+	function copySelected(fromObject,toObject) {
+		if (toObject.options.length == 1 && toObject.options[0].value == 'NONE') {
+			deleteOption(toObject,0)
+		}
+		for (var i=0, l=fromObject.options.length;i<l;i++) {
+			if (fromObject.options[i].selected) {
+				addOption(toObject,fromObject.options[i].text,fromObject.options[i].value);
+			}
+		}
+		for (var i=fromObject.options.length-1;i>-1;i--) {
+			if (fromObject.options[i].selected) {
+				deleteOption(fromObject,i);
+			}
+		}
+		if(fromObject.options.length == 0) {
+			addOption(fromObject,'--None--','NONE')
+		}
+	}
+
+
+	function forSaveValues(StatusString) {
+		var SelectRight = document.getElementById(jQuery('[id$=InSelectOptions]').attr('id'));
+		var arrayValues = [];
+		for (var i=0; i < SelectRight.options.length; i++){
+			if(SelectRight.options[i].value != 'NONE') {
+				arrayValues.push(SelectRight.options[i].value);
+			}
+		}
+		StatusString.value = arrayValues.join(';');
+		var strValue = StatusString.value;
+		if (arrayValues.length == 0) {
+			strValue = null;
+		}
+		var accessType = document.getElementById(jQuery('[id$=AccessType]').attr('id'));
+		var accessTypeValue = accessType.options[accessType.selectedIndex].value;
+		if (accessTypeValue == 'ACCOUNT') {
+			jQuery('[id$=accountId]').val(strValue);
+		}
+		else if (accessTypeValue == 'PROFILE') {
+			jQuery('[id$=profileId]').val(strValue);
+		}
+		else if (accessTypeValue == 'GROUP') {
+			jQuery('[id$=groupId]').val(strValue);
+		}
+	}
+
+
+	function onsubmitAction(){
+		if(event.keyCode != '13'){
+			return true;
+		}else{
+			jQuery('.waitingHolder').css('visibility','visible');
+			jQuery('[id$=table_div]').css('visibility','hidden');
+			SearchbyStr(this.value);
+			return false;
+		}
+	}
+
+	function checkAll(cb){
+		var inputElem = document.getElementsByTagName("input");
+		for(var i=0; i<inputElem.length; i++) {
+			if(inputElem[i].id.indexOf("selectLine")!=-1) {
+				inputElem[i].checked = cb.checked;
+			}
+		}
+	}
+
+	function allCheckedControl(allCheckboxStyleClassName, singleCheckboxStyleClassName){
+		var isAllChecked = true;
+		var singleCheckboxSelectorValue = "input." + singleCheckboxStyleClassName;
+		var allCheckboxSelectorValue = "input." + allCheckboxStyleClassName;
+		jQuery(singleCheckboxSelectorValue).each(function(index, element) {
+			if(jQuery(element).attr('type') =='checkbox' && jQuery(element).prop("checked") == false) {
+				isAllChecked = false;
+			}
+		});
+
+		jQuery(allCheckboxSelectorValue).each(function(index, element) {
+			if(jQuery(element).attr('type') =='checkbox') {
+				jQuery(element).prop("checked", isAllChecked);
+			}
+		});
+	}
+
+	function handleKeyPress(e){
+    	var eventInstance = window.event ? event : e;
+        var keyCode = eventInstance.charCode ? eventInstance.charCode : eventInstance.keyCode;
+        if (keyCode == 13){
+        	dosearch();
+           	return false;
+   		}
+   	}
+</script>
+
+<apex:form id="FormMain">
+	<apex:pageMessages />
+	<div style="display:none">
+		<apex:inputText value="{!selectedValues}" id="selectedString"/>
+		<apex:inputText value="{!catalogClass.lmsilt__Accounts__c}" id="accountId"/>
+		<apex:inputText value="{!catalogClass.lmsilt__Profiles__c}" id="profileId"/>
+		<apex:inputText value="{!catalogClass.lmsilt__Groups__c}" id="groupId"/>
+	</div>
+
+	<apex:actionfunction action="{!SearchbyStr}" name="dosearch" rerender="PaginationBlock"/>
+
+	<apex:pageBlock mode="maindetail" id="mainBlock">
+		<apex:pageBlockButtons location="top" id="pbbsMainButtons" >
+			<apex:commandButton value="{!$Label.Save}" action="{!saveClass}" onclick="forSaveValues(document.getElementById('{!$Component.selectedString}'))"
+								rendered="{!classLevel}" oncomplete="top.location.href='/{!eventCatalog.Id}';"/>
+			<apex:commandLink styleClass="btn"
+								style="text-decoration:none;padding:4px;"
+								value="{!$Label.Quick_Save}"
+								action="{!saveClass}"
+								onclick="forSaveValues(document.getElementById('{!$Component.selectedString}'))"
+								rendered="{!classLevel}" >
+				<apex:param value="true" assignTo="{!quickSave}"/>
+			</apex:commandLink>
+			<apex:commandButton value="{!$Label.Cancel}" action="{!TableAction}"  rendered="{!classLevel}"/>
+		</apex:pageBlockButtons>
+		<apex:pageBlockSection rendered="{!NOT(classLevel)}" columns="1" id="PaginationBlock">
+			<!-- Multiple Class Visibility Set button -->
+			<apex:outputPanel layout="block" style="text-align:center !important;">
+				<apex:commandButton action="{!massClassVisibilitySetup}" value="{!$Label.Set_Class_Visibility}" />
+			</apex:outputPanel>
+			<!-- *************************************************************************************************************************************************************** -->
+			<apex:outputPanel layout="block">
+				<apex:inputText value="{!SearchStr}" id="theSearchInput" style="width: 320px;" onkeypress="return handleKeyPress(event)">
+					<!-- <apex:actionSupport event="onkeypress" onsubmit="onsubmitAction()"/>
+					<apex:actionFunction action="{!SearchbyStr}" name="SearchbyStr" rerender="PaginationBlock">
+						<apex:param name="firstParam" assignTo="{!SearchStr}" value="" />
+					</apex:actionFunction>
+					 -->
+				</apex:inputText>&nbsp;
+				<apex:commandButton action="{!SearchbyStr}" value="{!$Label.Search}" id="theButton"  styleClass="waiting"/>
+			</apex:outputPanel>
+			<apex:outputPanel id="main_div" style="overflow:auto; height:300px;overflow-x: hidden; background:#ffffff; white-space: nowrap;" layout="block">
+				<apex:pageBlockTable value="{!records}" var="item" id="tableId" >
+					<!-- Checkbox ////////////////////////////////////////////////// -->
+					<apex:column style="width:30px;">
+						<apex:facet name="header">
+							<apex:inputCheckbox onclick="checkAll(this)" id="selectAll" styleClass="AllCheckbox"/>
+						</apex:facet>
+						<apex:inputCheckbox value="{!item.checked}" id="selectLine" styleClass="SingleCheckbox" onclick="allCheckedControl('AllCheckbox','SingleCheckbox');"/>
+					</apex:column>
+					<!-- ////////////////////////////////////////////////////////// -->
+					<apex:column >
+						<apex:facet name="header">{!$Label.Class_Name}</apex:facet>
+						<apex:outputLink title="{!$Label.Configure_visibility_for_this_class}" value="javascript: void(0)" id="theLink">{!item.entity['Name']}
+							<apex:actionSupport event="onclick"	action="{!classLevelAction}" rerender="FormMain">
+								<apex:param name="firstParam" assignTo="{!classId}" value="{!item.entity['Id']}" id="actionParam" />
+							</apex:actionSupport>
+						</apex:outputLink>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">{!$Label.Class_Visibility}</apex:facet>
+						<!-- <apex:outputText value="Visibility inherited from event"/> -->
+						<apex:outputText value="{!item.classVisibilityType}"/>
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+			<!-- PAGINATION CONTROL -->
+			<apex:outputPanel styleClass="paginator" layout="block">
+					<span class="prevNextLinks">
+						<span class="prevNext,waiting">
+							<apex:commandLink styleClass="{!IF(hasPrevious,'waiting','')}"
+												action="{!first}"
+												rerender="PaginationBlock"
+												oncomplete="allCheckedControl('AllCheckbox','SingleCheckbox');">
+								<img class="{!If(hasPrevious,'first','firstoff')}" alt="{-!$Label.First_Page_Dev_Plan_Alt}" title="{-!$Label.First_Page_Dev_Plan_Title}" src="/s.gif"/>
+							</apex:commandlink>
+						</span>
+						<span class="prevNext,waiting">
+							<apex:commandLink styleClass="{!IF(hasPrevious,'waiting','')}"
+												action="{!previous}"
+												style="{!IF(hasPrevious,'','color:grey')}"
+												oncomplete="allCheckedControl('AllCheckbox','SingleCheckbox');"
+												rerender="PaginationBlock">
+								<img class="{!If(hasPrevious,'prev','prevoff')}" alt="{-!$Label.Previous_Page_Dev_Plan_Alt}" title="{-!$Label.Previous_Page_Dev_Plan_Title}" src="/s.gif"/>
+								{!$Label.Pagination_Previous}
+							</apex:commandlink>
+						</span>
+						<span class="prevNext,waiting">
+							<apex:commandLink styleClass="{!IF(hasNext,'waiting','')}"
+												action="{!next}"
+												style="{!If(hasNext,'','color:grey')}"
+												onclick="if('{!NOT(hasNext)}'== true){return false;}"
+												oncomplete="allCheckedControl('AllCheckbox','SingleCheckbox');"
+												rerender="PaginationBlock">
+								{!$Label.Pagination_Next}
+								<img class="{!If(hasNext,'next','nextoff')}" alt="{-!$Label.Next_Page_Dev_Plan_Alt}" title="{-!$Label.Next_Page_Dev_Plan_Title}" src="/s.gif"/>
+							</apex:commandlink>
+						</span>
+						<span class="prevNext,waiting">
+							<apex:commandLink styleClass="{!IF(hasNext,'waiting','')}"
+												action="{!last}"
+												oncomplete="allCheckedControl('AllCheckbox','SingleCheckbox');"
+												rerender="PaginationBlock">
+								<img class="{!If(hasNext,'last','lastoff')}" alt="{-!$Label.Last_Page_Dev_Plan_Alt}" title="{-!$Label.Last_Page_Dev_Plan_Title}" src="/s.gif"/>
+							</apex:commandlink>
+						</span>
+					</span>
+			</apex:outputPanel>
+			<!-- PAGINATION CONTROL END -->
+		</apex:pageBlockSection>
+		<apex:pageBlockSection rendered="{!classLevel}" columns="1">
+			<!-- Single Class Name -->
+		    <apex:outputField value="{!classRecord.Name}" rendered="{!massVisibilitySetup==false}"/>
+			<!-- Multiple Class Name -->
+		    <apex:outputPanel layout="block" rendered="{!massVisibilitySetup}">
+		    	<table>
+		    		<tr>
+		    			<th class="labelCol vfLabelColTextWrap first" scope="row" style="width:400px;text-align:right;">
+		    				{!$Label.Classes}:
+		    			</th>
+		    			<td>
+		    				<apex:outputPanel id="classesNames" layout="block" style="overflow:auto;width:400px;height:100px;">
+		    					<apex:repeat value="{!selectedClasses}" var="selectedClass">
+		        					<apex:outputText value="{!selectedClass.Name}" /><br></br>
+		    					</apex:repeat>
+		    				</apex:outputPanel>
+		    			</td>
+		    		</tr>
+		    	</table>
+			</apex:outputPanel>
+			<!-- End of  Multiple Class Name -->
+			<apex:OutputPanel layout="block" id="BlockGroups"  >
+				<apex:outputText value="{!$Label.Search}:" />
+				<apex:selectList value="{!defaultSearch}" multiselect="false" size="1" Id="AccessType">
+					<apex:selectOptions value="{!AccessOptions}"/>
+					<apex:actionSupport event="onchange" action="{!changeType}" />
+				</apex:selectList>
+				&nbsp; <apex:outputText value="For:" />
+				<apex:inputText value="{!searchText}" id="SearchCriteria" />
+				<apex:CommandButton action="{!searchAction}"  onclick="forSaveValues(document.getElementById('{!$Component.selectedString}'))" value="{!$Label.Find}" />
+				<apex:OutputPanel layout="block" id="ShowPanelBlock">
+					<table class="layout">
+						<tr>
+							<td class="selectCell" >
+								<apex:outputpanel layout="block" ><apex:outputText style="font-weight: bold;" value="{!$Label.Available_for_Sharing}" /></apex:outputpanel>
+								<apex:selectList size="12" id="outSelectOptions" multiselect="true">
+									<apex:selectOptions value="{!availableOptions}"/>
+								</apex:selectList>
+							</td>
+							<td class="zen-phs buttonCell" style="text-align: center; width:60px">
+								<div class="text">{!$Label.ilt_Add}</div>
+								<apex:outputPanel layout="block" styleClass="zen-mbs text">
+									<apex:commandLink styleClass="catalogButton" onclick="copySelected(document.getElementById('{!$Component.outSelectOptions}'),document.getElementById('{!$Component.inSelectOptions}'))" id="urButton"  rerender="catalog">
+										<img title="{!$Label.ilt_Add}" class="rightArrowIcon" alt="{!$Label.ilt_Add}" src="/s.gif"/>
+									</apex:commandLink>
+								</apex:outputPanel>
+								<apex:outputPanel layout="block" styleClass="text">
+									<apex:commandLink styleClass="catalogButton" onclick="copySelected(document.getElementById('{!$Component.inSelectOptions}'),document.getElementById('{!$Component.outSelectOptions}'))" id="ulButton" rerender="catalog" >
+										<img title="{!$Label.ilt_Remove}" class="leftArrowIcon" alt="{!$Label.ilt_Remove}" src="/s.gif"/>
+									</apex:commandLink>
+										</apex:outputPanel>
+								<div class="duelingText">{!$Label.ilt_Remove}</div>
+							</td>
+							<td class="selectCell">
+								<apex:outputpanel layout="block" ><apex:outputText style="font-weight: bold;" value="{!$Label.Shared_To}" /></apex:outputpanel>
+								<apex:selectList size="12" id="InSelectOptions" multiselect="true">
+									<apex:selectOptions value="{!selectedOptions}"/>
+								</apex:selectList>
+							</td>
+						</tr>
+					</table>
+				</apex:OutputPanel>
+			</apex:OutputPanel>
+			* {!$Label.ClassVisibilityNoteText}
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

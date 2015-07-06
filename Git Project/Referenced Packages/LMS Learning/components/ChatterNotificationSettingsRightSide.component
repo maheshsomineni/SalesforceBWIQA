@@ -1,0 +1,21 @@
+<apex:component >
+
+	<apex:attribute name="settingField" type="String" required="true" description="Id from fields settings template"/>
+	<apex:attribute name="settingId" type="String" required="true" description="Setting Id"/>
+
+	<apex:outputPanel rendered="{!ISBLANK(settingField)}">
+		<apex:outputLink value="#" onclick="edit_chatter_template_popup('{!settingId}')">
+			{!$Label.Create_Chatter_Template}
+		</apex:outputLink>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!NOT(ISBLANK(settingField))}">
+		<apex:outputLink value="#" onclick="edit_chatter_template_popup('{!settingId}')">
+			{!$Label.Edit_Chatter_Template}
+		</apex:outputLink>
+		<apex:outputText value=" " />
+		<apex:outputLink value="javascript:remove_chatter_template('{!settingId}')" >
+			{!$Label.ConsumerSettings_value_Delete}
+		</apex:outputLink>
+	</apex:outputPanel>
+	
+</apex:component>

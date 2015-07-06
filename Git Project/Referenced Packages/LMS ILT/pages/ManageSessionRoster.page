@@ -1,0 +1,305 @@
+<apex:page standardController="lmsilt__GoToTraining_Session__c"  extensions="lmsilt.ManageSessionRosterController" tabStyle="lmsilt__Event__c">
+    <apex:includeScript value="{!URLFOR($Resource.lmsilt__jquery, 'jquery-1.7.min.js')}" />
+    <style>
+        .Apply_button {
+            color: black;
+            text-decoration: underline;
+            cursor: pointer;
+            padding-top: 7px;
+        }
+        .filter_label {
+            padding-top: 7px;
+            float: left;    
+            padding-left: 11px;   
+        }
+        .filter_level {
+            padding-top:10px;
+            padding-bottom: 20px;
+        }
+        .notice_hidden_box {
+            display: none;
+        }
+        .show_notice {
+            cursor: pointer;
+            color: black;
+            text-decoration: underline;
+        }
+        .EnrolmentStatus_FromFilter {
+            float: left;
+        }
+        .selectedRecord {
+        	background: rgb(210, 232, 255);
+        }
+    </style>
+    <apex:outputPanel id="pageMessages">
+        <apex:pageMessages />
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!NOt(exRecords)}">
+        <a href="#" onClick="history.go(-1); return false">{!$Label.Back}</a>
+    </apex:outputPanel>
+    <apex:outputPanel id="Results">
+    
+    <apex:form rendered="{!exRecords}">
+    
+        <apex:actionfunction name="previousCall" action="{!previous}" status="busyStatus" />
+        <apex:actionfunction name="nextCall" action="{!next}" status="busyStatus" />
+        <apex:actionFunction name="changePagesize" action="{!changePagesize}" rerender="Results" status="sortStatus"/>
+        
+        <apex:actionStatus id="sortStatus">
+            <apex:facet name="start">
+                <c:EnhancedActionStatus BackColor="#efefef" borderColor="#336699"
+                                borderSize="3" height="50px" width="120px" ImageUrl="/img/loading.gif"
+                                Message="{!$Label.Loading}" messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/>
+            </apex:facet>
+            <apex:facet name="stop">
+            </apex:facet>
+        </apex:actionStatus>
+
+        <apex:actionStatus startText=""  id="busyStatus"
+                onStart="document.body.style.cursor = 'wait';return true;"
+                onStop="document.body.style.cursor = 'default';return true;" >
+        </apex:actionStatus>
+  
+        <apex:pageBlock mode="edit" title="{!$Label.Manage_Sessions_Roster}">
+            <apex:pageBlockButtons >
+                <apex:commandButton id="save_button"
+                					status="sortStatus" 
+                					action="{!save}" 
+                					value="{!$Label.Save}" 
+                					onclick="disable_buttons()" 
+                					oncomplete="enable_button()" 
+                					rerender="pageMessages"/>
+                <apex:commandButton id="cancel_button" action="{!cancel}" value="{!$Label.Cancel}"/>
+            </apex:pageBlockButtons>
+            <div class="filter_level">
+                <apex:outputPanel >
+                    <div class="filter_label">   
+                        <b>{!$Label.Mark_Selected_As}:</b>
+                    </div>
+                    <div class="EnrolmentStatus_FromFilter" >
+                        <apex:panelgrid columns="2">
+                             <apex:inputField value="{!lmsilt__GoToTraining_Session__c.lmsilt__Status__c}" id="RosterSessionStatus" />
+                        </apex:panelgrid>
+                    </div>
+                    <div class="btn right_filter_child Apply_changes_for_table" style="padding-top: 5px; padding-left: 5px; padding-right: 5px; float: left;">
+                        {!$Label.Apply}
+                    </div>
+                </apex:outputpanel>
+            </div>
+            
+            <apex:outputPanel >
+                <table width="100%">
+                    <tr>
+                        <td align="right">
+                            <font style="font-size:8.5pt">
+                                <apex:image url="/img/search_prevarrow.gif" styleClass="prevArrow" rendered="{!(hasPrevious)}" alt="{!$Label.Previous_Page}" title="{!$Label.Previous_Page}" />
+                                <apex:image url="/img/search_prevarrow_disabled.gif" styleClass="prevArrow" rendered="{!NOT(hasPrevious)}" alt="{!$Label.Previous_Page}" title="{!$Label.Previous_Page}" />
+                                <apex:outputlink onclick="javascript: return fillCurrentPage('prev');" 
+                                                    disabled="{!NOT(hasPrevious)}" 
+                                                    title="{!$Label.Previous_Page}" 
+                                                    style="color:{!If(hasPrevious,'#000000','#999999')}" >
+                                                    {!$Label.Previous_Page}
+                                </apex:outputlink>
+                                &nbsp;&nbsp;
+                                ({!PageStartIndex}-{!PageStopIndex})
+                                &nbsp;&nbsp;
+                                <apex:outputlink onclick="javascript:return fillCurrentPage('next');" 
+                                                    disabled="{!NOT(hasNext)}" 
+                                                    title="{!$Label.Next_Page}" 
+                                                    style="color:{!If(hasNext,'#000000','#999999')}">
+                                                    {!$Label.Next_Page}&nbsp;
+                                </apex:outputlink>
+                                <apex:image url="/img/search_nextarrow_disabled.gif" styleClass="nextArrow" rendered="{!NOT(hasNext)}" alt="{!$Label.Next_Page}" title="{!$Label.Next_Page}"/>
+                                <apex:image url="/img/search_nextarrow.gif" styleClass="nextArrow" rendered="{!(hasNext)}" alt="{!$Label.Next_Page}" title="{!$Label.Next_Page}"/>
+                            </font>
+                        </td>
+                    </tr>
+                </table>
+            </apex:outputpanel>
+
+            <apex:outputPanel id="RosterSessionsBox">
+                <apex:dataTable width="100%" value="{!RosterSessionItems}" var="rs" cellspacing="0" cellpadding="0" border="0" styleClass="list" rowClasses="dataRow even, dataRow odd" headerClass="headerRow" onrowmouseout="if (window.hiOff){hiOff(this);}" onrowmouseover="if (window.hiOn){hiOn(this);}">
+                    <apex:column width="15px">
+                        <div class="select_all_records_checkbox">
+                            <apex:facet name="header">
+                                <apex:inputCheckbox id="select_all_records_checkboxQ" onclick="allRecordsSelected(this.checked)" />
+                            </apex:facet>
+                        </div>
+                        <div class="select_single_record_checkbox">
+                            <apex:inputCheckbox onclick="singleRecordSelected(this.checked);" />
+                        </div>
+                    </apex:column>
+                    <apex:column width="20%">
+                        <apex:facet name="header">{!$ObjectType.lmsilt__GoToTraining_Session__c.fields.lmsilt__User__c.label}</apex:facet>
+                        <apex:outputField value="{!rs.rosterSession.lmsilt__User__c}" id="rs_user" />
+                    </apex:column>
+                    <apex:column width="20%">
+                        <apex:facet name="header">{!$ObjectType.lmsilt__GoToTraining_Session__c.fields.lmsilt__Session__c.label}</apex:facet>
+                        <apex:outputField value="{!rs.rosterSession.Session__r.Name}" id="rs_session" />
+                    </apex:column>
+                    <apex:column width="10%">
+                        <apex:facet name="header">{!$ObjectType.lmsilt__GoToTraining_Session__c.fields.lmsilt__Registered__c.label}</apex:facet>
+                        <apex:outputField value="{!rs.rosterSession.lmsilt__Registered__c}" id="rs_registered" />
+                    </apex:column>
+                    <apex:column width="10%">
+                        <div class="status_box">
+                            <apex:facet name="header">{!$ObjectType.lmsilt__GoToTraining_Session__c.fields.lmsilt__Status__c.label}</apex:facet>
+                            <apex:inputField value="{!rs.rosterSession.lmsilt__Status__c}" id="RosterSessionStatus" />
+                        </div>
+                    </apex:column>
+                    <apex:column >
+                        	<apex:facet name="header">{!$ObjectType.lmsilt__GoToTraining_Session__c.fields.lmsilt__Note__c.label}</apex:facet>
+                            <div class="add_notes">
+                				<span class="show_notice">{!$Label.Add_Notes}</span>
+                				<div class="notice_hidden_box">
+                    				<apex:inputField value="{!rs.rosterSession.lmsilt__Note__c}" />
+                				</div>
+            				</div>
+                    </apex:column>  
+                </apex:datatable>  
+    
+                <apex:outputPanel >
+                    <table width="100%">
+                        <tr>
+                            <td align="right" >
+                                <font style="font-size:8.5pt">
+                                    <apex:image url="/img/search_prevarrow.gif" styleClass="prevArrow" rendered="{!(hasPrevious)}" alt="{!$Label.Previous_Page}" title="{!$Label.Previous_Page}" />
+                                    <apex:image url="/img/search_prevarrow_disabled.gif" styleClass="prevArrow" rendered="{!NOT(hasPrevious)}" alt="{!$Label.Previous_Page}" title="{!$Label.Previous_Page}" />
+                                    <apex:outputlink onclick="javascript: return fillCurrentPage('prev');" 
+                                                        disabled="{!NOT(hasPrevious)}" 
+                                                        title="{!$Label.Previous_Page}" 
+                                                        style="color:{!If(hasPrevious,'#000000','#999999')}" >
+                                                        {!$Label.Previous_Page}
+                                    </apex:outputlink>
+                                    &nbsp;&nbsp;
+                                    ({!PageStartIndex}-{!PageStopIndex})
+                                    &nbsp;&nbsp;
+                                    <apex:outputlink onclick="javascript:return fillCurrentPage('next');" 
+                                                        disabled="{!NOT(hasNext)}" 
+                                                        title="{!$Label.Next_Page}" 
+                                                        style="color:{!If(hasNext,'#000000','#999999')}">
+                                                        {!$Label.Next_Page}&nbsp;
+                                    </apex:outputlink>
+                                    <apex:image url="/img/search_nextarrow_disabled.gif" styleClass="nextArrow" rendered="{!NOT(hasNext)}" alt="{!$Label.Next_Page}" title="{!$Label.Next_Page}"/>
+                                    <apex:image url="/img/search_nextarrow.gif" styleClass="nextArrow" rendered="{!(hasNext)}" alt="{!$Label.Next_Page}" title="{!$Label.Next_Page}"/>
+                                </font>
+                            </td>
+                        </tr>
+                    </table>
+                </apex:outputpanel>
+            </apex:outputPanel>
+        </apex:pageblock>
+    </apex:form>
+    </apex:outputPanel>
+    
+    
+    <script>
+        jQuery.noConflict();
+        jQuery(document).ready(function(){
+            
+            // clear first picklist value "--none--"
+            //jQuery('[id$=RosterSessionStatus]').each(function (i, e) {
+                //jQuery(e).find('option').eq(0).remove();
+            //});
+            
+            //check checkboxes statuses after each time when page is rerendered
+            singleRecordSelected();
+            
+            // show notes box with notes
+			jQuery('.dataRow .add_notes .notice_hidden_box textarea').each(function(i) {
+	 			if(jQuery(this).val() != '') {
+	 				jQuery(this).closest('.add_notes').find(' .show_notice').hide();
+	 				jQuery(this).closest(".notice_hidden_box").show(); 
+	 			}
+	 		});
+            
+           	// show box for notes
+    		jQuery('.add_notes').click(function() {
+    			jQuery( this ).find('.notice_hidden_box').css({'display':'block'});
+        		jQuery( this ).find('.show_notice').hide();
+    		});
+      
+            // change data table
+            jQuery('.Apply_changes_for_table').click(function() {
+            
+               // add 'selectedRecord' class for checked records 
+               jQuery('.selectedRecord').removeClass("selectedRecord");
+               jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]:checked').closest("tr").addClass("selectedRecord");
+               //jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]:').closest("tr").removeClass("selectedRecord");
+               //jQuery('.selectedRecord').css({'background':'rgb(210, 232, 255)'});
+    
+               // get parameter from filter to update data
+               var EnrolmentStatus_FromFilter = jQuery('.EnrolmentStatus_FromFilter select').val().toString();
+               console.log('EnrolmentStatus_FromFilter == ' + EnrolmentStatus_FromFilter);
+               // change Status
+               jQuery('.selectedRecord .status_box option[value="' + EnrolmentStatus_FromFilter + '"]').attr("selected", "selected");
+
+               // refresh parameters    
+               //jQuery('.Apply_changes_for_table').click();   
+                
+            });
+        });
+        
+        // single Record Selected
+        function singleRecordSelected(checked_status){
+            var record_checked_status = checked_status;
+            if(jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]:checked').size() != jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]').size()){
+                jQuery('[id*="select_all_records_checkboxQ"]').removeAttr('checked').attr("unchecked", "unchecked");  
+            }
+            if(jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]:checked').size() == jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]').size()){
+                jQuery('[id*="select_all_records_checkboxQ"]').removeAttr('unchecked').attr("checked", "checked"); 
+            }
+        }
+        
+        // all Records Selected
+        function allRecordsSelected(checked_status){
+            var All_checked_status = checked_status;
+            if (All_checked_status){
+                jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]').attr("checked", "checked"); 
+            }
+            else {
+                jQuery('.dataRow .select_single_record_checkbox input[type=checkbox]').removeAttr('checked').attr("unchecked", "unchecked"); 
+            }
+        }
+        
+        var intSelectedItemsCount = 0;
+        function fillCurrentPage(btnClicked){
+
+            var blnProceed = true;
+            if(intSelectedItemsCount!=0){
+                if (confirm('{!JSENCODE($Label.lost_selection)}'))
+                    blnProceed = true;
+                else
+                    blnProceed = false;
+            }
+
+            if (blnProceed){
+                intSelectedItemsCount = 0;
+                if(btnClicked == 'prev'){
+                    previousCall();
+                    return false;
+                }else if(btnClicked == 'next'){
+                    nextCall();
+                    return false;
+                }else{
+                    changepagesize();
+                }
+            }
+            
+            return false;
+        }
+        
+        function enable_button() {
+			jQuery("input[id*=save_button]").attr('class', 'btn').attr('value', '{!$Label.Save}').removeAttr("disabled");
+			//jQuery("input[id*=save_and_new_button]").attr('class', 'btn').attr('value', '{!$Label.Save_New}').removeAttr("disabled");
+			//jQuery("input[id*=cancel_button]").attr('class', 'btn').attr('value', '{!$Label.Cancel}').removeAttr("disabled");
+		}
+
+    	function disable_buttons() {
+			jQuery("input[id*=save_button]").attr('class', 'btnDisabled').attr('value', '{!$Label.Saving}').attr('disabled', 'disabled');
+			//jQuery("input[id*=save_and_new_button]").attr('class', 'btnDisabled').attr('value', '{!$Label.Saving}').attr('disabled', 'disabled');
+			//jQuery("input[id*=cancel_button]").attr('class', 'btnDisabled').attr('value', '{!$Label.Saving}').attr('disabled', 'disabled');
+    	}
+    
+    </script>    
+</apex:page>

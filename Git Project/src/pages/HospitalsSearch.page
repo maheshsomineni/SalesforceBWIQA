@@ -1,0 +1,112 @@
+<apex:page standardController="Call__c" extensions="CallController" sidebar="false" standardStylesheets="true" showHeader="false">
+<apex:form >
+
+<script>
+     var hospital; 
+     var jde_no;
+     var AccountId;
+      function close1(a1, b1,c1,d1,parentPage)
+        {
+           hospital= a1;
+           jde_no = b1; 
+           var blank = c1;  
+           AccountId = d1;
+            
+           //parent.window.opener.location.reload(); 
+           //window.opener.location.href="/{!$CurrentPage.parameters.id}";
+         
+          if(parentPage!=null && parentPage!='')
+          {
+           // top.window.opener.document.getElementById('mypage:myform:pb:pbs3:pbsi:acc_name').value = hospital;
+              top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:accName').value = hospital;
+           // top.window.opener.document.getElementById('j_id0:j_id2:pb:j_id31:j_id38:accId').value = AccountId ;
+          //  top.window.opener.document.getElementById('mypage:myform:pb:pbs1:pbsi2:accId').value = AccountId ;
+            top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:pbsiNew1:accId').value = AccountId ;
+            //top.window.opener.document.getElementById('j_id0:j_id2:pb:j_id31:pbsi2:accId').value = AccountId ;
+           // top.window.opener.document.getElementById('mypage:myform:pb:pbs1:jde').value = jde_no; 
+            top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:jde').value = jde_no; 
+            top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:pbscon:conName').value = blank ;
+           
+          }
+          else
+          {
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:pbs3:j_id37:acc_name').value = hospital;
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:pbs3:j_id36:acc_name').value = hospital;
+         top.window.opener.document.getElementById('mypage:myform:pb:pbs3:pbsi:acc_name').value = hospital;
+         //top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:accName').value = hospital;
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:pbs7:j_id63:j_id65').value = AccountId ;
+           top.window.opener.document.getElementById('mypage:myform:pb:pbs7:pbsi7:AId').value = AccountId ;
+            //top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:accId').value = AccountId ;
+          // top.window.opener.document.getElementById('j_id0:j_id2:pb:pbs7:j_id62:AId').value = AccountId ;
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:j_id57:jde').value = jde_no; 
+           top.window.opener.document.getElementById('mypage:myform:pb:pbs9:jde').value = jde_no; 
+           //top.window.opener.document.getElementById('thepage:theform:pb:pbsNew1:jde').value = jde_no; 
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:j_id56:jde').value = jde_no; 
+           //top.window.opener.document.getElementById('j_id0:j_id2:pb:pbs4:j_id44:phy').value = blank ; 
+           top.window.opener.document.getElementById('mypage:myform:pb:pbs4:pbsi4:phy').value = blank ; 
+           top.window.opener.document.getElementById('mypage:myform:pb:pbsFellow:pbsiFellow:fellow').value = blank ;
+           
+          } 
+           parent.window.close();
+           //window.opener.document.getElementById('{!$Component.pb.pbs3.acc_name}').reload();
+         
+        }
+      
+  </script>
+  
+  
+  <apex:pageBlock >
+      <apex:pageBlockSection >
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >State</apex:outputLabel>
+              <apex:selectList value="{!state}" size="1">
+            <apex:selectOptions value="{!states}"/>
+        </apex:selectList>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >City</apex:outputLabel>
+              <apex:inputText value="{!city}"/>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Hospital</apex:outputLabel>
+              <apex:inputText value="{!hospital}"/>
+          </apex:pageBlockSectionItem>
+      
+      </apex:pageBlockSection>
+      <apex:pageBlockSection columns="2">
+          <apex:outputLabel ></apex:outputLabel>
+          <apex:commandButton value="Search" action="{!searchAcc}"/>
+      
+      </apex:pageBlockSection>
+  
+  </apex:pageBlock>
+  
+  <apex:pageBlock rendered="{!showResults}">
+      <apex:pageBlockTable value="{!acctsList}" var="obj">
+         
+            <apex:column headervalue="Hospital Name">
+                <apex:outputLink onclick="close1('{!JSENCODE(obj.Name)}', '{!obj.JDE_JJHCS_Number__c}','','{!obj.Id}','{!parentPage}')"  value="{!obj.Name}">
+                    <apex:param name="name1" value="{!obj.Name}"/>
+                    <apex:param name="jd" value="{!obj.JDE_JJHCS_Number__c}"/>
+                    <apex:param name="Accid" value="{!obj.Id}"/>
+                    {!obj.Name}
+                </apex:outputLink>
+            </apex:column>
+            <apex:column value="{!obj.ShippingStreet}"/>
+            <apex:column value="{!obj.ShippingCity}"/>
+            <apex:column value="{!obj.ShippingState}"/>
+            <apex:column value="{!obj.JDE_JJHCS_Number__c}"/>
+
+        </apex:pageBlockTable> 
+
+  
+  </apex:pageBlock>
+  
+  <apex:pageBlock rendered="{!IF(acctsList.size==0,true,false)}">
+    <b>No results found</b>
+  </apex:pageBlock>  
+ </apex:form>
+</apex:page>

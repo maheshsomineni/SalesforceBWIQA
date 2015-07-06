@@ -1,0 +1,660 @@
+<apex:page controller="cfsp.CFSP_TemplateController" showHeader="{!NOT(ISBLANK($CurrentPage.parameters.sfdc.tabName))}" sidebar="false" standardStylesheets="false" cache="false" docType="html-5.0" id="pageTempl" >
+
+    <head>
+        <meta charset="utf-8" />
+        <title>{!$Site.Name}</title>
+        <meta name="author" content=""/>
+        <meta name="description" content=""/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,900,300' rel='stylesheet' type='text/css' />
+        <script type="text/javascript">if (location.href.match(/inline=1/)) window.top.location=location.href.replace(/inline=1/, '');</script>
+
+        <apex:outputPanel layout="none" rendered="{!ISBLANK($CurrentPage.parameters.sfdc.tabName)}">
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap.min.css')}"/>
+            <!--<apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap-responsive.css')}"/> -->
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/nested-table.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-responsive.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/hacks.css')}"/>
+        </apex:outputPanel>
+
+        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK($CurrentPage.parameters.sfdc.tabName))}">
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrapPortal.min.css')}"/>
+            <!-- <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap-responsive.css')}"/> -->
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/nested-table.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overridesPortal.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-responsive.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/hacks.css')}"/>
+            <apex:stylesheet value="/sCSS/29.0/sprites/1384456088000/Theme3/default/base/chatterCore.css"/>
+            <apex:stylesheet value="/sCSS/29.0/sprites/1384456088000/Theme3/default/base/chatterExtended.css"/>
+            <!-- hack1 for Branding Community -->
+            <style>
+                html .brandZeronaryBgr{background-color:{!settings['MotifZeronaryColor']}!important;}
+                html .brandZeronaryFgr{color:#FFFFFF!important;}
+                html .brandPrimaryBgr{background-color:{!settings['MotifPrimaryColor']}!important;}
+                html .brandPrimaryFgr{color:#FFFFFF!important;}
+                html .brandPrimaryBrd2{border-color:#FFFFFF!important;}
+                html .brandPrimaryFgrBrdTop{border-top-color:#FFFFFF!important;}
+                html .brandPrimaryBrd{border-top-color: #FFF!important;}
+                html .brandSecondaryBrd{border-color: #FFF}!important;}
+                html .brandSecondaryBgr{background-color: #FFF !important;}
+                html .brandTertiaryFgr{color:#222222!important;}
+                html .brandTertiaryBgr{background-color:{!settings['MotifTertiaryColor']}!important;color:#222222!important;background-image:none!important;}
+                html .brandTertiaryBrd{border-top-color:{!settings['MotifTertiaryColor']}!important;}
+                html .brandQuaternaryFgr{color:#FFFFFF!important;}
+                html .brandQuaternaryBgr{background: #FFF!important;}
+                #phSearchInput {box-shadow:none; vertical-align: baseline; line-height:normal}
+                #searchButtonContainer > input {font-size: 90% !important;}
+                .headerSearchLeftRoundedCorner #phSearchButton {width: 46px !important;}
+                #appHeaderTop h1 {line-height: normal;}
+            </style>
+        </apex:outputPanel>
+
+        <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/bootstrap-datetimepicker.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/fullcalendar.css')}"/>
+
+        <!-- hack for Learning tab -->
+        <apex:outputPanel layout="none" rendered="{!$CurrentPage.parameters.dat='true'}">
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-displayAllTabs.css')}"/>
+        </apex:outputPanel>
+        <!-- hack2 for Branding Community in Portal -->
+        <apex:outputPanel layout="none" rendered="{!AND(settings['isBraningCommunityIdExist'] == true,NOT(ISBLANK($CurrentPage.parameters.sfdc.tabName)))}">
+            <style>
+                /* sub-tabs */
+                .breadcrumb {
+                    padding: 4px 10px;
+                    background-color: {!settings['MotifPrimaryColor']};
+                    border-radius: 0px;
+                }
+                /* link color */
+                a {
+                    color: {!settings['MotifSecondaryColor']};
+                }
+                a:hover, a:focus {
+                    color: #0085D0;
+                }
+                .prereq-item, .sequence-item {
+                    color: {!settings['MotifSecondaryColor']};
+                }
+                .legend { color: {!settings['MotifSecondaryColor']}; }
+                /* table border */
+                table.outer-table {
+                    border-color: {!settings['MotifSecondaryColor']};
+                }
+                table.outer-table td {
+                    border-color: {!settings['MotifSecondaryColor']};
+                }
+                /* table header borders and colors */
+                table.outer-table th {
+                    background: {!settings['MotifSecondaryColor']};
+                    border-color: {!settings['MotifSecondaryColor']};
+                    color: #FFFFFF;
+                }
+                /* event table colors */
+                .agenda-container {
+                    border-left-color: {!settings['MotifSecondaryColor']};
+                    border-right-color: {!settings['MotifSecondaryColor']};
+                }
+                table.agenda tr:last-child td {
+                    border-color: {!settings['MotifSecondaryColor']} !important;
+                }
+                table.agenda th, table.agenda td, table.agenda tr.last-child td {
+                    border-color: {!settings['MotifSecondaryColor']} !important;
+                }
+                table.agenda th {
+                    background: {!settings['MotifSecondaryColor']} !important;
+                    color: #FFFFFF;
+                }
+                /* learning calendar colors */
+                .fc-widget-header, .fc-widget-content {
+                    border-color: {!settings['MotifSecondaryColor']};
+                }
+                .fc-grid th {
+                    background: {!settings['MotifSecondaryColor']};
+                    border-color: {!settings['MotifSecondaryColor']};
+                }
+                .fc-state-highlight {
+                    background: #DDEDFC;
+                }
+                .fc-grid .fc-state-highlight .fc-day-number {
+                    background: #80C3FF;
+                    border-bottom-color: {!settings['MotifSecondaryColor']};
+                }
+                /* sidebar colors */
+                .sidebar-nav .headline {
+                    color: {!settings['MotifSecondaryColor']};
+                }
+                textarea:focus, input[type="text"]:focus,
+                input[type="password"]:focus, input[type="datetime"]:focus,
+                input[type="datetime-local"]:focus, input[type="date"]:focus,
+                input[type="month"]:focus, input[type="time"]:focus,
+                input[type="week"]:focus, input[type="number"]:focus,
+                input[type="email"]:focus, input[type="url"]:focus,
+                input[type="search"]:focus, input[type="tel"]:focus,
+                input[type="color"]:focus, .uneditable-input:focus {
+                    border-color: {!settings['MotifSecondaryColor']};
+                    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px {!settings['MotifSecondaryColor']};
+                }
+                /* button and calendar colors */
+                .btn-primary, body .btn-primary, .wrapper .btn-primary, #contentWrapper .btn-primary,
+                .datetimepicker table tr td.active,
+                .datetimepicker table tr td.active:hover,
+                .datetimepicker table tr td.active.disabled,
+                .datetimepicker table tr td.active.disabled:hover {
+                    background-color: {!settings['MotifSecondaryColor']};
+                    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+                    background-image: none;
+                    border-color: {!settings['MotifSecondaryColor']};
+                }
+                .btn-primary:hover, body .btn-primary:hover,  .wrapper .btn-primary:hover, #contentWrapper .btn-primary:hover,
+                .btn-primary:focus, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+                    background-color: {!settings['MotifSecondaryColor']};
+                    background-image: none;
+                }
+                .datetimepicker table tr td.active:active,
+                .datetimepicker table tr td.active:hover:active,
+                .datetimepicker table tr td.active.disabled:active,
+                .datetimepicker table tr td.active.disabled:hover:active,
+                .datetimepicker table tr td.active.active,
+                .datetimepicker table tr td.active.active:hover,
+                .datetimepicker table tr td.active.disabled.active,
+                .datetimepicker table tr td.active.disabled.active:hover {
+                    background-color: {!settings['MotifSecondaryColor']};
+                }
+                .btn-primary,
+                .btn-cancel, 
+                body .btn-primary, 
+                body .btn-cancel,
+                .wrapper .btn-primary, 
+                .wrapper .btn-cancel,
+                #contentWrapper .btn-primary,
+                #contenWrapper .btn-cancel
+                 {
+                color: #FFF!important;
+                background: #F18C21 !important;
+                text-shadow: none;
+                }
+                .window .header {
+                 background: #F18C21 !important;
+                }
+                pre.myLearningTip {
+                     font-family: "Roboto", Arial, sans-serif !important;
+                     font-size: 19px !important;
+                     text-rendering: optimizelegibility;
+                     border-radius: 0;
+                     word-wrap: break-word;
+                     text-overflow:ellipsis;
+                     white-space:pre-wrap;
+                     word-break: normal;
+                     background-color:#FFFFFF;
+                     white-space: pre-wrap;    /* css-3 */
+                     white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+                     white-space: -pre-wrap;      /* Opera 4-6 */
+                     white-space: -o-pre-wrap;  /* Opera 7 */
+                     word-wrap: break-word;  /* Internet Explorer 5.5+ */
+                     padding-left: 8px;
+                     padding-right: 8px;
+                     padding-top: 4px;
+                     padding-bottom: 4px;
+                     color: #81898e !important;
+                     border-left: 0 !important;
+                     border-right: 0 !important;
+                     border-top: 2px solid #f18c21 !important;
+                     border-bottom: 2px solid #f18c21 !important;
+                     text-transform: uppercase !important;
+                }
+            </style>
+        </apex:outputPanel>
+
+        <apex:outputPanel layout="none" rendered="{!$CurrentPage.parameters.disableHeader='true'}">
+            <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-disableHeader.css')}"/>
+        </apex:outputPanel>
+
+        <apex:stylesheet value="{!URLFOR($Resource.cfsp__CFSP,'css/overrides-kumo.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.CFSP_Biosense_assets,'css/BSCSS.css')}"/>
+        <link rel="stylesheet" href="{!URLFOR($Resource.CFSP_Biosense_assets, 'css/biosense_registration.css')}" />
+        <!-- NAV DISPLAY NONE-->
+        <apex:outputPanel layout="none" rendered="{!ISPICKVAL($User.UserType,'Guest')}">
+            <style>
+                p.navbar-text.pull-right {
+                    display: none !important;
+                }
+                ul.nav.nav-pills {
+                    display: none !important;
+                }
+            </style>
+        
+        </apex:outputPanel>
+        <!-- NAV DISPLAY NONE-->
+    </head>
+
+    <body>
+    <!-- CHANGES FOR REGISTRATION -->
+    <apex:outputPanel layout="none" rendered="{!AND($CurrentPage.parameters.dat!='true',ISPICKVAL($User.UserType,'Guest'))}">
+        <div class="container">
+            <div class="row">
+                <div class="span12 regimage">
+                    <img src="{!URLFOR($Resource.CFSP_Biosense_assets, 'images/Login_Photos.png')}" alt="" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                    <h2>{!$Label.BIOSENSE_REQUEST_ACCOUNT}</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span12">
+                    <p>
+                        {!$Label.BIOSENSE_EXPAND_YOUR_LEARNING}
+                        {!$Label.BIOSENSE_THIS_SITE_ALLOWS_YOU_1}
+                        {!$Label.BIOSENSE_THIS_SITE_ALLOWS_YOU_2}
+                        <a target="_blank" href="http://www.biosensewebster.com/privacy.php">Privacy Policy</a>.
+                        {!$Label.BIOSENSE_THIS_SITE_ALLOWS_YOU_3}
+                        <a target="_blank" href="http://www.biosensewebster.com/privacy.php">Privacy Policy</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+    <style>
+        html,
+        body {
+            background: #FFF;
+            min-height: auto !important;
+        }
+        .registration-paragraph-wrapper {
+            width: 1100px;
+            margin: 0 auto;
+            background: #FFF;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        .registration-paragraph-wrapper h2 {
+            font-weight: 700;
+            color: #231F20;
+            font-size: 18px;
+        }
+        .registration-paragraph-wrapper a {
+            color: #F18C21;
+        }
+        .registration-paragraph-wrapper p {
+            font-size: 14px;
+            color: #231F20;
+            line-height: 1.5em;
+        }
+        .registration-image-wrapper {
+            background: #FFF;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .registration-image-wrapper img {
+            display: block;
+            margin: 0 auto;
+        }
+        .pad,
+        .container {
+            padding-top: 0;
+        }
+        .wrapper {
+            min-height: 10% !important;
+        }
+        .wrapper .container {
+            padding-top: 0;
+        }
+        .navbar,
+        .footer {
+            display: none;
+        }
+        .alert-error  table[role="alert"] {
+            background: inherit!important;
+        }
+        .alert-info,
+        .alert-info td {
+            background: #d9edf7 !important;
+        } 
+        .alert {
+            width: 500px;
+        }
+        div#jsErrorMessage {
+            margin-top: 40px;
+        }
+    </style>
+    <!-- CHANGES FOR REGISTRATION END -->
+
+        <apex:actionStatus layout="block" stopText="" id="statusBox">
+            <apex:facet name="start">
+                <apex:outputPanel layout="block" styleClass="statusBox-layer">
+                    <apex:outputPanel layout="block" styleClass="statusBox-msgBox"></apex:outputPanel>
+                    <apex:outputPanel layout="block" styleClass="statusBox-msg"><apex:image url="{!URLFOR($Resource.cfsp__CFSP,'img/spinner.gif')}"/>&nbsp;&nbsp;</apex:outputPanel>
+                </apex:outputPanel>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <!-- Sub tabs for Learning tab -->
+        <apex:outputPanel layout="none" rendered="{!$CurrentPage.parameters.dat='true'}">
+            <ul class="breadcrumb">
+                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_findlearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_findlearning')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_FindLearning}?dat=true{!IF(NOT(ISNULL($CurrentPage.parameters.sfdc.tabName)),'&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName,'')}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_FIND_LEARNING}</apex:outputLink></li>
+                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='0')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=0&dat=true{!IF(NOT(ISNULL($CurrentPage.parameters.sfdc.tabName)),'&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName,'')}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_MY_LEARNING}</apex:outputLink></li>
+                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_calendar'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_calendar')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_Calendar}?dat=true{!IF(NOT(ISNULL($CurrentPage.parameters.sfdc.tabName)),'&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName,'')}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_CALENDAR}</apex:outputLink></li>
+                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='5')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=5&dat=true{!IF(NOT(ISNULL($CurrentPage.parameters.sfdc.tabName)),'&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName,'')}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_DEVELOPMENT_PLANS}</apex:outputLink></li>
+                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='1')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=1&dat=true{!IF(NOT(ISNULL($CurrentPage.parameters.sfdc.tabName)),'&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName,'')}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_COMPLETED_LEARNING}</apex:outputLink></li>
+            </ul>
+        </apex:outputPanel>
+
+        <apex:outputPanel layout="block" styleClass="wrapper">
+            <apex:outputPanel layout="none" rendered="{!NOT($CurrentPage.parameters.disableHeader='true')}">
+                <apex:outputPanel layout="none" rendered="{!$CurrentPage.parameters.dat!='true'}">
+                    <apex:outputPanel layout="none" rendered="{!ISBLANK($CurrentPage.parameters.sfdc.tabName)}">
+                        <apex:outputPanel layout="block" styleClass="navbar navbar-inverse navbar-fixed-top">
+                            <apex:outputPanel layout="block" styleClass="navbar-inner">
+                                <apex:outputPanel layout="block" styleClass="container-fluid">
+                                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a>
+                                    <apex:outputLink styleClass="brand" value="javascript:void(0);">&nbsp;</apex:outputLink>
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleClass="container-fluid">
+                                    <apex:outputPanel layout="block" styleClass="nav-collapse collapse" id="navbar">
+                                        <p class="navbar-text pull-right">
+                                            <apex:outputText value="{!IF(ISPICKVAL($User.UserType,'Guest'),$Label.cfsp__CFSP_COMMON_TITLE_HELLO_GUEST,$Label.cfsp__CFSP_COMMON_TITLE_HELLO + ', ' + $User.FirstName + ' ' + $User.LastName + ' !')}"/>
+                                            <apex:outputLink styleClass="navbar-link" value="{!IF(ISPICKVAL($User.UserType,'Guest'),$Page.cfsp__CFSP_Login,'/secur/logout.jsp')}">{!IF(ISPICKVAL($User.UserType,'Guest'),$Label.cfsp__CFSP_COMMON_LINK_SIGN_IN,$Label.cfsp__CFSP_COMMON_LINK_LOG_OUT)}</apex:outputLink>
+                                        </p>
+                                        <ul class="nav nav-pills">
+                                            <apex:outputPanel layout="none" rendered="{!AND(ISPICKVAL($User.UserType,'Guest'),OR(settings['anonymousSearching'],settings['enabledAnonymousRedirectUrl']))}">
+                                                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_findlearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_findlearning')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_FindLearning}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_FIND_LEARNING}</apex:outputLink></li>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="none" rendered="{!AND(NOT(ISPICKVAL($User.UserType,'Guest')),NOT(AND (CONTAINS(LOWER($CurrentPage.URL), 'changepassword'),CONTAINS(LOWER($CurrentPage.URL), 'frontdoor'))))}">
+                                                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_findlearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_findlearning')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_FindLearning}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_FIND_LEARNING}</apex:outputLink></li>
+                                                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='0')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=0">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_MY_LEARNING}</apex:outputLink></li>
+                                                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_calendar'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_calendar')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_Calendar}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_CALENDAR}</apex:outputLink></li>
+                                                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='1')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=1">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_COMPLETED_LEARNING}</apex:outputLink></li>
+                                                <li class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='5')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyLearning}?mode=5">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_DEVELOPMENT_PLANS}</apex:outputLink></li>
+                                                <li class="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_myaccount'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_myaccount')),'active','')}"><apex:outputLink value="{!$Page.cfsp__CFSP_MyAccount}">{!$Label.cfsp__CFSP_COMMON_LINK_PAGE_MY_ACCOUNT}</apex:outputLink></li>
+                                            </apex:outputPanel>
+                                        </ul>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <!-- No JS -->
+            <noscript>
+                <apex:outputPanel style="padding-top:160px;" layout="block" styleClass="container-fluid container" id="pageMessageBoxNoJS">
+                    <apex:outputPanel layout="block" styleClass="row-fluid">
+                        <apex:outputPanel layout="block" styleClass="alert alert-error span12">
+                            <table role="alert">
+                                <tbody>
+                                    <tr><td><apex:outputText value="{!$Label.cfsp__CFSP_COMMON_LABEL_NO_JS}"/></td></tr>
+                                </tbody>
+                            </table>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <style>
+                    .pad {
+                        padding-top: 0px;
+                    }
+                </style>
+            </noscript>
+
+            <apex:insert name="body"/>
+
+        </apex:outputPanel>
+
+        <!-- Footer -->
+        <apex:outputPanel layout="none" rendered="{!NOT($CurrentPage.parameters.disableHeader='true')}">
+            <apex:outputPanel layout="none" rendered="{!ISBLANK($CurrentPage.parameters.sfdc.tabName)}">
+                <apex:outputPanel layout="block" styleClass="footer">
+                    <apex:outputPanel layout="block" styleClass="container-fluid">
+                        <apex:outputPanel layout="block" styleClass="row-fluid">
+                            <apex:outputPanel layout="block" styleClass="span12">
+                                <p class="copyright">Copyright &copy;<apex:outputPanel layout="inline" id="date">{!YEAR(TODAY())}</apex:outputPanel></p>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/jquery.min.js')}"/>
+        <!--[if lt IE 9]><script src="{!URLFOR($Resource.cfsp__CFSP,'js/respond.min.js')}"></script><![endif]-->
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/bootstrap.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/nested-table.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'/js/bootstrap-datetimepicker.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'/js/locales/bootstrap-datetimepicker.' + settings['currentLocaleShort'] + '.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/launch.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/ie-polyfill.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/cfsp.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/fullCalendar2b/moment.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/fullCalendar2b/fullcalendar.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/fullCalendar2b/lang/all.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/respond.min.js')}"/>
+
+        <apex:outputPanel layout="none" rendered="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_findlearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_findlearning')),true,false)}">
+            <script>
+            function defineTips() {
+                try {
+                    if($('pre.myLearningTip').length < 1) {
+                        var label = '{!JSENCODE($Label.cfsp__CFSP_COMMON_LINK_PAGE_FIND_LEARNING)}';
+                        $('.container-fluid.pad').prepend('<pre class="myLearningTip">'+label+'</pre>');
+                    }
+                }
+                catch(e) {}
+            }
+            </script>
+        </apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='0')),true,false)}">
+            <script>
+            function defineTips() {
+                try {
+                    if($('pre.myLearningTip').length < 1) {
+                        var label = '{!JSENCODE($Label.cfsp__CFSP_COMMON_LINK_PAGE_MY_LEARNING)}';
+                        $('.container-fluid.pad').prepend('<pre class="myLearningTip">'+label+'</pre>');
+                    }
+                }
+                catch(e) {}
+            }
+            </script>
+        </apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL),'/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='1')),true,false)}">
+            <script>
+            function defineTips() {
+                try {
+                    if($('pre.myLearningTip').length < 1) {
+                        var label = '{!JSENCODE($Label.cfsp__CFSP_COMMON_LINK_PAGE_COMPLETED_LEARNING)}';
+                        $('.container-fluid.pad').prepend('<pre class="myLearningTip">'+label+'</pre>');
+                    }
+                }
+                catch(e) {}
+            }
+            </script>
+        </apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL),'/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='5')),true,false)}">
+            <script>
+            function defineTips() {
+                try {
+                    if($('pre.myLearningTip').length < 1) {
+                        var label = '{!JSENCODE($Label.cfsp__CFSP_COMMON_LINK_PAGE_DEVELOPMENT_PLANS)}';
+                        $('.container-fluid.pad').prepend('<pre class="myLearningTip">'+label+'</pre>');
+                    }
+                }
+                catch(e) {}
+            }
+            </script>
+        </apex:outputPanel>
+        <apex:outputPanel layout="none" rendered="{!IF(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_calendar'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_calendar')),true,false)}">
+            <script>
+            function defineTips() {
+                try {
+                    if($('pre.myLearningTip').length < 1) {
+                        var label = '{!JSENCODE($Label.cfsp__CFSP_COMMON_LINK_PAGE_CALENDAR)}';
+                        $('.container-fluid.pad').prepend('<pre class="myLearningTip">'+label+'</pre>');
+                    }
+                }
+                catch(e) {}
+            }
+            </script>
+        </apex:outputPanel>
+
+        <script>
+            var cfsp_popup_width = document.documentElement.clientWidth || document.body.clientWidth;
+            var cfsp_popup_height = document.documentElement.clientHeight || document.body.clientHeight;
+            var CURRENT_LOCALE,CURRENT_LOCALE_SHORT,CURRENT_LOCALE_DATE_TIME_FORMAT;
+
+            function expandDevelopmentPlans() {
+                jQuery('tr .type-DevelopmentPlan a[name="knob"], tr .type-Activity a[name="knob"]').click();
+            }
+
+            function defineDateTimePicker() {
+                CURRENT_LOCALE = '{!settings['currentLocale']}';
+                CURRENT_LOCALE_SHORT = '{!settings['currentLocaleShort']}';
+                CURRENT_LOCALE_DATE_TIME_FORMAT = 'mm/d/yyyy h:ii P';
+
+                try {
+                    if (cfsp.locales[CURRENT_LOCALE] !== undefined) {
+                        CURRENT_LOCALE_DATE_TIME_FORMAT = cfsp.locales[CURRENT_LOCALE];
+                    }
+                    else if (cfsp.locales[CURRENT_LOCALE_SHORT] !== undefined) {
+                        CURRENT_LOCALE_DATE_TIME_FORMAT = cfsp.locales[CURRENT_LOCALE_SHORT];
+                    }
+                }
+                catch (e) {}
+
+                $('div.date-time-picker').each(function(i,e) {
+                    defineDatePicker(e, new Date(), new Date());
+                    var str = $(e).attr('id');
+                    if (str.indexOf('To', str.length - 2) == -1) {
+                        $(e).datetimepicker().on('changeDate', function(ev){
+                            $('#' + str + 'To').datetimepicker('remove');
+                            defineDatePicker('#' + str + 'To', ev.date, ev.date);
+                            $('#' + str + 'To > input').val('');
+                        });
+                    }
+                });
+            }
+
+            function defineDatePicker(inSelector, inStartDate, inInitialDate) {
+                $(inSelector).data('date',false);
+                $(inSelector).datetimepicker({
+                    format: CURRENT_LOCALE_DATE_TIME_FORMAT,
+                    language: CURRENT_LOCALE_SHORT,
+                    minView: 2,
+                    todayBtn: true,
+                    autoclose: true,
+                    showMeridian: false,
+                    pickerPosition: 'top-right',
+                    startDate: inStartDate,
+                    initialDate: inInitialDate
+                });
+            }
+
+            function displaySelectLongValues() {
+                $('.span12.fl-location-sellist').find('option').each(function () {
+                    $(this).attr('title',$(this).val());
+                });
+                $('.span12.fl-catalog-sellist').find('option').each(function () {
+                    $(this).attr('title',$(this).val());
+                });
+            }
+
+            function defineSettings() {
+            
+            var certlinks = $('.m-award').parent();
+                if (certlinks !== undefined) {
+                    for (var i=0; i < certlinks.length; i++) {
+                        var linksource = $(certlinks[i]).attr('href');
+                        var linkcustom = linksource.replace('lmscons__LMS_Certificate','c__Congratulations');
+                        $(certlinks[i]).attr('href', linkcustom);
+                        $(certlinks[i]).attr('target', '__blank');
+                    }
+                }
+            
+                if (typeof window['defineTips'] == 'function') {defineTips();}
+                try {
+                    defineDateTimePicker();
+                    displaySelectLongValues();
+                }
+                catch(e) {}
+
+                try {
+                    expandDevelopmentPlans();
+                }
+                catch(e) {}
+
+                try {
+                    $('body').keyup(function(e) {
+                        if ($('div.lightbox div.window').is(':visible') && e.which == 13) {
+                            $('div.lightbox div.window div.bracket div.control-group a.btn-primary').click()
+                        }
+                    });
+                }
+                catch(e){}
+            }
+
+            $(document).ready(function() {
+                defineSettings();
+                cangeColumnWidth();
+            });
+            $(window).resize(function() {
+                cangeColumnWidth();
+            });
+
+            function cangeColumnWidth() {
+                $('#apart + div[id$="part"], #apart + div[id*="page"]').addClass('mainpart');
+                if ($('body').width() <= 979) {
+                    $('#apart').addClass('span3').removeClass('span2');
+                    $('#part, .mainpart').addClass('span9').removeClass('span10');
+                }
+                if ($('body').width() > 979) {
+                    $('#apart').addClass('span2').removeClass('span3');
+                    $('#part, .mainpart').addClass('span10').removeClass('span9');
+                }
+            };
+
+            $(function() {
+                $(document).on('click', '.title-desc-btn', function() {
+                    //$(this).parents('tr').eq(0).next().toggle();
+                    $(this).parent().prev('a').toggleClass('knob-neg');
+                    $(this).parent().prev('a').parents().eq(5).find('table.inner-table').parent().parent().toggleClass('elbow');
+                    $(this).parent().prev('a').parent().parent().parent().children().each(function(i, data) {
+                        if (i != 0) {
+                            $(data).toggleClass('expanded');
+                            $($(data).find('tr').get(0)).toggleClass('expanded');
+                        }
+                    });
+                });
+            });
+            
+            /* Commented for pointing to NewQuiz page */
+            function actionHandler(result, isSelf, isJSAction) {
+                if (isJSAction !== undefined && isJSAction == true) {
+                    window[result].call();
+                }
+                else {
+                    if (result == '') {
+                        $('[id*=lightbox]').show();
+                    }
+                    else {
+                        if (isSelf !== undefined && isSelf == true) {
+                            result = result.replace('lmscons__Quiz','c__NewQuiz');
+                            var url_dec = decodeURIComponent(result);
+                            console.log('url_dec '+url_dec );
+                            var completedMode = url_dec.indexOf("mode=1")>-1;
+                            var quizMode = url_dec.indexOf("Type=Quiz")>-1;
+                            if (completedMode && quizMode ) {
+                                result = result + "&reviewmode=true";
+                            }
+                            window.location.href = result;
+                        }
+                        else {
+                            var win = window.open(result,"", "width= " + cfsp_popup_width + ", height=" + cfsp_popup_height);
+                            if (win) refreshPage();
+                        }
+                    }
+                }
+            }
+            
+            </script>
+    </body>
+
+</apex:page>

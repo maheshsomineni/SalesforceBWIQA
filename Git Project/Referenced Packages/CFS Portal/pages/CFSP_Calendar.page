@@ -1,0 +1,389 @@
+<apex:page controller="cfsp.CFSP_CalendarController" showHeader="false" standardStylesheets="false" cache="false" readOnly="true" docType="html-5.0">
+	<apex:composition template="{!dynamicTemplate}">
+		<apex:define name="body">
+			<style>
+				body { min-width:990px; }
+				.fc-event-container .fc-event.event-available {background: #007ecc; cursor:pointer;}
+				.fc-event-container .fc-event.event-enrolled {background: #0a8e19; cursor:pointer;}
+				.selectAllCatalogsCFS {font-size: 85%;}
+				.catalogsSectionCalendarFilter .selectAllCatalogsCFS {float: right;}
+				.catalogsSectionCalendarFilter .headline {float: left;}
+				.calendar-legend > p {float: left; padding: 0 20px 0 0; margin: 0;}
+				.fc {padding: 0;}
+				.pageCalendarNoFound {color: rgb(246, 30, 30); padding-top: 12px;}
+				.availableClassesLegend {background: #007ecc; width: 18px; height: 18px; float:left;}
+				.enrolledClassesLegend{background: #0a8e19; width: 18px; height: 18px; float:left;}
+				div.row-fluid div.span10 div.event-panel span p.event-title span {
+					float:right;
+					font-size:14px;
+					font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+				}
+				.link-class {
+					font-size:20px;
+				}
+			</style>
+			<apex:outputPanel layout="block" styleClass="container-fluid pad">
+
+				<!-- ApexMessages Container -->
+				<apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+					<apex:outputPanel layout="block" styleClass="row-fluid">
+						<apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+							<apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+								<apex:messages layout="table" id="pageMessages"/>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</apex:outputPanel>
+
+				<apex:Form id="lightboxWrapper">
+					<apex:actionFunction name="doAction" action="{!doAction}" rerender="lightboxWrapper" status="statusBox" oncomplete="actionHandler('{!lightBox.action.link}',{!lightBox.action.isSelf},{!lightBox.action.isJSAction});"><apex:param name="p15" value=""/></apex:actionFunction>
+
+					<apex:outputPanel layout="none">
+						<apex:outputPanel id="lightbox" layout="block" styleClass="lightbox" rendered="{!AND(NOT(ISBLANK(lightBox)),lightBox.enabled)}">
+							<apex:outputPanel layout="block" styleClass="window">
+								<apex:outputPanel layout="block" styleClass="header">
+									<apex:outputPanel layout="block" styleClass="header-label">
+										<apex:outputText styleClass="header-label-text" value="{!lightBox.windowHeader}"/>
+									</apex:outputPanel>
+									<a class="close" onclick="closeLightBox({!lightBox.action.needRefresh});"><i class="icon-large icon-remove icon-button"></i></a>
+								</apex:outputPanel>
+								<apex:outputPanel layout="block" styleClass="bracket">
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.messages)),lightBox.messages.size>0)}">
+										<apex:repeat value="{!lightBox.messages}" var="message">
+											<label class="emphasis"><apex:outputText value="{!message.label}"/></label>
+											<apex:repeat value="{!message.items}" var="item">
+												<label class="{!item.styleClass}">
+													<apex:outputPanel layout="block" rendered="{!item.isFormatted}"><pre><apex:outputText value="{!item.value}"/></pre></apex:outputPanel>
+													<apex:outputPanel layout="block" rendered="{!NOT(item.isFormatted)}"><apex:outputText value="{!item.value}"/></apex:outputPanel>
+												</label>
+											</apex:repeat>
+										</apex:repeat>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(lightBox.iframe))}">
+										<iframe src="{!lightBox.iframe.src}" width="{!lightBox.iframe.width}" height="{!lightBox.iframe.height}" align="{!lightBox.iframe.align}" frameborder="{!lightBox.iframe.frameborder}" hspace="{!lightBox.iframe.hspace}" scrolling="{!lightBox.iframe.scrolling}"></iframe>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.inputs)),lightBox.inputs.size>0)}">
+										<div class="control-group" style="text-align:center; width:100%;">
+											<apex:repeat value="{!lightBox.inputs}" var="input">
+												<apex:outputText value="{!input.label}"/>&nbsp;
+												<apex:inputText value="{!input.value}" maxlength="{!input.maxLength}"/>
+											</apex:repeat>
+										</div>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.buttons)),lightBox.buttons.size>0)}">
+										<div class="control-group" style="text-align:center; width:100%;">
+											<apex:repeat value="{!lightBox.buttons}" var="button">
+												<apex:outputPanel layout="none" rendered="{!button.isActionable}">
+													<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(button.action)),button.label != $Label.CFSP_COMMON_POPUP_BUTTON_OK)}">
+														<button class="{!button.styleClass}" type="button" style="margin: 0 20px;" onclick="doActionInvoke('{!JSENCODE(button.action)}',{!button.isRemote});"><apex:outputText value="{!HTMLENCODE(button.label)}"/></button>
+													</apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(button.action)),button.label == $Label.CFSP_COMMON_POPUP_BUTTON_OK)}">
+														<button class="{!button.styleClass}" type="button" style="margin: 0 20px;" onclick="doAction('{!JSENCODE(button.action)}');"><apex:outputText value="{!HTMLENCODE(button.label)}"/></button>
+													</apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(button.jsAction))}">
+														<button class="{!button.styleClass}" type="button" style="margin: 0 20px;" onclick="{!JSENCODE(button.jsAction)}"><apex:outputText value="{!HTMLENCODE(button.label)}"/></button>
+													</apex:outputPanel>
+												</apex:outputPanel>
+												<apex:outputPanel layout="none" rendered="{!NOT(button.isActionable)}">
+													<button class="{!button.styleClass}" type="button" style="margin: 0 20px;"><apex:outputText value="{!button.label}"/></button>
+												</apex:outputPanel>
+											</apex:repeat>
+										</div>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(lightBox.table))}">
+										<div class="agenda-container">
+											<table class="{!lightBox.table.tableClass}">
+												<tr class="expanded"><apex:repeat var="row" value="{!lightBox.table.rowHeader.values}"><th>{!row}</th></apex:repeat></tr>
+												<apex:repeat var="rows" value="{!lightBox.table.rows}">
+													<tr><apex:repeat var="row" value="{!rows}">
+														<apex:outputPanel layout="none" rendered="{!row.isText}"><td>{!row.textValue}</td></apex:outputPanel>
+														<apex:outputPanel layout="none" rendered="{!row.isLink}">
+															<td><apex:repeat var="link" value="{!row.links}">
+																<a title="{!link.linkTitle}" target="{!link.linkTarget}" href="{!link.linkValue}">{!link.linkName}</a><br/>
+															</apex:repeat></td>
+														</apex:outputPanel>
+													</apex:repeat></tr>
+												</apex:repeat>
+											</table>
+										</div>
+									</apex:outputPanel>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</apex:Form>
+
+				<apex:outputPanel id="content2" styleClass="row-fluid" layout="block" rendered="{!isILTInstalled}">
+					<div id="apart" class="span2">
+						<apex:form id="form1">
+							<apex:actionFunction name="applyFilterActionFunction" action="{!ApplyFilter}" status="statusBox" rerender="content2,selectAllCatalogsCFSLink,pageMessageBox" oncomplete="defineSettings()">
+								<apex:param name="month" value="" assignTo="{!monthDisplayed}"/>
+								<apex:param name="year" value="" assignTo="{!yearDisplayed}"/>
+							</apex:actionFunction>
+							<apex:actionFunction name="resetFilterActionFunction" action="{!Reset}" status="statusBox" rerender="content2,selectAllCatalogsCFSLink,pageMessageBox" oncomplete="defineSettings()">
+								<apex:param name="month" value="" assignTo="{!monthDisplayed}"/>
+								<apex:param name="year" value="" assignTo="{!yearDisplayed}"/>
+							</apex:actionFunction>
+							<apex:actionFunction name="selectEventAction" action="{!selectEvent}" rerender="eventPanel,pageMessageBox" status="statusBox" oncomplete="showEventPanel()">
+								<apex:param name="eventIndex" value="" assignTo="{!eventIndex}"/>
+							</apex:actionFunction>
+							<apex:actionFunction name="updateLocationsPicklistFromJS" action="{!filter.updateLocationsPicklist}" rerender="controls-locations" oncomplete="displaySelectLongValues();"></apex:actionFunction>
+							<apex:actionFunction name="doAction" action="{!doAction}" rerender="lightboxWrapper" status="statusBox" oncomplete="actionHandler('{!lightBox.action.link}',{!lightBox.action.isSelf},{!lightBox.action.isJSAction});"><apex:param name="p15" value=""/></apex:actionFunction>
+							<div class="well sidebar-nav">
+								<div class="controls">
+									<input type="button" class="btn btn-primary" value="{!$Label.CFSP_PAGE_FIND_LEARNING_BUTTON_APPLY_FILTER}" onclick="applyFilter();" />
+									<input type="button" Class="btn" value="{!$Label.CFSP_PAGE_FIND_LEARNING_BUTTON_RESET_FILTER}" onclick="resetFilter();"/>
+								</div>
+								<hr/>
+								<div class="controls keywordsSectionCatalogFilter">
+									<label class="headline">{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_KEYWORDS}</label>
+									<apex:inputText styleClass="span12" value="{!filter.searchKeyword}"/>
+									<label class="checkbox"><apex:inputCheckbox value="{!filter.searchDescription}"/>{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_SEARCH_DESCRIPTION}</label>
+								</div>
+								<hr class="keywordsSectionCatalogFilter"/>
+								<apex:outputPanel layout="none" rendered="{!isILTInstalled}">
+									<apex:outputPanel layout="block" styleClass="controls trainingTypeSectionCatalogFilter">
+										<label class="headline">{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_TRAINING_TYPE}</label>
+										<label class="checkbox"><apex:inputCheckbox value="{!filter.SearchEnrolledClasses}"/>{!$Label.CFSP_PAGE_CALENDAR_TITLE_ENROLLED_CLASSES}</label>
+										<label class="checkbox"><apex:inputCheckbox value="{!filter.SearchAvailableClasses}"/>{!$Label.CFSP_PAGE_CALENDAR_TITLE_AVAILABLE_CLASSES}</label>
+									</apex:outputPanel>
+								<hr class="trainingTypeSectionCatalogFilter"/>
+									<apex:outputPanel layout="block" styleClass="controls dateRangeSectionCalendarFilter">
+										<label class="headline">{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE}</label>
+										<apex:outputPanel layout="block" styleClass="control-group span12 inline">
+											<label class="control-label span4" >{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE_FROM}</label>
+											<div id="eventDateTime" class="span11 input-append date date-time-picker">
+												<apex:inputText id="date-from" styleClass="span10" value="{!filter.dateRangeFrom}"/>
+												<span class="add-on"><i class="icon-calendar"></i></span>
+											</div>
+										</apex:outputPanel>
+										<apex:outputPanel layout="block" styleClass="control-group span12 inline">
+											<label class="control-label span4" >{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE_TO}</label>
+											<div id="eventDateTimeTo" class="span11 input-append date date-time-picker">
+												<apex:inputText id="date-to" styleClass="span10" value="{!filter.dateRangeTo}"/>
+												<span class="add-on"><i class="icon-calendar"></i></span>
+											</div>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<hr class="dateRangeSectionCalendarFilter"/>
+									<apex:outputPanel layout="block" styleClass="controls locationsSectionCatalogFilter">
+										<label class="headline">{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_LOCATIONS}</label>
+										<apex:selectList styleClass="span12 fl-location-sellist" value="{!filter.selectedLocation}" multiselect="true" size="5" id="controls-locations">
+											<apex:selectOptions value="{!filter.allLocations}"/>
+										</apex:selectList>
+									</apex:outputPanel>
+									<hr class="locationsSectionCatalogFilter"/>
+								</apex:outputPanel>
+								<apex:outputPanel layout="block" styleClass="controls catalogsSectionCalendarFilter">
+									<label class="headline">{!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_CATALOGS}</label>
+									<apex:outputLink id="selectAllCatalogsCFSLink" styleClass="selectAllCatalogsCFS" value="javascript:void(0);" onclick="selectUnselectAllCatalogs();">
+										<apex:outputText value="{!IF(showAllCatalogs == true,$Label.CFSP_PAGE_FIND_LEARNING_LABEL_UNSELECT_ALL,$Label.CFSP_PAGE_FIND_LEARNING_LABEL_SELECT_ALL)}"/>
+									</apex:outputLink>
+									<apex:selectList styleClass="span12 fl-catalog-sellist" value="{!filter.selectedCatalog}" multiselect="true" size="5" id="controls-catalogs">
+										<apex:selectOptions value="{!filter.allCatalogs}"/>
+										<apex:actionSupport event="onchange" action="{!filter.updateLocationsPicklist}" oncomplete="displaySelectLongValues();" rerender="selectAllCatalogsCFSLink,controls-locations" />
+									</apex:selectList>
+								</apex:outputPanel>
+								<hr class="catalogsSectionCalendarFilter"/>
+								<div class="controls">
+									<input type="button" class="btn btn-primary" value="{!$Label.CFSP_PAGE_FIND_LEARNING_BUTTON_APPLY_FILTER}" onclick="applyFilter();" />
+									<input type="button" Class="btn" value="{!$Label.CFSP_PAGE_FIND_LEARNING_BUTTON_RESET_FILTER}" onclick="resetFilter();"/>
+								</div>
+							</div>
+						</apex:form>
+					</div>
+					<apex:outputPanel layout="block" styleClass="span10">
+						<apex:outputPanel layout="block" id="calendarPanel" styleClass="calendar-panel">
+							<!-- <label class="control-label pull-left result">{!allResultSize} {!$Label.CFSP_PAGE_FIND_LEARNING_TITLE_RESULTS_FOUND}</label>-->
+							<div class="calendar-legend">
+								<div class="availableClassesLegend" title="{!$Label.CFSP_PAGE_CALENDAR_TITLE_AVAILABLE_CLASSES}"></div><p>&nbsp;&nbsp;{!$Label.CFSP_PAGE_CALENDAR_TITLE_AVAILABLE_CLASSES}</p>
+								<div class="enrolledClassesLegend" title="{!$Label.CFSP_PAGE_CALENDAR_TITLE_ENROLLED_CLASSES}"></div><p>&nbsp;&nbsp;{!$Label.CFSP_PAGE_CALENDAR_TITLE_ENROLLED_CLASSES}</p>
+								<div id="calendar"></div>
+							</div>
+						</apex:outputPanel>
+						<apex:outputPanel id="eventPanel" style="display:none;" layout="block" styleClass="event-panel">
+							<apex:outputPanel rendered="{!NOT(ISNULL(row))}">
+								<apex:outputLink value="javascript:void(0);" onclick="backToCalendar();">{!$Label.CFSP_PAGE_CALENDAR_LINK_BACK_TO_CALENDAR}</apex:outputLink>
+								<p class="event-title"><apex:outputText value="{!$Label.CFSP_PAGE_CALENDAR_LABEL_EVENT}: "/>
+									<apex:outputText value="{!row.Title}"/>
+									<apex:outputPanel layout="none" styleClass="enroll-link" style="float:right" rendered="{!AND(OR(row.isBillable,row.isBillableByTrainingUnit),(row.assignmentId == NULL||row.assignment['lmscons__Status__c']=='Withdrawn'),row.event.possibleEnroll)}">
+										{!$Label.CFSP_COMMON_LABEL_TRAINING_UNIT_COST}:&nbsp;{!row.event.trainingUnitCost}
+									</apex:outputPanel>
+									<apex:outputPanel rendered="{!NOT(row.action['linkLabel'] == $Label.CFSP_COMMON_LINK_DETAILS)}">
+										<a class = "enroll-link link-class" href="#" onclick="doAction('{!row.action['linkValue']}')">{!row.action['linkLabel']}</a>
+									</apex:outputPanel>
+								</p>
+								<p class="event-description"><apex:outputText value="{!row.Description}"/></p>
+								<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row.event.classes), row.event.classes.size=0)}">
+									<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+								</apex:outputPanel>
+
+								<apex:repeat value="{!row.event.classes}" var="class">
+									<apex:variable var="classColumnsCounter" value="{!IF(row.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+									<apex:outputPanel style="float:right;margin-bottom:15px">
+										<apex:outputPanel layout="none" rendered="{!row.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+										<apex:outputPanel layout="none" rendered="{!NOT(row.action[class.classId]['empty'])}">
+											<apex:outputPanel layout="none" rendered="{!row.action[class.classId]['isText']}">{!row.action[class.classId]['textLabel']}</apex:outputPanel>
+											<apex:outputPanel layout="none" rendered="{!row.action[class.classId]['isActionable']}"><a href="#" onclick="doAction('{!row.action[class.classId]['linkValue']}')">{!row.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+										</apex:outputPanel>
+									</apex:outputPanel>
+									<div class="agenda-container">
+										<table class="inner-table agenda">
+											<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader5">
+												<th class="unsortable-header {!colEventHeader5.className}">{!$Label[colEventHeader5.label]}</th>
+											</apex:repeat></tr>
+											<apex:repeat value="{!class.sessions}" var="session">
+											<tr><apex:repeat value="{!columnsEvent}" var="colEvent">
+													<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent.isEventClass, colEvent.isAction))}">
+														<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent.className}">
+															<apex:outputPanel layout="none" rendered="{!colEvent.isSimple}">{!class[colEvent.getterName]}</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!NOT(colEvent.isSimple)}">
+																<apex:outputPanel layout="none" rendered="{!colEvent.isEventClassMaterials}">
+																	<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																	</apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																</apex:outputPanel>
+															</apex:outputPanel>
+														</td>
+														<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+													</apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!OR(colEvent.isEventSession, AND(colEvent.isAction,row.event.enrolled))}">
+														<td class="ct-eventsession {!colEvent.className} {!IF(session.inPast == true,'pastSession','')}">
+															<apex:outputPanel layout="none" rendered="{!colEvent.isSimple}">{!session[colEvent.getterName]}</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!NOT(colEvent.isSimple)}">
+																<apex:outputPanel layout="none" rendered="{!colEvent.isEventSessionLocation}">
+																	<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																		{!session[colEvent.getterName]}
+																	</apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																		<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent.getterName]}</a>
+																	</apex:outputPanel>
+																</apex:outputPanel>
+																<apex:outputPanel layout="none" rendered="{!colEvent.isEventSessionInstructors}">{!session[colEvent.getterName]}</apex:outputPanel>
+																<apex:outputPanel layout="none" rendered="{!colEvent.isAction}">
+																	<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																		<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																	</apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																</apex:outputPanel>
+															</apex:outputPanel>
+														</td>
+													</apex:outputPanel>
+												</apex:repeat></tr>
+											</apex:repeat>
+										</table>
+									</div>
+								</apex:repeat>
+							</apex:outputPanel>
+						</apex:outputPanel>
+						<script>
+							function selectUnselectAllCatalogs() {
+								if ($('a.selectAllCatalogsCFS').text() === '{!JSENCODE($Label.CFSP_PAGE_FIND_LEARNING_LABEL_SELECT_ALL)}') {
+									$('a.selectAllCatalogsCFS').text('{!JSENCODE($Label.CFSP_PAGE_FIND_LEARNING_LABEL_UNSELECT_ALL)}');
+									$('.catalogsSectionCalendarFilter option').each(function() {
+										$(this).prop('selected',true);
+									});
+								}
+								else {
+									$('a.selectAllCatalogsCFS').text('{!JSENCODE($Label.CFSP_PAGE_FIND_LEARNING_LABEL_SELECT_ALL)}');
+									$('.catalogsSectionCalendarFilter option').each(function() {
+										$(this).prop('selected',false);
+									});
+								}
+								updateLocationsPicklistFromJS();
+							}
+
+							function formatDateForCalendar(moment) {
+								var defaultDateMoment = moment.format();
+								return defaultDateMoment;
+							}
+
+							var eventTemp = JSON.parse('{!JSENCODE(eventJSONlist)}');
+							var calendarHeight = $('[id$=form1]').height() - 25;
+
+							$(document).ready(function() {
+								var defaultDateMoment = new moment('{!JSENCODE(startDate)}');
+								var defaultDateMoment = formatDateForCalendar(defaultDateMoment);
+
+								$('#calendar').fullCalendar({
+									lang: '{!CurrentLanguage}',
+									header: {
+										left: '',
+										center: 'title',
+										right: 'today prev,next'
+									},
+									editable: true,
+									events: eventTemp,
+									eventClick: function(calEvent, jsEvent, view) {
+										selectEventAction(calEvent.id);
+										$('[id*=calendarPanel]').hide();
+									},
+									height: calendarHeight,
+									eventRender: function(event, element) {
+										element.attr('title', event.tip);
+									},
+									buttonIcons: true,
+									defaultDate: defaultDateMoment
+								});
+
+								$('#calendar').fullCalendar('gotoDate', defaultDateMoment);
+
+								if ({!NOT(currentMonthMatchesFound)}) {
+										$('.fc-header-left').html('<label class=\'pageCalendarNoFound\'>{!$Label.CFSP_PAGE_CALENDAR_LABEL_NO_MATCHES_FOUND}</label>');
+								}
+								var hideMessage = true;
+								$('.fc-button-next span, .fc-button-prev span').click(function(){
+									if (hideMessage) {
+										$('.fc-header-left label').css('display','none');
+										hideMessage = false;
+									}
+								});
+							});
+						</script>
+					</apex:outputPanel>
+				</apex:outputPanel>
+			</apex:outputPanel>
+			<script>
+				window.onkeypress = handleKeyPress;
+				function handleKeyPress(e) {
+					var eventInstance = window.event ? event : e;
+					var keyCode = eventInstance.charCode ? eventInstance.charCode : eventInstance.keyCode;
+					var link = $('div.lightbox div div div div').eq(3).children('div a').attr('onclick');
+					if (keyCode == 13) {
+						if ($('div.lightbox').css('display') == 'none') {
+							applyFilter();
+						}
+						else if (link != 'undefined' && link.indexOf('cfsp_assign')<0) {
+							return enroll('{row.enrollLink}',this);
+						}
+						return false;
+					}
+				}
+				function refreshPage() {
+					window.location.reload();
+				}
+				function showEventPanel() {
+					$('[id*=eventPanel]').show();
+					$(document).scrollTop(0);
+				}
+
+				function backToCalendar() {
+					$('[id*=eventPanel]').hide();
+					$('[id*=calendarPanel]').show();
+					$('#calendar').fullCalendar('render');
+				}
+
+				function applyFilter() {
+					var moment = $('#calendar').fullCalendar('getDate');
+					applyFilterActionFunction(moment.month(),moment.year());
+				}
+
+				function resetFilter() {
+					var moment = $('#calendar').fullCalendar('getDate');
+					resetFilterActionFunction(moment.month(),moment.year());
+				}
+			</script>
+			<apex:includeScript value="{!URLFOR($Resource.CFSP,'js/launch.js')}"/>
+		</apex:define>
+	</apex:composition>
+</apex:page>

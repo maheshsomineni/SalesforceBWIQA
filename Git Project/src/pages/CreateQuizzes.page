@@ -1,0 +1,3 @@
+<apex:page standardController="lmscons__Quiz__c" extensions="CreateQuizzesController"
+           recordSetVar="Records" action="{!executeBatchforQuizzes}">
+</apex:page>

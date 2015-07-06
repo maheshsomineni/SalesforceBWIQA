@@ -1,0 +1,1536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_CONTENT_HAS_NOT_BEEN_ASSIGNED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Content has not been assigned</shortDescription>
+        <value>Content has not been assigned.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_PLEASE_INSTALL_LMS_ILT_PACKAGE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Please install LMS ILT package to use this Tab</shortDescription>
+        <value>Please install LMS ILT package to use this Tab.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_CODE_IS_NOT_VALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit Code is not Valid</shortDescription>
+        <value>The code you entered is not valid.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_CODE_IS_NOT_VALID_FOR_THIS_ITEM</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit Code is not Valid for this item</shortDescription>
+        <value>The code you entered is not valid for this item.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_DATE_RANGE_ERROR</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit Date range error</shortDescription>
+        <value>The code only works during the available dates.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_DOES_NOT_CONTAIN_SUFFICIENT_TRAINING_UNITS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit does not contain sufficient Training Units</shortDescription>
+        <value>The code you entered does not contain sufficient training units.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_PLEASE_ENTER_A_CODE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit Code Please enter a code</shortDescription>
+        <value>Please enter a code.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_ERROR_TRAINING_UNIT_YOU_ARE_NOT_AUTHORIZED_TO_USE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common error Training Unit You are not Authorized to Use</shortDescription>
+        <value>You are not authorized to use this code.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_CANCELED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Cancelled</shortDescription>
+        <value>Cancelled</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_COMPLETED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Completed</shortDescription>
+        <value>Completed</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_ENROLLED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Enrolled</shortDescription>
+        <value>Enrolled</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_EXEMPTED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Exempted</shortDescription>
+        <value>Exempted</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_FAILED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Failed</shortDescription>
+        <value>Failed</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_IN_PROGRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status In Progress</shortDescription>
+        <value>In Progress</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_NOT_STARTED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Not Started</shortDescription>
+        <value>Not Started</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_PASSED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Passed</shortDescription>
+        <value>Passed</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_UNENROLLED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Unenrolled</shortDescription>
+        <value>Unenrolled</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_WAITLISTED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Waitlisted</shortDescription>
+        <value>Waitlisted</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_ASSIGNMENT_STATUS_WITHDRAW</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Assignment Status Withdrawn</shortDescription>
+        <value>Withdrawn</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASSES_ENDED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label all classes is ended</shortDescription>
+        <value>All classes for this event have already ended</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASSES_STARTED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Started</shortDescription>
+        <value>Started</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASS_IS_FULL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label class is Full</shortDescription>
+        <value>Class is full</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASS_STATUS_ENROLLED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label class status Enrolled</shortDescription>
+        <value>Enrolled</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASS_STATUS_FULL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label class status Full</shortDescription>
+        <value>Full</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASS_STATUS_OPEN</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label class status Open</shortDescription>
+        <value>Enroll</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_CLASS_STATUS_WAITLIST</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label class status Waitlist</shortDescription>
+        <value>Waitlist</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_MAX_ATTEMPTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Max attempts</shortDescription>
+        <value>The maximum number of attempts to pass Quiz has been reached.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_NO_JS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label no js</shortDescription>
+        <value>Warning: either you have javascript disabled or your browser does not support javascript. To work properly, this page requires javascript to be enabled</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_COURSES</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Courses</shortDescription>
+        <value>Courses</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_CURRICULUMS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Curriculums</shortDescription>
+        <value>Curriculums</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_EVENTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Events</shortDescription>
+        <value>Events</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_LEARNING_PATHS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Learning Paths</shortDescription>
+        <value>Learning Paths</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_MODULES</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Modules</shortDescription>
+        <value>Modules</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_PLURAL_QUIZZES</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Plural Quizzes</shortDescription>
+        <value>Quizzes</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TRAINING_UNIT_COST</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Training Unit Cost</shortDescription>
+        <value>Training Unit Cost</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TRAINING_UNIT_ENTER_TRAINING_UNITS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Training Unit Enter Training Units</shortDescription>
+        <value>Enter Training Units</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TRAINING_UNIT_TRAINING_UNIT_CODE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Training Unit Training Unit Code</shortDescription>
+        <value>Training Unit Code:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_ACTIVITY</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Activity</shortDescription>
+        <value>Activity</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_COURSE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Course</shortDescription>
+        <value>Course</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_CURRICULUM</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Curriculum</shortDescription>
+        <value>Curriculum</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_DEVELOPMENT_PLAN</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Development Plan</shortDescription>
+        <value>Development Plan</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_DEVELOPMENT_PLAN_TASK</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Development Plan Task</shortDescription>
+        <value>Task</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_EVENT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Event</shortDescription>
+        <value>Event</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_LEARNING_PATH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Learning Path</shortDescription>
+        <value>Learning Path</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_MODULE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Module</shortDescription>
+        <value>Module</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LABEL_TYPE_QUIZ</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label Type Quiz</shortDescription>
+        <value>Quiz</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_DETAILS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Details</shortDescription>
+        <value>Details</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_DOWNLOAD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Download</shortDescription>
+        <value>Download</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_HIDE_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link hide Description</shortDescription>
+        <value>Hide</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_JOIN</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Join</shortDescription>
+        <value>Join</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_LAUNCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Launch</shortDescription>
+        <value>Launch</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_LOG_OUT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Log out</shortDescription>
+        <value>Log out</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_CALENDAR</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common Link Page Calendar</shortDescription>
+        <value>Learning Calendar</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_COMPLETED_LEARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page Completed Learning</shortDescription>
+        <value>Completed Learning</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_DEVELOPMENT_PLANS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page Development Plans</shortDescription>
+        <value>Development Plans</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_FIND_LEARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page Find Learning</shortDescription>
+        <value>Find Learning</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_HELP</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page Help</shortDescription>
+        <value>Help</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_MY_ACCOUNT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page My Account</shortDescription>
+        <value>My Account</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_PAGE_MY_LEARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link page My Learning</shortDescription>
+        <value>My Learning</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_SHOW_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link show Description</shortDescription>
+        <value>Show Description</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_SIGN_IN</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Sign in</shortDescription>
+        <value>Sign in</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_VIEW</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Common link View</shortDescription>
+        <value>View</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_LINK_WITHDRAW</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common link Withdraw</shortDescription>
+        <value>Withdraw</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_CANCEL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_CLOSE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button Close</shortDescription>
+        <value>Close</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_CONTINUE_SEARCHING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button Continue Searching</shortDescription>
+        <value>Continue Searching</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_GO_TO_MY_LEARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button go to My Learning</shortDescription>
+        <value>Go to My Learning</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_LAUNCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button Launch</shortDescription>
+        <value>Launch Now</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_OK</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button OK</shortDescription>
+        <value>OK</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_BUTTON_SUBMIT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup button Submit</shortDescription>
+        <value>Submit</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_COLUMN_PREREQUISITES</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup column Prerequisites</shortDescription>
+        <value>Prerequisites:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_COLUMN_SEQUENCE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup column Sequence</shortDescription>
+        <value>Sequence:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_FEEDBACK_HEADER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup Feedback Header</shortDescription>
+        <value>Please provide your feedback for the following objects:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_HEADER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup Header</shortDescription>
+        <value>The following items must be completed first:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_STATUS_ERROR</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup status Error</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_STATUS_SUCCESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup status Success</shortDescription>
+        <value>Success</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_POPUP_STATUS_WARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common popup status Warning</shortDescription>
+        <value>Warning</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_TITLE_HELLO</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common title Hello</shortDescription>
+        <value>Hello</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_TITLE_HELLO_GUEST</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common title Hello Guest</shortDescription>
+        <value>Hello Guest!</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_TITLE_NO_ASSIGNMENTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common title do not have Assignments</shortDescription>
+        <value>You do not have any assignments</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_TITLE_NO_COMPLETED_ASSIGNMENTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common title do not have completed Assignments</shortDescription>
+        <value>You do not have any completed assignments</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_COMMON_TITLE_NO_INCOMPLETE_ASSIGNMENTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common title do not have incomplete Assignments</shortDescription>
+        <value>You do not have any incomplete assignments</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_CANCEL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account button Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_CREATE_AN_ACCOUNT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration button Create an Account</shortDescription>
+        <value>Create an Account</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_EDIT_ACCOUNT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account button Edit Account</shortDescription>
+        <value>Edit Account</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_FORGOT_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account button Forgot Password</shortDescription>
+        <value>Continue</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_SAVE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account button Save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_BUTTON_SIGN_IN</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account button Sign in</shortDescription>
+        <value>Sign in</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_ADDITIONAL_FIELD_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error additional fields&apos; values are required</shortDescription>
+        <value>The following fields are required:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_COMMUNITY_NICKNAME_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error ivalid Community Nickname</shortDescription>
+        <value>Invalid Community Nickname.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_COMMUNITY_NICKNAME_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Community Nickname value is required</shortDescription>
+        <value>Community Nickname value is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_COMPANY_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Company value is required</shortDescription>
+        <value>Company is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_CONFIRM_PASSWORD_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Password value is required</shortDescription>
+        <value>Confirm Password is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_EMAIL_DOMAIN_IS_NOT_ALLOWED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Email Domain is not Allowed</shortDescription>
+        <value>E-mail address ending with domain name is not allowed.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_EMAIL_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error invalid Email</shortDescription>
+        <value>Invalid e-mail.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_EMAIL_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Email value is required</shortDescription>
+        <value>E-mail is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_FIRST_NAME_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error ivalid First Name</shortDescription>
+        <value>Invalid First Name.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_FIRST_NAME_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error First Name value is required</shortDescription>
+        <value>First Name is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_LAST_NAME_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error invalid Last Name</shortDescription>
+        <value>Invalid Last Name.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_LAST_NAME_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Last Name value is required</shortDescription>
+        <value>Last name is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_MATCH_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Password and Confirm Password do not match</shortDescription>
+        <value>Password and Confirm Password do not match.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_NICKNAME_DUPLICATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Nickname Duplicate</shortDescription>
+        <value>Nickname already exists.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_PASSWORD_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error invalid Password</shortDescription>
+        <value>Invalid Password.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_PASSWORD_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Password value is required</shortDescription>
+        <value>Password is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_USERNAME_DUPLICATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Username Duplicate</shortDescription>
+        <value>Username already exists.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_USERNAME_INVALID</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error ivalid Username</shortDescription>
+        <value>Invalid Username.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_USERNAME_LENGTH_EXCEEDED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error username length exceeded</shortDescription>
+        <value>Username can&apos;t exceed 80 characters.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_USERNAME_REQUIRED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error Last Name value is required</shortDescription>
+        <value>Username is required.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_ERROR_WAS_NOT_PREVIOUSLY_REGISTERED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Login Not previously registered</shortDescription>
+        <value>If you have not previously registered, please click the Sign Up link below.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_CHANGE_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label Change password</shortDescription>
+        <value>Change password</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_CREATED_LEAD_SUCCESSFULLY</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration label Created Lead Successfully</shortDescription>
+        <value>Thank you for registering! Someone from our team will contact you shortly.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_FORGOT_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account label Forgot Password</shortDescription>
+        <value>Did you forget your password? Please enter your username below.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_NEW_PASSWORD_WAS_SENT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label New password for the following user has been sent via email</shortDescription>
+        <value>A new password for the following user has been sent via e-mail. The user will be required to enter a new password upon initial login to salesforce.com.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_PASSWORD_WAS_CHANGED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label Password has been changed successfully</shortDescription>
+        <value>Your password has been changed successfully.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_REGISTRATION_EMAIL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration Login activation email</shortDescription>
+        <value>Thank you for registering. In a few moments, you should receive an activation e-mail.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_RESET_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label Reset password</shortDescription>
+        <value>Reset password</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_RESET_PASSWORD_FOR_USER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label Reset password for this user?</shortDescription>
+        <value>Reset password for this user?</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_UNABLE_TO_RESET_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page MyAccount label Unable to reset password for this user</shortDescription>
+        <value>Unable to reset password for this user.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_USERNAME_PLACEHOLDER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration username placeholder</shortDescription>
+        <value>username@example.form</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LABEL_USERNAME_TITLE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration username title</shortDescription>
+        <value>Select a unique username in the form of an e-mail by which you will access your portal contact</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_ACTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Action</shortDescription>
+        <value>Action</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_ASSIGNMENTS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Assignments</shortDescription>
+        <value>Assignments</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_COMPLETED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Completed</shortDescription>
+        <value>Completed</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_CONTACT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Contact</shortDescription>
+        <value>Contact</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_EMAIL_ADDRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Email Address</shortDescription>
+        <value>E-mail address</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_FEEDBACK</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Feedback</shortDescription>
+        <value>Feedback</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_IN_PROGRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column In Progress</shortDescription>
+        <value>In Progress</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_LAST_LAUNCH_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Last Launch Date</shortDescription>
+        <value>Last Launch Date</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_NOT_STARTED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning column Not Started</shortDescription>
+        <value>Not Started</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LEARNING_LINK_CONTACT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account Learning link Contact</shortDescription>
+        <value>View Contact</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LINK_FORGOT_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account link Forgot Password</shortDescription>
+        <value>Forgot password?</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LINK_REGISTRATION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account link Registration</shortDescription>
+        <value>Don&apos;t have an account?</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_LINK_SIGN_UP</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account link Sign up</shortDescription>
+        <value>Sign up</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_REQUIRED_FIELDS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration error additional fields&apos; values are required</shortDescription>
+        <value>Required</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_COMMUNITY_NICKNAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title Community Nickname</shortDescription>
+        <value>Community Nickname:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_COMPANY</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title Company</shortDescription>
+        <value>Company</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_CONFIRM_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title Confirm Password</shortDescription>
+        <value>Confirm Password:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_EMAIL_ADDRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account title Email Address</shortDescription>
+        <value>E-mail address:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_FIRST_NAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title First Name</shortDescription>
+        <value>First Name</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_LAST_NAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title Last Name</shortDescription>
+        <value>Last Name</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account title Password</shortDescription>
+        <value>Password</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_SIGN_IN_HEADER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Account title Sign in header</shortDescription>
+        <value>Please sign in</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_ACCOUNT_TITLE_USERNAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Registration title Username</shortDescription>
+        <value>Username</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_LABEL_EVENT</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page Claendar label Event</shortDescription>
+        <value>Event</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_LABEL_NO_MATCHES_FOUND</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Calendar label No matches found for current month</shortDescription>
+        <value>No matching events this month.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_LINK_BACK_TO_CALENDAR</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Calendar Link Back to Calendar</shortDescription>
+        <value>Back to Calendar</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_MESSAGE_EVENT_WITHDRAWN</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page Calendar message Event Withdrawn</shortDescription>
+        <value>Event Withdrawn</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_TITLE_AVAILABLE_CLASSES</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page Calendar title Available Classes</shortDescription>
+        <value>Available Classes</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_CALENDAR_TITLE_ENROLLED_CLASSES</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page Calendar title Enrolled Classes</shortDescription>
+        <value>Enrolled Classes</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_ASSIGNED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Assigned</shortDescription>
+        <value>Assigned</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_CERTIFICATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Certificate</shortDescription>
+        <value>Certificate</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_COMPLETED</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Completed</shortDescription>
+        <value>Completed</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_DUE_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Due Date</shortDescription>
+        <value>Due Date</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_DURATION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Duration</shortDescription>
+        <value>Duration</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_ENROLLED_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Enrolled Date</shortDescription>
+        <value>Enrolled Date</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_LAUNCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Launch</shortDescription>
+        <value>Launch</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_PROGRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Progress</shortDescription>
+        <value>Progress</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_SCORE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Score</shortDescription>
+        <value>Score</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_STATUS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Status</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_TITLE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Title</shortDescription>
+        <value>Title</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_COLUMN_TYPE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning column Type</shortDescription>
+        <value>Type</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_MARK_COMPLETE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning Url Mark Complete</shortDescription>
+        <value>Mark Complete</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_COMPLETED_LEARNING_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Completed Learning Url</shortDescription>
+        <value>URL</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_BUTTON_APPLY_FILTER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning button Apply Filter</shortDescription>
+        <value>Apply Filter</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_BUTTON_RESET_FILTER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning button Reset Filter</shortDescription>
+        <value>Reset</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_CATALOG</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Catalog</shortDescription>
+        <value>Catalog</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_DURATION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Duration</shortDescription>
+        <value>Duration</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_LAST_LAUNCH_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Last Launch Date</shortDescription>
+        <value>Last Launched Date</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_LAUNCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Launch</shortDescription>
+        <value>Launch</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_PRICE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Price</shortDescription>
+        <value>Price</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_PROGRESS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Progress</shortDescription>
+        <value>Progress</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_SCORE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Score</shortDescription>
+        <value>Score</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_STATUS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Status</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_TITLE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Title</shortDescription>
+        <value>Title</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_COLUMN_TYPE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning column Type</shortDescription>
+        <value>Type</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_ERROR_LOG_IN_TO_THE_PORTAL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning error Log in to the Portal</shortDescription>
+        <value>Log in to the Portal to be able to view, enroll and launch content.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_ERROR_SELECT_CATALOGS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning error select Catalogs</shortDescription>
+        <value>Please, select the Catalog Name in available Catalogs for start search.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_ASSIGNED_SUCCESSFULLY</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label Assigned Successfully</shortDescription>
+        <value>{0} &quot;{1}&quot; has been assigned successfully.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_ASSIGN_RESULT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label Assign result</shortDescription>
+        <value>{0} &quot;{1}&quot; has been assigned successfully. Would you like {2}</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_REDIRECT_TO_LAUNCH</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label redirect to launch module</shortDescription>
+        <value>launch this module now?</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_REDIRECT_TO_PAGE_MY_LEARNING</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label redirect to page My Learning</shortDescription>
+        <value>go to My Learning now?</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_SELECT_ALL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label Select All</shortDescription>
+        <value>Select All</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LABEL_UNSELECT_ALL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning label Unelect All</shortDescription>
+        <value>Unselect All</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LINK_ENROLL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning link Enroll</shortDescription>
+        <value>Enroll</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_LINK_PURCHASE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning link Purchase</shortDescription>
+        <value>Purchase</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_PICKLIST_VALUE_NONE</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page Find Learning Locations Picklist</shortDescription>
+        <value>- None -</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_POPUP_ERROR_HEADER</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning popup error header</shortDescription>
+        <value>Assign error:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_POPUP_ERROR_MESSAGE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning popup error message</shortDescription>
+        <value>Message:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_CATALOGS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Catalogs</shortDescription>
+        <value>Catalogs:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Date Range</shortDescription>
+        <value>Date Range:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE_FROM</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Date Range From</shortDescription>
+        <value>From:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_DATE_RANGE_TO</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Date Range To</shortDescription>
+        <value>To:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_KEYWORDS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Keywords</shortDescription>
+        <value>Keywords:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_LOCATIONS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Locations</shortDescription>
+        <value>Location:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_NO_RESULTS_FOUND</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title No Results Found</shortDescription>
+        <value>No results found.</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_RESULTS_FOUND</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Results Found</shortDescription>
+        <value>Results</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_SEARCH_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Search Description</shortDescription>
+        <value>Search Description</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_TRAINING_TYPE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Training Type</shortDescription>
+        <value>Training Type:</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_TRAINING_TYPE_ILT</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning title Training Type Instructor-Led Training</shortDescription>
+        <value>Instructor-Led Training</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_FIND_LEARNING_TITLE_TRAINING_TYPE_ONLINE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page Find Learning titleTraining Type Self-Passed Online</shortDescription>
+        <value>Self-Paced Online</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_CLASS_NAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Class Name</shortDescription>
+        <value>Class</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_END_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column End Date</shortDescription>
+        <value>End</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_INSTRUCTOR</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Instructor</shortDescription>
+        <value>Instructor</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_LOCATION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Location</shortDescription>
+        <value>Location</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_MATERIALS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Materials</shortDescription>
+        <value>Materials</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_MATERIAL_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Material Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_MATERIAL_DOWNLOADS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Material Downloads</shortDescription>
+        <value>Downloads</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_MATERIAL_INSTRUCTIONS</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Material Instructions</shortDescription>
+        <value>Instructions</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_MATERIAL_TITLE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Material Title</shortDescription>
+        <value>Material</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_NOTES_AND_ATTACHMENTS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page My Learning column Notes And Attachments</shortDescription>
+        <value>Materials</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_NOTES_AND_ATTACHMENTS_DESCRIPTION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Notes And Attachments Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_NOTES_AND_ATTACHMENTS_TYPE</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Page My Learning column Notes And Attachments Type</shortDescription>
+        <value>Type</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_SESSION_END_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Session End Date</shortDescription>
+        <value>End</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_SESSION_LOCATION</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Session Location</shortDescription>
+        <value>Location</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_SESSION_NAME</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Session Name</shortDescription>
+        <value>Session</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_SESSION_START_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Session Start Date</shortDescription>
+        <value>Start</value>
+    </labels>
+    <labels>
+        <fullName>CFSP_PAGE_MY_LEARNING_COLUMN_START_DATE</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Page My Learning column Start Date</shortDescription>
+        <value>Start</value>
+    </labels>
+    <labels>
+        <fullName>COMMON_LABEL_A_NEW_PASSWORD</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Common label A new password</shortDescription>
+        <value>A new password for the following user has been sent via e-mail. The user will be required to enter a new password when they first log in to salesforce.com.</value>
+    </labels>
+</CustomLabels>

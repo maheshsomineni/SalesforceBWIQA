@@ -1,0 +1,941 @@
+<apex:page controller="cfsp.CFSP_MyLearningController" showHeader="false" standardStylesheets="false" cache="false" docType="html-5.0">
+	<apex:composition template="{!DynamicTemplate}">
+		<apex:define name="body">
+			<apex:outputPanel id="content" layout="block">
+				<div class="container-fluid pad">
+
+					<!-- ApexMessages Container -->
+					<apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+						<apex:outputPanel layout="block" styleClass="row-fluid">
+							<apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+								<apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+									<apex:messages layout="table" id="pageMessages"/>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+
+					<!-- AARP Customization Action -->
+					<apex:form >
+						<apex:actionFunction name="functionFeedbackQuiz" action="{!assignLaunchFeedbackQuiz}" status="statusBox" rerender="pageMessageBox" oncomplete="if ('{!launchLink}' != null && '{!launchLink}' != '') { window.location.href = '{!launchLink}'; } closeLightBox(false);">
+							<apex:param name="contentId" value=""/>
+							<apex:param name="contentName" value=""/>
+						</apex:actionFunction>
+					</apex:form>
+
+					<apex:Form id="lightboxWrapper">
+					<apex:actionFunction name="doAction" action="{!doAction}" rerender="lightboxWrapper" status="statusBox" oncomplete="actionHandler('{!lightBox.action.link}',{!lightBox.action.isSelf},{!lightBox.action.isJSAction});"><apex:param name="p15" value=""/></apex:actionFunction>
+
+					<apex:outputPanel layout="none">
+						<apex:outputPanel id="lightbox" layout="block" styleClass="lightbox" rendered="{!AND(NOT(ISBLANK(lightBox)),lightBox.enabled)}">
+							<apex:outputPanel layout="block" styleClass="window">
+								<apex:outputPanel layout="block" styleClass="header">
+									<apex:outputPanel layout="block" styleClass="header-label">
+										<apex:outputText styleClass="header-label-text" value="{!lightBox.windowHeader}"/>
+									</apex:outputPanel>
+									<a class="close" onclick="closeLightBox({!lightBox.action.needRefresh});"><i class="icon-large icon-remove icon-button"></i></a>
+								</apex:outputPanel>
+								<apex:outputPanel layout="block" styleClass="bracket">
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.messages)),lightBox.messages.size>0)}">
+										<apex:repeat value="{!lightBox.messages}" var="message">
+											<label class="emphasis"><apex:outputText value="{!message.label}"/></label>
+											<apex:repeat value="{!message.items}" var="item">
+												<label class="{!item.styleClass}">
+													<apex:outputPanel layout="block" rendered="{!item.isFormatted}">
+														<pre>
+															<apex:outputText value="{!item.value}"/>
+														</pre>
+													</apex:outputPanel>
+													<apex:outputPanel layout="block" rendered="{!NOT(item.isFormatted)}">
+														<apex:outputPanel layout="block" rendered="{!item.isLink}">
+															<apex:outputLink value="{!item.value}" id="theLink" target="_blank">
+																{!item.value}
+															</apex:outputLink>
+														</apex:outputPanel>
+														<apex:outputPanel layout="block" rendered="{!NOT(item.isLink)}">
+															<apex:outputText value="{!item.value}"/>
+														</apex:outputPanel>
+													</apex:outputPanel>
+												</label>
+											</apex:repeat>
+										</apex:repeat>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(lightBox.iframe))}">
+										<iframe src="{!lightBox.iframe.src}" width="{!lightBox.iframe.width}" height="{!lightBox.iframe.height}" align="{!lightBox.iframe.align}" frameborder="{!lightBox.iframe.frameborder}" hspace="{!lightBox.iframe.hspace}" scrolling="{!lightBox.iframe.scrolling}"></iframe>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.inputs)),lightBox.inputs.size>0)}">
+										<div class="control-group" style="text-align:center; width:100%;">
+											<apex:repeat value="{!lightBox.inputs}" var="input">
+												<apex:outputText value="{!input.label}"/>&nbsp;
+												<apex:inputText value="{!input.value}" required="true" maxlength="{!input.maxLength}"/>
+											</apex:repeat>
+										</div>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(lightBox.buttons)),lightBox.buttons.size>0)}">
+										<div class="control-group" style="text-align:center; width:100%;">
+											<apex:repeat value="{!lightBox.buttons}" var="button">
+												<apex:outputPanel layout="none" rendered="{!button.isActionable}">
+													<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(button.action))}">
+														<button class="{!button.styleClass}" type="button" style="margin: 0 20px;" onclick="doActionInvoke('{!button.action}',{!button.isRemote});"><apex:outputText value="{!button.label}"/></button>
+													</apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(button.jsAction))}">
+														<button class="{!button.styleClass}" type="button" style="margin: 0 20px;" onclick="{!button.jsAction}"><apex:outputText value="{!button.label}"/></button>
+													</apex:outputPanel>
+												</apex:outputPanel>
+												<apex:outputPanel layout="none" rendered="{!NOT(button.isActionable)}">
+													<button class="{!button.styleClass}" type="button" style="margin: 0 20px;"><apex:outputText value="{!button.label}"/></button>
+												</apex:outputPanel>
+											</apex:repeat>
+										</div>
+									</apex:outputPanel>
+									<apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(lightBox.table))}">
+										<div class="agenda-container">
+										<table class="{!lightBox.table.tableClass} details">
+											<tr class="expanded"><apex:repeat var="row" value="{!lightBox.table.rowHeader.values}"><th>{!row}</th></apex:repeat></tr>
+											<apex:repeat var="rows" value="{!lightBox.table.rows}">
+												<tr><apex:repeat var="row" value="{!rows}">
+													<apex:outputPanel layout="none" rendered="{!row.isText}"><td>{!row.textValue}</td></apex:outputPanel>
+													<apex:outputPanel layout="none" rendered="{!row.isLink}">
+														<td><apex:repeat var="link" value="{!row.links}">
+															<a title="{!link.linkTitle}" target="{!link.linkTarget}" href="{!link.linkValue}">{!link.linkName}</a><br/>
+														</apex:repeat></td>
+													</apex:outputPanel>
+												</apex:repeat></tr>
+											</apex:repeat>
+										</table>
+										</div>
+									</apex:outputPanel>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					</apex:Form>
+
+					<apex:outputPanel layout="block" styleClass="row-fluid" rendered="{!IF(AND(NOT(isILTInstalledForPage),OR($CurrentPage.parameters.mode='3',$CurrentPage.parameters.mode='4',$CurrentPage.parameters.mode='5',$CurrentPage.parameters.mode='6',$CurrentPage.parameters.mode='7',$CurrentPage.parameters.mode='8')),'false','true')}">
+						<div class="span12">
+							<div class="row-fluid">
+								<div class="nested-table prolate">
+									<apex:form >
+										<apex:actionFunction name="changeSort" action="{!changeSort}" rerender="content" status="statusBox" oncomplete="defineSettings();"><apex:param name="sc" value=""/><apex:param name="sd" value=""/></apex:actionFunction>
+
+										<table class="{!IF(AND(OR(CONTAINS(LOWER($CurrentPage.URL), '/cfsp_mylearning'),CONTAINS(LOWER($CurrentPage.URL), '/cfsp__cfsp_mylearning')),AND(!ISBLANK($CurrentPage.parameters.mode),$CurrentPage.parameters.mode='5')),'outer-table devplan-table','outer-table')}">
+											<apex:outputPanel layout="none" rendered="{!renderedTopHeader}">
+												<thead><tr>
+													<apex:repeat value="{!columns}" var="columnHeader">
+														<apex:outputPanel layout="none" rendered="{!columnHeader.isCommon}">
+															<apex:outputPanel layout="none" rendered="{!columnHeader.isSortableHeader}">
+																<th class="{!columnHeader.className}" onclick="changeSort({!columnHeader.index},{!orderDirection});">
+																	<div class="{!IF(orderColumn=columnHeader.index,IF(orderDirection, 'sort srt-asc','sort srt-desc'),'')}"></div>{!$Label[columnHeader.label]}
+																</th>
+															</apex:outputPanel>
+															<apex:outputPanel layout="none" rendered="{!NOT(columnHeader.isSortableHeader)}">
+																<th class="unsortable-header {!columnHeader.className}">{!$Label[columnHeader.label]}</th>
+															</apex:outputPanel>
+														</apex:outputPanel>
+														<apex:outputPanel layout="none" rendered="{!columnHeader.isCustom}">
+															<th class="{!columnHeader.className}">{!columnHeader.customLabel}</th>
+														</apex:outputPanel>
+													</apex:repeat>
+												</tr></thead>
+											</apex:outputPanel>
+											<tbody>
+											<apex:outputPanel layout="none" rendered="{!table.size=0}"><tr><td colspan="{!enabledColumnsSize}"><apex:outputText value="{!IF(showCompleted, $Label.CFSP_COMMON_TITLE_NO_COMPLETED_ASSIGNMENTS, $Label.CFSP_COMMON_TITLE_NO_INCOMPLETE_ASSIGNMENTS)}" /></td></tr></apex:outputPanel>
+											<tr class="fork collapsed" style="display: none"><td>&nbsp;</td></tr>
+
+											<apex:repeat value="{!table}" var="block2">
+												<tr class="fork expanded"><td colspan="{!enabledColumnsSize}"><table class="inner-table"><tbody>
+												<apex:repeat value="{!block2.row}" var="row2">
+													<tr class="type-{!row2.name}">
+														<apex:outputPanel layout="none" rendered="{!row2.name!='DevelopmentPlan'}">
+															<apex:variable var="loTitle" value=""/>
+															<apex:repeat value="{!columns}" var="colLev2">
+																<apex:outputPanel layout="none" rendered="{!NOT(colLev2.isSimple)}">
+																	<apex:outputPanel layout="none" rendered="{!colLev2.isTitle}">
+																		<td class="pin ct-title">
+																			<apex:outputPanel layout="none" rendered="{!OR(!row2.isItem, row2.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent1" name="knob"></a></apex:outputPanel>
+																			<span class="cage indent1"><a href="javascript:void(0);" class="title-desc-btn">{!row2[colLev2.getterName]}</a></span>
+																		</td>
+																		<apex:variable var="loTitle" value="{!row2[colLev2.getterName]}"/>
+																	</apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!colLev2.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row2[colLev2.getterName]};"></span></span><span class="ratio">{!row2[colLev2.getterName]}</span></td></apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!colLev2.isAction}">
+																		<td class="ct-action">
+																			<apex:repeat value="{!row2.event.classes}" var="class">
+																				<apex:outputPanel layout="none" rendered="{!AND(row2.event.enrolled, row2.action[class.classId]['isLink'])}">
+																					<apex:outputPanel layout="none" rendered="{!row2.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row2.action[class.classId]['linkValue']}')">{!row2.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+
+																				</apex:outputPanel>
+																			</apex:repeat>
+																			<apex:outputPanel layout="none" rendered="{!row2.action['empty']}">&nbsp;</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!NOT(row2.action['empty'])}">
+																				<apex:outputPanel layout="none" rendered="{!row2.action['isText']}">{!row2.action['textLabel']}</apex:outputPanel>
+																				<apex:outputPanel layout="none" rendered="{!row2.action['isLink']}">
+																					<apex:outputPanel layout="none" rendered="{!row2.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row2.action['linkValue']}')">{!row2.action['linkLabel']}</a></apex:outputPanel>
+																					<apex:outputPanel layout="none" rendered="{!NOT(row2.action['isActionable'])}"><a href="{!row2.action['linkValue']}" class="{!row2.action['linkClass']}" name="{!row2.action['linkName']}">{!row2.action['linkLabel']}</a></apex:outputPanel>
+																				</apex:outputPanel>
+																			</apex:outputPanel>
+																		</td>
+																	</apex:outputPanel>
+																	<apex:outputPanel layout="none" rendered="{!colLev2.isCertificate}"><td class="ct-certificate"><span style="padding-left: 40%;"><apex:outputLink value="{!row2[colLev2.getterName]}" target="_blank" rendered="{!row2.ShowCertificate}"><span class="m-award">&nbsp;</span></apex:outputLink></span></td></apex:outputPanel>
+																	<!-- AARP Customization Action -->
+																	<apex:outputPanel layout="none" rendered="{!colLev2.isFeedbackLink}">
+																		<td class="ct-feedback">
+																			<apex:outputPanel rendered="{!IF(AND(row2.FeedbackQuizlink != NULL),true,false)}" layout="none">
+																				<apex:outputLink value="javascript:void(0);" styleClass="feedQuizLink" rendered="{!IF(row2.FeedbackQuizlink != NULL,true,false)}" onclick="functionFeedbackQuiz('{!row2.FeedbackQuizlink}','{!loTitle}');" style="display:none; text-decoration:none; text-align:center; width: 185px;" target="_blank">Provide Feedback</apex:outputLink>
+																				<span class="checkedFeedbackQuizId" style="display:none;">{!row2.FeedbackQuizlink}</span>
+																			</apex:outputPanel>
+																			<apex:outputPanel rendered="{!IF(row2.name == 'Quiz',true,false)}">
+																				<span class="checkedQuizId" style="display:none;">{!row2.key}</span>
+																			</apex:outputPanel>
+																		</td>
+																	</apex:outputPanel>
+																</apex:outputPanel>
+																<apex:outputPanel layout="none" rendered="{!colLev2.isSimple}">
+																	<apex:outputPanel layout="none"><td class="{!colLev2.className}">{!row2[colLev2.getterName]}</td></apex:outputPanel>
+																</apex:outputPanel>
+															</apex:repeat>
+														</apex:outputPanel>
+
+														<apex:outputPanel layout="none" rendered="{!row2.name='DevelopmentPlan'}">
+															<td class="ct-title ct-dp">
+																<apex:outputPanel layout="none" rendered="{!OR(!row2.isItem, row2.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent1" name="knob"></a></apex:outputPanel>
+																<span class="cage indent1"><a href="javascript:void(0);" class="title-desc-btn">{!row2.title}</a></span>
+															</td>
+															<td colspan="{!enabledColumnsSize-1}" class="row-DevelopmentPlan">
+																<table class="inner-table table-row-DevelopmentPlan">
+																	<tr>
+																		<td class="ct-progress ct-dp"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row2.progress};"></span></span><span class="ratio">{!row2.progress}</span></td>
+																		<td class="ct-createddate ct-dp"><span>{!row2.createdDate}</span></td>
+																	</tr>
+																</table>
+															</td>
+														</apex:outputPanel>
+													</tr>
+													<tr class="type-Description" style="display:{!showDescription}">
+														<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent1">{!row2.description}&nbsp;</span></td>
+													</tr>
+
+													<apex:outputPanel layout="none" rendered="{!AND(row2.isItem, row2.isEvent)}">
+														<tr class="fork collapsed">
+															<td colspan="{!enabledColumnsSize}">
+																<div class="agenda-container">
+																	<table class="inner-table agenda">
+																		<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader2">
+																			<th class="unsortable-header {!colEventHeader2.className}">{!$Label[colEventHeader2.label]}</th>
+																		</apex:repeat></tr>
+
+																		<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row2.event.classes), row2.event.classes.size=0)}">
+																			<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																		</apex:outputPanel>
+
+																		<apex:repeat value="{!row2.event.classes}" var="class">
+																			<apex:variable var="classColumnsCounter" value="{!IF(row2.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																			<apex:variable var="feedbackClassCounter" value="{!0}"/>
+																			<apex:repeat value="{!class.sessions}" var="session"><tr>
+																				<apex:repeat value="{!columnsEvent}" var="colEvent2">
+																					<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent2.isEventClass, colEvent2.isAction))}">
+																						<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent2.className}">
+																							<apex:outputPanel layout="none" rendered="{!colEvent2.isSimple}">{!class[colEvent2.getterName]}</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!NOT(colEvent2.isSimple)}">
+																								<apex:outputPanel layout="none" rendered="{!colEvent2.isEventClassMaterials}">
+																									<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																										<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																								</apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!colEvent2.isAction}">
+																									<apex:outputPanel layout="none" rendered="{!row2.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!NOT(row2.action[class.classId]['empty'])}">
+																										<apex:outputPanel layout="none" rendered="{!row2.action[class.classId]['isText']}">{!row2.action[class.classId]['textLabel']}</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!row2.action[class.classId]['isLink']}">
+																											<apex:outputPanel layout="none" rendered="{!row2.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row2.action[class.classId]['linkValue']}')">{!row2.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																										</apex:outputPanel>
+																									</apex:outputPanel>
+																								</apex:outputPanel>
+																							</apex:outputPanel>
+																						</td>
+																						<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																					</apex:outputPanel>
+																					<apex:outputPanel layout="none" rendered="{!OR(colEvent2.isEventSession, AND(colEvent2.isAction,row2.event.enrolled))}">
+																						<td class="ct-eventsession {!colEvent2.className} {!IF(session.inPast == true,'pastSession','')}">
+																							<apex:outputPanel layout="none" rendered="{!colEvent2.isSimple}">{!session[colEvent2.getterName]}</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!NOT(colEvent2.isSimple)}">
+																								<apex:outputPanel layout="none" rendered="{!colEvent2.isEventSessionLocation}">
+																									<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																										{!session[colEvent2.getterName]}
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																										<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent2.getterName]}</a>
+																									</apex:outputPanel>
+																								</apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!colEvent2.isEventSessionInstructors}">{!session[colEvent2.getterName]}</apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!colEvent2.isAction}">
+																									<!-- For AARP Customization -->
+																									<apex:outputPanel layout="none" rendered="{!AND(showCompleted,feedbackClassCounter < 1)}">
+																										<apex:outputPanel rendered="{!IF(AND(class.feedbackLink != NULL),true,false)}" layout="none">
+																											<apex:outputLink value="javascript:void(0);" styleClass="feedQuizLink" rendered="{!IF(class.feedbackLink != NULL,true,false)}" onclick="functionFeedbackQuiz('{!class.feedbackLink}','{!class.name}');" style="display:none; text-decoration:none; text-align:center; width: 185px;" target="_blank">Provide Feedback</apex:outputLink>
+																											<span class="checkedFeedbackQuizId" style="display:none;">{!class.feedbackLink}</span>
+																											<apex:variable var="feedbackClassCounter" value="{!feedbackClassCounter+1}"/>
+																										</apex:outputPanel>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																										<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																								</apex:outputPanel>
+																							</apex:outputPanel>
+																						</td>
+																					</apex:outputPanel>
+																				</apex:repeat></tr>
+																			</apex:repeat>
+																		</apex:repeat>
+																	</table>
+																</div>
+															</td>
+														</tr>
+													</apex:outputPanel>
+
+													<apex:repeat value="{!block2.block}" var="block3" >
+														<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}"><table class="tier-table {!IF(row2.name='DevelopmentPlan','table-Activity','')}"><tbody>
+														<apex:repeat value="{!block3.row}" var="row3">
+															<tr class="{!IF(row2.name='DevelopmentPlan','expanded','collapsed')} type-{!row3.name}">
+																<apex:outputPanel layout="none" rendered="{!row3.name!='Activity'}">
+																	<apex:repeat value="{!columns}" var="colLev3">
+																		<apex:outputPanel layout="none" rendered="{!NOT(colLev3.isSimple)}">
+																			<apex:outputPanel layout="none" rendered="{!colLev3.isTitle}">
+																				<td class="pin ct-title">
+																					<apex:outputPanel layout="none" rendered="{!OR(!row3.isItem, row3.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent2" name="knob"></a></apex:outputPanel>
+																					<span class="cage indent2"><a href="javascript:void(0);" class="title-desc-btn">{!row3[colLev3.getterName]}</a></span>
+																				</td>
+																			</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!colLev3.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row3[colLev3.getterName]};"></span></span><span class="ratio">{!row3[colLev3.getterName]}</span></td></apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!colLev3.isAction}">
+																				<td class="ct-action">
+																					<apex:repeat value="{!row3.event.classes}" var="class">
+																						<apex:outputPanel layout="none" rendered="{!AND(row3.event.enrolled, row3.action[class.classId]['isLink'])}">
+																							<apex:outputPanel layout="none" rendered="{!row3.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row3.action[class.classId]['linkValue']}')">{!row3.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																						</apex:outputPanel>
+																					</apex:repeat>
+																					<apex:outputPanel layout="none" rendered="{!row3.action['empty']}">&nbsp;</apex:outputPanel>
+																					<apex:outputPanel layout="none" rendered="{!NOT(row3.action['empty'])}">
+																						<apex:outputPanel layout="none" rendered="{!row3.action['isText']}">{!row3.action['textLabel']}</apex:outputPanel>
+																						<apex:outputPanel layout="none" rendered="{!row3.action['isLink']}">
+																							<apex:outputPanel layout="none" rendered="{!row3.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row3.action['linkValue']}')">{!row3.action['linkLabel']}</a></apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!NOT(row3.action['isActionable'])}"><a href="{!row3.action['linkValue']}" class="{!row3.action['linkClass']}" name="{!row3.action['linkName']}">{!row3.action['linkLabel']}</a></apex:outputPanel>
+																						</apex:outputPanel>
+																					</apex:outputPanel>
+																				</td>
+																			</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!colLev3.isCertificate}"><td class="ct-certificate">&nbsp;</td></apex:outputPanel>
+																			<!-- AARP Customization Action -->
+																			<apex:outputPanel layout="none" rendered="{!colLev3.isFeedbackLink}"><td class="ct-feedback"></td></apex:outputPanel>
+																		</apex:outputPanel>
+																		<apex:outputPanel layout="none" rendered="{!colLev3.isSimple}">
+																			<apex:outputPanel layout="none"><td class="{!colLev3.className}">{!IF(colLev3.name == 'CatalogName',' ',row3[colLev3.getterName])}</td></apex:outputPanel>
+																		</apex:outputPanel>
+																	</apex:repeat>
+																</apex:outputPanel>
+
+																<apex:outputPanel layout="none" rendered="{!row3.name='Activity'}">
+																	<td class="pin ct-title ct-a">
+																		<apex:outputPanel layout="none" rendered="{!OR(!row3.isItem, row3.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent2" name="knob"></a></apex:outputPanel>
+																		<span class="cage indent2"><a href="javascript:void(0);" class="title-desc-btn">{!row3.title}</a></span>
+																	</td>
+																	<td colspan="{!enabledColumnsSize-1}" class="row-Activity">
+																		<table class="inner-table table-row-Activity">
+																			<tr>
+																				<td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row3.progress};"></span></span><span class="ratio">{!row3.progress}</span></td>
+																				<td class="ct-activityrange"><span>{!row3.activityRange}</span></td>
+																			</tr>
+																		</table>
+																	</td>
+																</apex:outputPanel>
+															</tr>
+															<tr class="{!IF(row2.name='DevelopmentPlan','expanded','collapsed')} type-Description" style="display:{!showDescription}">
+																<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent2">{!row3.description}&nbsp;</span></td>
+															</tr>
+
+															<apex:outputPanel layout="none" rendered="{!AND(row3.isItem, row3.isEvent)}">
+																<tr class="fork collapsed">
+																	<td colspan="{!enabledColumnsSize}">
+																		<div class="agenda-container">
+																			<table class="inner-table agenda">
+																				<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader3">
+																					<th class="unsortable-header {!colEventHeader3.className}">{!$Label[colEventHeader3.label]}</th>
+																				</apex:repeat></tr>
+
+																				<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row3.event.classes), row3.event.classes.size=0)}">
+																					<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																				</apex:outputPanel>
+
+																				<apex:repeat value="{!row3.event.classes}" var="class">
+																					<apex:variable var="classColumnsCounter" value="{!IF(row3.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																					<apex:repeat value="{!class.sessions}" var="session"><tr>
+																						<apex:repeat value="{!columnsEvent}" var="colEvent3">
+																							<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent3.isEventClass, colEvent3.isAction))}">
+																								<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent3.className}">
+																									<apex:outputPanel layout="none" rendered="{!colEvent3.isSimple}">{!class[colEvent3.getterName]}</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!NOT(colEvent3.isSimple)}">
+																										<apex:outputPanel layout="none" rendered="{!colEvent3.isEventClassMaterials}">
+																											<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																												<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																											</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																										</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!colEvent3.isAction}">
+																											<apex:outputPanel layout="none" rendered="{!row3.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!NOT(row3.action[class.classId]['empty'])}">
+																												<apex:outputPanel layout="none" rendered="{!row3.action[class.classId]['isText']}">{!row3.action[class.classId]['textLabel']}</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!row3.action[class.classId]['isLink']}">
+																													<apex:outputPanel layout="none" rendered="{!row3.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row3.action[class.classId]['linkValue']}')">{!row3.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																												</apex:outputPanel>
+																											</apex:outputPanel>
+																										</apex:outputPanel>
+																									</apex:outputPanel>
+																								</td>
+																								<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																							</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!OR(colEvent3.isEventSession, AND(colEvent3.isAction,row3.event.enrolled))}">
+																								<td class="ct-eventsession {!colEvent3.className} {!IF(session.inPast == true,'pastSession','')}">
+																									<apex:outputPanel layout="none" rendered="{!colEvent3.isSimple}">{!session[colEvent3.getterName]}</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!NOT(colEvent3.isSimple)}">
+																										<apex:outputPanel layout="none" rendered="{!colEvent3.isEventSessionLocation}">
+																											<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																												{!session[colEvent3.getterName]}
+																											</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																												<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent3.getterName]}</a>
+																											</apex:outputPanel>
+																										</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!colEvent3.isEventSessionInstructors}">{!session[colEvent3.getterName]}</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!colEvent3.isAction}">
+																											<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																												<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																											</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																										</apex:outputPanel>
+																									</apex:outputPanel>
+																								</td>
+																							</apex:outputPanel>
+																						</apex:repeat></tr>
+																					</apex:repeat>
+																				</apex:repeat>
+																			</table>
+																		</div>
+																	</td>
+																</tr>
+															</apex:outputPanel>
+
+															<apex:outputPanel layout="none" rendered="{!row3.name='Activity'}">
+																<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}" class="inner-header"><table class="tier-table table-inner-header">
+																	<tr class="collapsed table-header">
+																		<apex:repeat value="{!columns}" var="columnHeader">
+																			<apex:outputPanel layout="none" rendered="{!columnHeader.isCommon}">
+																				<apex:outputPanel layout="none" rendered="{!columnHeader.isSortableHeader}">
+																					<th class="{!columnHeader.className}" onclick="changeSort({!columnHeader.index},{!orderDirection});">
+																						<div class="{!IF(orderColumn=columnHeader.index,IF(orderDirection, 'sort srt-asc','sort srt-desc'),'')}"></div>{!$Label[columnHeader.label]}
+																					</th>
+																				</apex:outputPanel>
+																				<apex:outputPanel layout="none" rendered="{!NOT(columnHeader.isSortableHeader)}">
+																					<th class="unsortable-header {!columnHeader.className}">{!$Label[columnHeader.label]}</th>
+																				</apex:outputPanel>
+																			</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!columnHeader.isCustom}">
+																				<th class="{!columnHeader.className}">{!columnHeader.customLabel}</th>
+																			</apex:outputPanel>
+																		</apex:repeat>
+																	</tr>
+																</table></td></tr>
+															</apex:outputPanel>
+
+															<apex:repeat value="{!block3.block}" var="block4" >
+																<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}"><table class="tier-table"><tbody>
+																<apex:repeat value="{!block4.row}" var="row4">
+																	<tr class="collapsed">
+																		<apex:repeat value="{!columns}" var="colLev4">
+																			<apex:outputPanel layout="none" rendered="{!colLev4.isTitle}">
+																				<td class="pin ct-title">
+																					<apex:outputPanel layout="none" rendered="{!OR(!row4.isItem, row4.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent3" name="knob"></a></apex:outputPanel>
+																					<span class="cage indent3"><a href="javascript:void(0);" class="title-desc-btn">{!row4[colLev4.getterName]}</a></span>
+																				</td>
+																			</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!NOT(colLev4.isSimple)}">
+																				<apex:outputPanel layout="none" rendered="{!colLev4.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row4[colLev4.getterName]};"></span></span><span class="ratio">{!row4[colLev4.getterName]}</span></td></apex:outputPanel>
+																				<apex:outputPanel layout="none" rendered="{!colLev4.isAction}">
+																					<td class="ct-action">
+																						<apex:repeat value="{!row4.event.classes}" var="class">
+																							<apex:outputPanel layout="none" rendered="{!AND(row4.event.enrolled, row4.action[class.classId]['isLink'])}">
+																								<apex:outputPanel layout="none" rendered="{!row4.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row4.action[class.classId]['linkValue']}')">{!row4.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																							</apex:outputPanel>
+																						</apex:repeat>
+																						<apex:outputPanel layout="none" rendered="{!row4.action['empty']}">&nbsp;</apex:outputPanel>
+																						<apex:outputPanel layout="none" rendered="{!NOT(row4.action['empty'])}">
+																							<apex:outputPanel layout="none" rendered="{!row4.action['isText']}">{!row4.action['textLabel']}</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!row4.action['isLink']}">
+																								<apex:outputPanel layout="none" rendered="{!row4.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row4.action['linkValue']}')">{!row4.action['linkLabel']}</a></apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!NOT(row4.action['isActionable'])}"><a href="{!row4.action['linkValue']}" class="{!row4.action['linkClass']}" name="{!row4.action['linkName']}">{!row4.action['linkLabel']}</a></apex:outputPanel>
+																							</apex:outputPanel>
+																						</apex:outputPanel>
+																					</td>
+																				</apex:outputPanel>
+																				<apex:outputPanel layout="none" rendered="{!colLev4.isCertificate}"><td class="ct-certificate">&nbsp;</td></apex:outputPanel>
+																				<!-- AARP Customization Action -->
+																				<apex:outputPanel layout="none" rendered="{!colLev4.isFeedbackLink}"><td class="ct-feedback"></td></apex:outputPanel>
+																			</apex:outputPanel>
+																			<apex:outputPanel layout="none" rendered="{!colLev4.isSimple}">
+																				<apex:outputPanel layout="none"><td class="{!colLev4.className}">{!IF(colLev4.name == 'CatalogName',' ',row4[colLev4.getterName])}</td></apex:outputPanel>
+																			</apex:outputPanel>
+																		</apex:repeat>
+																	</tr>
+																	<tr class="collapsed type-Description" style="display:{!showDescription}">
+																		<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent3">{!row4.description}&nbsp;</span></td>
+																	</tr>
+
+																	<apex:outputPanel layout="none" rendered="{!AND(row4.isItem, row4.isEvent)}">
+																		<tr class="fork collapsed">
+																			<td colspan="{!enabledColumnsSize}">
+																				<div class="agenda-container">
+																					<table class="inner-table agenda">
+																						<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader4">
+																							<th class="unsortable-header {!colEventHeader4.className}">{!$Label[colEventHeader4.label]}</th>
+																						</apex:repeat></tr>
+
+																						<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row4.event.classes), row4.event.classes.size=0)}">
+																							<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																						</apex:outputPanel>
+
+																						<apex:repeat value="{!row4.event.classes}" var="class">
+																							<apex:variable var="classColumnsCounter" value="{!IF(row4.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																							<apex:repeat value="{!class.sessions}" var="session"><tr>
+																								<apex:repeat value="{!columnsEvent}" var="colEvent4">
+																									<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent4.isEventClass,colEvent4.isAction))}">
+																										<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent4.className}">
+																											<apex:outputPanel layout="none" rendered="{!colEvent4.isSimple}">{!class[colEvent4.getterName]}</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!NOT(colEvent4.isSimple)}">
+																												<apex:outputPanel layout="none" rendered="{!colEvent4.isEventClassMaterials}">
+																													<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																														<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																													</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																												</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!colEvent4.isAction}">
+																													<apex:outputPanel layout="none" rendered="{!row4.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!NOT(row4.action[class.classId]['empty'])}">
+																														<apex:outputPanel layout="none" rendered="{!row4.action[class.classId]['isText']}">{!row4.action[class.classId]['textLabel']}</apex:outputPanel>
+																														<apex:outputPanel layout="none" rendered="{!row4.action[class.classId]['isLink']}">
+																															<apex:outputPanel layout="none" rendered="{!row4.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row4.action[class.classId]['linkValue']}')">{!row4.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																														</apex:outputPanel>
+																													</apex:outputPanel>
+																												</apex:outputPanel>
+																											</apex:outputPanel>
+																										</td>
+																										<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!OR(colEvent4.isEventSession, AND(colEvent4.isAction,row4.event.enrolled))}">
+																										<td class="ct-eventsession {!colEvent4.className} {!IF(session.inPast == true,'pastSession','')}">
+																											<apex:outputPanel layout="none" rendered="{!colEvent4.isSimple}">{!session[colEvent4.getterName]}</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!NOT(colEvent4.isSimple)}">
+																												<apex:outputPanel layout="none" rendered="{!colEvent4.isEventSessionLocation}">
+																												<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																													{!session[colEvent4.getterName]}
+																												</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																													<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent4.getterName]}</a>
+																												</apex:outputPanel>
+																												</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!colEvent4.isEventSessionInstructors}">{!session[colEvent4.getterName]}</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!colEvent4.isAction}">
+																													<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																														<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																													</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																												</apex:outputPanel>
+																											</apex:outputPanel>
+																										</td>
+																									</apex:outputPanel>
+																								</apex:repeat></tr>
+																							</apex:repeat>
+																						</apex:repeat>
+																					</table>
+																				</div>
+																			</td>
+																		</tr>
+																	</apex:outputPanel>
+
+																	<apex:repeat value="{!block4.block}" var="block5" >
+																		<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}"><table class="tier-table"><tbody>
+																		<apex:repeat value="{!block5.row}" var="row5">
+																			<tr class="collapsed">
+																				<apex:repeat value="{!columns}" var="colLev5">
+																					<apex:outputPanel layout="none" rendered="{!colLev5.isTitle}">
+																						<td class="pin ct-title">
+																							<apex:outputPanel layout="none" rendered="{!OR(!row5.isItem, row5.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent4" name="knob"></a></apex:outputPanel>
+																							<span class="cage indent4"><a href="javascript:void(0);" class="title-desc-btn">{!row5[colLev5.getterName]}</a></span>
+																						</td>
+																					</apex:outputPanel>
+																					<apex:outputPanel layout="none" rendered="{!NOT(colLev5.isSimple)}">
+																						<apex:outputPanel layout="none" rendered="{!colLev5.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row5[colLev5.getterName]};"></span></span><span class="ratio">{!row5[colLev5.getterName]}</span></td></apex:outputPanel>
+																						<apex:outputPanel layout="none" rendered="{!colLev5.isAction}">
+																							<td class="ct-action">
+																								<apex:repeat value="{!row5.event.classes}" var="class">
+																									<apex:outputPanel layout="none" rendered="{!AND(row5.event.enrolled, row5.action[class.classId]['isLink'])}">
+																										<apex:outputPanel layout="none" rendered="{!row5.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row5.action[class.classId]['linkValue']}')">{!row5.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																									</apex:outputPanel>
+																								</apex:repeat>
+																								<apex:outputPanel layout="none" rendered="{!row5.action['empty']}">&nbsp;</apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!NOT(row5.action['empty'])}">
+																									<apex:outputPanel layout="none" rendered="{!row5.action['isText']}">{!row5.action['textLabel']}</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!row5.action['isLink']}">
+																										<apex:outputPanel layout="none" rendered="{!row5.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row5.action['linkValue']}')">{!row5.action['linkLabel']}</a></apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!NOT(row5.action['isActionable'])}"><a href="{!row5.action['linkValue']}" class="{!row5.action['linkClass']}" name="{!row5.action['linkName']}">{!row5.action['linkLabel']}</a></apex:outputPanel>
+																									</apex:outputPanel>
+																								</apex:outputPanel>
+																							</td>
+																						</apex:outputPanel>
+																						<apex:outputPanel layout="none" rendered="{!colLev5.isCertificate}"><td class="ct-certificate">&nbsp;</td></apex:outputPanel>
+																						<!-- AARP Customization Action -->
+																						<apex:outputPanel layout="none" rendered="{!colLev5.isFeedbackLink}"><td class="ct-feedback"></td></apex:outputPanel>
+																					</apex:outputPanel>
+																					<apex:outputPanel layout="none" rendered="{!colLev5.isSimple}">
+																						<apex:outputPanel layout="none"><td class="{!colLev5.className}">{!IF(colLev5.name == 'CatalogName',' ',row5[colLev5.getterName])}</td></apex:outputPanel>
+																					</apex:outputPanel>
+																				</apex:repeat>
+																			</tr>
+																			<tr class="collapsed type-Description" style="display:{!showDescription}">
+																				<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent4">{!row5.description}&nbsp;</span></td>
+																			</tr>
+
+																			<apex:outputPanel layout="none" rendered="{!AND(row5.isItem, row5.isEvent)}">
+																				<tr class="fork collapsed">
+																					<td colspan="{!enabledColumnsSize}">
+																						<div class="agenda-container">
+																							<table class="inner-table agenda">
+																								<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader5">
+																									<th class="unsortable-header {!colEventHeader5.className}">{!$Label[colEventHeader5.label]}</th>
+																								</apex:repeat></tr>
+
+																								<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row5.event.classes), row5.event.classes.size=0)}">
+																									<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																								</apex:outputPanel>
+
+																								<apex:repeat value="{!row5.event.classes}" var="class">
+																									<apex:variable var="classColumnsCounter" value="{!IF(row5.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																									<apex:repeat value="{!class.sessions}" var="session"><tr>
+																										<apex:repeat value="{!columnsEvent}" var="colEvent5">
+																											<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent5.isEventClass,colEvent5.isAction))}">
+																												<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent5.className}">
+																													<apex:outputPanel layout="none" rendered="{!colEvent5.isSimple}">{!class[colEvent5.getterName]}</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!NOT(colEvent5.isSimple)}">
+																														<apex:outputPanel layout="none" rendered="{!colEvent5.isEventClassMaterials}">
+																															<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																																<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																															</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																														</apex:outputPanel>
+																														<apex:outputPanel layout="none" rendered="{!colEvent5.isAction}">
+																															<apex:outputPanel layout="none" rendered="{!row5.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!NOT(row5.action[class.classId]['empty'])}">
+																																<apex:outputPanel layout="none" rendered="{!row5.action[class.classId]['isText']}">{!row5.action[class.classId]['textLabel']}</apex:outputPanel>
+																																<apex:outputPanel layout="none" rendered="{!row5.action[class.classId]['isLink']}">
+																																	<apex:outputPanel layout="none" rendered="{!row5.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row5.action[class.classId]['linkValue']}')">{!row5.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																																</apex:outputPanel>
+																															</apex:outputPanel>
+																														</apex:outputPanel>
+																													</apex:outputPanel>
+																												</td>
+																												<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																											</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!OR(colEvent5.isEventSession, AND(colEvent5.isAction,row5.event.enrolled))}">
+																												<td class="ct-eventsession {!colEvent5.className} {!IF(session.inPast == true,'pastSession','')}">
+																													<apex:outputPanel layout="none" rendered="{!colEvent5.isSimple}">{!session[colEvent5.getterName]}</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!NOT(colEvent5.isSimple)}">
+																														<apex:outputPanel layout="none" rendered="{!colEvent5.isEventSessionLocation}">
+																															<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																																{!session[colEvent5.getterName]}
+																															</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																																<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent5.getterName]}</a>
+																															</apex:outputPanel>
+																														</apex:outputPanel>
+																														<apex:outputPanel layout="none" rendered="{!colEvent5.isEventSessionInstructors}">{!session[colEvent5.getterName]}</apex:outputPanel>
+																														<apex:outputPanel layout="none" rendered="{!colEvent5.isAction}">
+																															<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																																<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																															</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																														</apex:outputPanel>
+																													</apex:outputPanel>
+																												</td>
+																											</apex:outputPanel>
+																										</apex:repeat></tr>
+																									</apex:repeat>
+																								</apex:repeat>
+																							</table>
+																						</div>
+																					</td>
+																				</tr>
+																			</apex:outputPanel>
+
+																			<apex:repeat value="{!block5.block}" var="block6" >
+																				<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}"><table class="tier-table"><tbody>
+																				<apex:repeat value="{!block6.row}" var="row6">
+																					<tr class="collapsed">
+																						<apex:repeat value="{!columns}" var="colLev6">
+																							<apex:outputPanel layout="none" rendered="{!colLev6.isTitle}">
+																								<td class="pin ct-title">
+																									<apex:outputPanel layout="none" rendered="{!OR(!row6.isItem, row6.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent5" name="knob"></a></apex:outputPanel>
+																									<span class="cage indent5"><a href="javascript:void(0);" class="title-desc-btn">{!row6[colLev6.getterName]}</a></span>
+																								</td>
+																							</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!NOT(colLev6.isSimple)}">
+																								<apex:outputPanel layout="none" rendered="{!colLev6.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row6[colLev6.getterName]};"></span></span><span class="ratio">{!row6[colLev6.getterName]}</span></td></apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!colLev6.isAction}">
+																									<td class="ct-action">
+																										<apex:repeat value="{!row6.event.classes}" var="class">
+																											<apex:outputPanel layout="none" rendered="{!AND(row6.event.enrolled, row6.action[class.classId]['isLink'])}">
+																												<apex:outputPanel layout="none" rendered="{!row6.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row6.action[class.classId]['linkValue']}')">{!row6.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																											</apex:outputPanel>
+																										</apex:repeat>
+																										<apex:outputPanel layout="none" rendered="{!row6.action['empty']}">&nbsp;</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!NOT(row6.action['empty'])}">
+																											<apex:outputPanel layout="none" rendered="{!row6.action['isText']}">{!row6.action['textLabel']}</apex:outputPanel>
+																											<apex:outputPanel layout="none" rendered="{!row6.action['isLink']}">
+																												<apex:outputPanel layout="none" rendered="{!row6.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row6.action['linkValue']}')">{!row6.action['linkLabel']}</a></apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!NOT(row6.action['isActionable'])}"><a href="{!row6.action['linkValue']}" class="{!row6.action['linkClass']}" name="{!row6.action['linkName']}">{!row6.action['linkLabel']}</a></apex:outputPanel>
+																											</apex:outputPanel>
+																										</apex:outputPanel>
+																									</td>
+																								</apex:outputPanel>
+																								<apex:outputPanel layout="none" rendered="{!colLev6.isCertificate}"><td class="ct-certificate">&nbsp;</td></apex:outputPanel>
+																							</apex:outputPanel>
+																							<apex:outputPanel layout="none" rendered="{!colLev6.isSimple}">
+																								<apex:outputPanel layout="none"><td class="{!colLev6.className}">{!IF(colLev6.name == 'CatalogName',' ',row6[colLev6.getterName])}</td></apex:outputPanel>
+																							</apex:outputPanel>
+																						</apex:repeat>
+																					</tr>
+																					<tr class="collapsed type-Description" style="display:{!showDescription}">
+																						<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent5">{!row6.description}&nbsp;</span></td>
+																					</tr>
+
+																					<apex:outputPanel layout="none" rendered="{!AND(row6.isItem, row6.isEvent)}">
+																						<tr class="fork collapsed">
+																							<td colspan="{!enabledColumnsSize}">
+																								<div class="agenda-container">
+																									<table class="inner-table agenda">
+																										<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader6">
+																											<th class="unsortable-header {!colEventHeader6.className}">{!$Label[colEventHeader6.label]}</th>
+																										</apex:repeat></tr>
+
+																										<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row6.event.classes), row6.event.classes.size=0)}">
+																											<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																										</apex:outputPanel>
+
+																										<apex:repeat value="{!row6.event.classes}" var="class">
+																											<apex:variable var="classColumnsCounter" value="{!IF(row6.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																											<apex:repeat value="{!class.sessions}" var="session"><tr>
+																												<apex:repeat value="{!columnsEvent}" var="colEvent6">
+																													<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent6.isEventClass,colEvent6.isAction))}">
+																														<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent6.className}">
+																															<apex:outputPanel layout="none" rendered="{!colEvent6.isSimple}">{!class[colEvent6.getterName]}</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!NOT(colEvent6.isSimple)}">
+																																<apex:outputPanel layout="none" rendered="{!colEvent6.isEventClassMaterials}">
+																																	<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																																		<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																																	</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																																</apex:outputPanel>
+																																<apex:outputPanel layout="none" rendered="{!colEvent6.isAction}">
+																																	<apex:outputPanel layout="none" rendered="{!row6.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!NOT(row6.action[class.classId]['empty'])}">
+																																		<apex:outputPanel layout="none" rendered="{!row6.action[class.classId]['isText']}">{!row6.action[class.classId]['textLabel']}</apex:outputPanel>
+																																		<apex:outputPanel layout="none" rendered="{!row6.action[class.classId]['isLink']}">
+																																			<apex:outputPanel layout="none" rendered="{!row6.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row6.action[class.classId]['linkValue']}')">{!row6.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																																		</apex:outputPanel>
+																																	</apex:outputPanel>
+																																</apex:outputPanel>
+																															</apex:outputPanel>
+																														</td>
+																														<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																													</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!OR(colEvent6.isEventSession, AND(colEvent6.isAction,row6.event.enrolled))}">
+																														<td class="ct-eventsession {!colEvent6.className} {!IF(session.inPast == true,'pastSession','')}">
+																															<apex:outputPanel layout="none" rendered="{!colEvent6.isSimple}">{!session[colEvent6.getterName]}</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!NOT(colEvent6.isSimple)}">
+																																<apex:outputPanel layout="none" rendered="{!colEvent6.isEventSessionLocation}">
+																																	<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																																		{!session[colEvent6.getterName]}
+																																	</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																																		<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent6.getterName]}</a>
+																																	</apex:outputPanel>
+																																</apex:outputPanel>
+																																<apex:outputPanel layout="none" rendered="{!colEvent6.isEventSessionInstructors}">{!session[colEvent6.getterName]}</apex:outputPanel>
+																																<apex:outputPanel layout="none" rendered="{!colEvent6.isAction}">
+																																	<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																																		<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																																	</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																																</apex:outputPanel>
+																															</apex:outputPanel>
+																														</td>
+																													</apex:outputPanel>
+																												</apex:repeat></tr>
+																											</apex:repeat>
+																										</apex:repeat>
+																									</table>
+																								</div>
+																							</td>
+																						</tr>
+																					</apex:outputPanel>
+
+																					<apex:repeat value="{!block6.block}" var="block7" >
+																						<tr class="fork collapsed"><td colspan="{!enabledColumnsSize}"><table class="tier-table"><tbody>
+																						<apex:repeat value="{!block7.row}" var="row7">
+																							<tr class="collapsed">
+																								<apex:repeat value="{!columns}" var="colLev7">
+																									<apex:outputPanel layout="none" rendered="{!colLev7.isTitle}">
+																										<td class="pin ct-title">
+																											<apex:outputPanel layout="none" rendered="{!OR(!row7.isItem, row7.isEvent)}"><a href="javascript:void(0);" class="knob-pos knob-indent6" name="knob"></a></apex:outputPanel>
+																											<span class="cage indent6"><a href="javascript:void(0);" class="title-desc-btn">{!row7[colLev7.getterName]}</a></span>
+																										</td>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!NOT(colLev7.isSimple)}">
+																										<apex:outputPanel layout="none" rendered="{!colLev7.isProgress}"><td class="ct-progress"><span class="meter"><span class="progress {!IF(showCompleted, 'complete', 'in')}" style="width: {!row7[colLev7.getterName]};"></span></span><span class="ratio">{!row7[colLev7.getterName]}</span></td></apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!colLev7.isAction}">
+																											<td class="ct-action">
+																												<apex:repeat value="{!row7.event.classes}" var="class">
+																													<apex:outputPanel layout="none" rendered="{!AND(row7.event.enrolled, row7.action[class.classId]['isLink'])}">
+																														<apex:outputPanel layout="none" rendered="{!row7.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row7.action[class.classId]['linkValue']}')">{!row7.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																													</apex:outputPanel>
+																												</apex:repeat>
+																												<apex:outputPanel layout="none" rendered="{!row7.action['empty']}">&nbsp;</apex:outputPanel>
+																												<apex:outputPanel layout="none" rendered="{!NOT(row7.action['empty'])}">
+																													<apex:outputPanel layout="none" rendered="{!row7.action['isText']}">{!row7.action['textLabel']}</apex:outputPanel>
+																													<apex:outputPanel layout="none" rendered="{!row7.action['isLink']}">
+																														<apex:outputPanel layout="none" rendered="{!row7.action['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row7.action['linkValue']}')">{!row7.action['linkLabel']}</a></apex:outputPanel>
+																														<apex:outputPanel layout="none" rendered="{!NOT(row7.action['isActionable'])}"><a href="{!row7.action['linkValue']}" class="{!row7.action['linkClass']}" name="{!row7.action['linkName']}">{!row7.action['linkLabel']}</a></apex:outputPanel>
+																													</apex:outputPanel>
+																												</apex:outputPanel>
+																											</td>
+																										</apex:outputPanel>
+																										<apex:outputPanel layout="none" rendered="{!colLev7.isCertificate}"><td class="ct-certificate">&nbsp;</td></apex:outputPanel>
+																									</apex:outputPanel>
+																									<apex:outputPanel layout="none" rendered="{!colLev7.isSimple}">
+																										<apex:outputPanel layout="none"><td class="{!colLev7.className}">{!IF(colLev7.name == 'CatalogName',' ',row7[colLev7.getterName])}</td></apex:outputPanel>
+																									</apex:outputPanel>
+																								</apex:repeat>
+																							</tr>
+																							<tr class="collapsed type-Description" style="display:{!showDescription}">
+																								<td class="ct-description" colspan="{!enabledColumnsSize}"><span class="desc indent6">{!row7.description}&nbsp;</span></td>
+																							</tr>
+
+																							<apex:outputPanel layout="none" rendered="{!AND(row7.isItem, row7.isEvent)}">
+																								<tr class="fork collapsed">
+																									<td colspan="{!enabledColumnsSize}">
+																										<div class="agenda-container">
+																											<table class="inner-table agenda">
+																												<tr><apex:repeat value="{!columnsEvent}" var="colEventHeader7">
+																													<th class="unsortable-header {!colEventHeader7.className}">{!$Label[colEventHeader7.label]}</th>
+																												</apex:repeat></tr>
+
+																												<apex:outputPanel layout="none" rendered="{!OR(ISBLANK(row7.event.classes), row7.event.classes.size=0)}">
+																													<tr><td colspan="{!columnsEvent.size}"><span>{!$Label.CFSP_COMMON_LABEL_CLASSES_ENDED}</span></td></tr>
+																												</apex:outputPanel>
+
+																												<apex:repeat value="{!row7.event.classes}" var="class">
+																													<apex:variable var="classColumnsCounter" value="{!IF(row7.event.enrolled,enabledClassColumns-1,enabledClassColumns)}"/>
+																													<apex:repeat value="{!class.sessions}" var="session"><tr>
+																														<apex:repeat value="{!columnsEvent}" var="colEvent7">
+																															<apex:outputPanel layout="none" rendered="{!AND(classColumnsCounter>0,OR(colEvent7.isEventClass, colEvent7.isAction))}">
+																																<td rowspan="{!class.sessions.size}" class="ct-eventclass {!colEvent7.className}">
+																																	<apex:outputPanel layout="none" rendered="{!colEvent7.isSimple}">{!class[colEvent7.getterName]}</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!NOT(colEvent7.isSimple)}">
+																																		<apex:outputPanel layout="none" rendered="{!colEvent7.isEventClassMaterials}">
+																																			<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size>0)}">
+																																				<a href="javascript:void(0);" onclick="doAction('{!class.materialsAction}');">{!$Label.CFSP_COMMON_LINK_DETAILS}</a>
+																																			</apex:outputPanel>
+																																			<apex:outputPanel layout="none" rendered="{!AND(NOT(ISBLANK(class.materials)), class.materials.size=0)}">&nbsp;</apex:outputPanel>
+																																		</apex:outputPanel>
+																																		<apex:outputPanel layout="none" rendered="{!colEvent7.isAction}">
+																																			<apex:outputPanel layout="none" rendered="{!row7.action[class.classId]['empty']}">&nbsp;</apex:outputPanel>
+																																			<apex:outputPanel layout="none" rendered="{!NOT(row7.action[class.classId]['empty'])}">
+																																				<apex:outputPanel layout="none" rendered="{!row7.action[class.classId]['isText']}">{!row7.action[class.classId]['textLabel']}</apex:outputPanel>
+																																				<apex:outputPanel layout="none" rendered="{!row7.action[class.classId]['isLink']}">
+																																					<apex:outputPanel layout="none" rendered="{!row7.action[class.classId]['isActionable']}"><a href="javascript:void(0);" onclick="doAction('{!row7.action[class.classId]['linkValue']}')">{!row7.action[class.classId]['linkLabel']}</a></apex:outputPanel>
+																																				</apex:outputPanel>
+																																			</apex:outputPanel>
+																																		</apex:outputPanel>
+																																	</apex:outputPanel>
+																																</td>
+																																<apex:variable var="classColumnsCounter" value="{!classColumnsCounter-1}"/>
+																															</apex:outputPanel>
+																															<apex:outputPanel layout="none" rendered="{!OR(colEvent7.isEventSession, AND(colEvent7.isAction,row7.event.enrolled))}">
+																																<td class="ct-eventsession {!colEvent7.className} {!IF(session.inPast == true,'pastSession','')}">
+																																	<apex:outputPanel layout="none" rendered="{!colEvent7.isSimple}">{!session[colEvent7.getterName]}</apex:outputPanel>
+																																	<apex:outputPanel layout="none" rendered="{!NOT(colEvent7.isSimple)}">
+																																		<apex:outputPanel layout="none" rendered="{!colEvent7.isEventSessionLocation}">
+																																			<apex:outputPanel layout="none" rendered="{!AND(session.location.Name != NULL, session.location.action == NULL)}">
+																																				{!session[colEvent7.getterName]}
+																																			</apex:outputPanel>
+																																			<apex:outputPanel layout="none" rendered="{!session.location.action != NULL}">
+																																				<a href="javascript:void(0);" onclick="doAction('{!session.location.action}');">{!session[colEvent7.getterName]}</a>
+																																			</apex:outputPanel>
+																																		</apex:outputPanel>
+																																		<apex:outputPanel layout="none" rendered="{!colEvent7.isEventSessionInstructors}">{!session[colEvent7.getterName]}</apex:outputPanel>
+																																		<apex:outputPanel layout="none" rendered="{!colEvent7.isAction}">
+																																			<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(session.joinURL))}">
+																																				<apex:outputLink value="{!session.joinURL}" target="_blank">{!$Label.CFSP_COMMON_LINK_JOIN}</apex:outputLink>
+																																			</apex:outputPanel>
+																																			<apex:outputPanel layout="none" rendered="{!ISBLANK(session.joinURL)}">&nbsp;</apex:outputPanel>
+																																		</apex:outputPanel>
+																																	</apex:outputPanel>
+																																</td>
+																															</apex:outputPanel>
+																														</apex:repeat></tr>
+																													</apex:repeat>
+																												</apex:repeat>
+																											</table>
+																										</div>
+																									</td>
+																								</tr>
+																							</apex:outputPanel>
+
+																						</apex:repeat>
+																						</tbody></table></td></tr>
+																					</apex:repeat>
+
+																				</apex:repeat>
+																				</tbody></table></td></tr>
+																			</apex:repeat>
+
+																		</apex:repeat>
+																		</tbody></table></td></tr>
+																	</apex:repeat>
+																</apex:repeat>
+																</tbody></table></td></tr>
+															</apex:repeat>
+														</apex:repeat>
+														</tbody></table></td></tr>
+													</apex:repeat>
+												</apex:repeat>
+												</tbody></table></td></tr>
+												<!-- </apex:repeat> -->
+											</apex:repeat>
+											</tbody>
+										</table>
+									</apex:form>
+								</div>
+							</div>
+						</div>
+					</apex:outputPanel>
+				</div>
+			</apex:outputPanel>
+			<apex:includeScript value="{!URLFOR($Resource.CFSP,'js/launch.js')}"/>
+			<script>
+				function refreshPage() {
+					window.location.reload();
+				}
+			</script>
+		</apex:define>
+	</apex:composition>
+</apex:page>

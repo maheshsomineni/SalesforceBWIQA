@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>28.0</apiVersion>
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>CFSP_NewLeadNotification</name>
+    <packageVersions>
+        <majorNumber>3</majorNumber>
+        <minorNumber>200</minorNumber>
+        <namespace>lmscons</namespace>
+    </packageVersions>
+    <style>none</style>
+    <subject>New Lead has been created.</subject>
+    <type>visualforce</type>
+</EmailTemplate>

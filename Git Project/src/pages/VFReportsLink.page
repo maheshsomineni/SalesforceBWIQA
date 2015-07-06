@@ -1,0 +1,29 @@
+<!-- <apex:page StandardController="Opportunity"> -->
+<apex:page showheader="false" sidebar="false">    
+    <table>
+         <tr>
+             <td>
+              
+             <a href="/00OE0000002Fc9b" target="_blank" >#61 Opportunity Detail Report</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00OE0000002Fc9c" target="_blank" >#63 Opportunity Summary Report</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00OE0000002Fc9Z" target="_blank" >#67 Report on Current Sales Vs Current Quota</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00OE0000002Fc9a" target="_blank" >#68 Market Loss Report</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00OE0000002Fc9d" target="_blank" >#72 Stagnant Opportunities Report</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00OE0000002Fc9Y" target="_blank" >#73 Report on Cases covered by Physician</a></td>
+         </tr>
+         <tr>
+            <td> <a href="/00O/o" target="_blank" >More Reports</a></td>
+         </tr>
+     </table>
+
+</apex:page>

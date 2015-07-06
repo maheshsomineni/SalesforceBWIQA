@@ -1,0 +1,77 @@
+<apex:page standardController="Account" extensions="cfsp.CFSP_AccountLearningController" readOnly="true" standardStylesheets="true" >
+
+	<style>
+		.statusBox-layer {
+			position: fixed;top: 0;left: 0;height: 100%;width: 100%;z-index: 99999;
+		}
+		.statusBox-msgBox {
+			width: 100%;height: 100%;background-color: #ffffff;opacity:0.4;filter:alpha(opacity=40);
+		}
+		.statusBox-msg {
+			position: fixed;top: 50%;left: 50%;padding: 10px;
+		}
+	</style>
+
+	<apex:actionStatus layout="block" stopText="" id="statusBox">
+		<apex:facet name="start">
+			<apex:outputPanel layout="block" styleClass="statusBox-layer">
+				<apex:outputPanel layout="block" styleClass="statusBox-msgBox"></apex:outputPanel>
+				<apex:outputPanel layout="block" styleClass="statusBox-msg">
+					<apex:image url="/img/loading.gif"/>&nbsp;&nbsp;
+				</apex:outputPanel>
+			</apex:outputPanel>
+		</apex:facet>
+	</apex:actionStatus>
+
+	<apex:pageBlock mode="edit" id="table">
+		<apex:form >
+			<apex:actionFunction name="changeSort" action="{!changeSort}" rerender="table" status="statusBox" ><apex:param name="sc" value=""/><apex:param name="sd" value=""/></apex:actionFunction>
+		</apex:form>
+
+		<apex:pageBlockTable value="{!table}" var="item" width="100%">
+			<apex:column headerValue="{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_ACTION}">
+				<apex:outputLink styleClass="actionLink" value="#" onclick="javascript:openContactOnParentWindow('{!item.contactLink}')" >{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_LINK_CONTACT}</apex:outputLink>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(0,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_CONTACT}<img class="{!IF(orderColumn=0,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.contactName}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(1,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_EMAIL_ADDRESS}<img class="{!IF(orderColumn=1,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.contactEmail}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(2,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_ASSIGNMENTS}<img class="{!IF(orderColumn=2,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.countAllAssignments}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(3,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_NOT_STARTED}<img class="{!IF(orderColumn=3,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.countNotStartedAssignments}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(4,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_IN_PROGRESS}<img class="{!IF(orderColumn=4,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.countInProgressAssignments}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(5,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_COMPLETED}<img class="{!IF(orderColumn=5,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.countCompletedAssignments}"/>
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header"><a href="#" onclick="changeSort(6,{!orderDirection});">{!$Label.CFSP_PAGE_ACCOUNT_LEARNING_COLUMN_LAST_LAUNCH_DATE}<img class="{!IF(orderColumn=6,IF(orderDirection, 'sortAsc','sortDesc'),'')}" src="/s.gif"/></a></apex:facet>
+				<apex:outputText value="{!item.lastLaunchedDate}"/>
+			</apex:column>
+		</apex:pageBlockTable>
+
+		<!-- <div class="pShowMore">
+			<a href="#">Show 20 more »</a>&nbsp;|&nbsp;<a href="#">Go to list (57)&nbsp;»</a>
+		</div> -->
+
+		<apex:outputText value="{!$Label.CFSP_COMMON_TITLE_NO_ASSIGNMENTS}" rendered="{!IF(OR(ISBLANK(table),table.size=0),true,false)}"/>
+	</apex:pageBlock>
+
+	<script>
+		function openContactOnParentWindow(link) {
+			window.top.location.href = link;
+		}
+	</script>
+</apex:page>

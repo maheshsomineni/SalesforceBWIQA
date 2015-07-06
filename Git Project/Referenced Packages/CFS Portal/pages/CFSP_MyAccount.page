@@ -1,0 +1,120 @@
+<apex:page controller="cfsp.CFSP_MyAccountController" showHeader="false" standardStylesheets="false" cache="false" docType="html-5.0">
+	<apex:composition template="{!dynamicTemplate}">
+		<apex:define name="body">
+			<script>
+				function reload() {
+					reload();
+				}
+			</script>
+			<style>
+				.errorMsg {color: red;}
+			</style>
+			<apex:form id="Allform">
+
+			<apex:actionFunction name="reload" action="{!reload}" reRender="userInfo, buttons, edit_bttn, save_bttn, cancel_bttn" />
+				<div class="container-fluid pad">
+					<!-- ApexMessages Container -->
+					<apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox">
+						<apex:outputPanel layout="block" styleClass="row-fluid">
+							<apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+								<apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+									<apex:messages layout="table" id="pageMessages"/>
+								</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<div class="row-fluid">
+						<div class="span12">
+							<div class="row-fluid">
+								<apex:outputPanel styleClass="span9" id="userInfo" layout="block" >
+									<apex:panelGrid id="infoView" styleClass="plate-nfo" columns="2" rendered="{!isEdit == 0}">
+										<apex:outputLabel value="{!$ObjectType.User.Fields.Username.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.Username}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.TimeZoneSidKey.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.TimeZoneSidKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LocaleSidKey.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.LocaleSidKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LanguageLocaleKey.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.LanguageLocaleKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.CommunityNickname.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.CommunityNickname}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.Email.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.Email}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.FirstName.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.FirstName}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LastName.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!user.LastName}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.Phone.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.Phone}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingStreet.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MailingStreet}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingCity.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MailingCity}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingState.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MailingState}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingPostalCode.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MailingPostalCode}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingCountry.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MailingCountry}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MobilePhone.Label}:" style="font-weight: bold"/>
+										<apex:outputField value="{!contact.MobilePhone}"/>
+									</apex:panelGrid>
+
+									<apex:panelGrid id="infoEdit" styleClass="plate-nfo" columns="2" rendered="{!isEdit == 1}">
+										<apex:outputLabel value="{!$ObjectType.User.Fields.Username.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.Username}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.TimeZoneSidKey.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.TimeZoneSidKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LocaleSidKey.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.LocaleSidKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LanguageLocaleKey.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.LanguageLocaleKey}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.CommunityNickname.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.CommunityNickname}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.Email.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.Email}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.FirstName.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.FirstName}"/>
+										<apex:outputLabel value="{!$ObjectType.User.Fields.LastName.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!user.LastName}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.Phone.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.Phone}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingStreet.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MailingStreet}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingCity.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MailingCity}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingState.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MailingState}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingPostalCode.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MailingPostalCode}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MailingCountry.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MailingCountry}"/>
+										<apex:outputLabel value="{!$ObjectType.Contact.Fields.MobilePhone.Label}:" style="font-weight: bold"/>
+										<apex:inputField value="{!contact.MobilePhone}"/>
+									</apex:panelGrid>
+									<apex:outputPanel layout="none" rendered="{!isEdit == 0}">
+										<apex:outputLink styleClass="btn" value="{!$Page.CFSP_ChangePassword}">{!$Label.CFSP_PAGE_ACCOUNT_LABEL_CHANGE_PASSWORD}</apex:outputLink>
+										&nbsp;
+										<apex:commandButton styleClass="btn" id="resetBtn" value="{!$Label.CFSP_PAGE_ACCOUNT_LABEL_RESET_PASSWORD}" action="{!resetPassword}" onclick="if(!confirm(new String('{!JSENCODE($Label.CFSP_PAGE_ACCOUNT_LABEL_RESET_PASSWORD_FOR_USER)}'))){return false};"/>
+									</apex:outputPanel>
+								</apex:outputPanel>
+								<apex:outputPanel layout="none" id="buttons">
+								<div class="span3">
+									<div class="controls peen-rigth indent-bottom">
+										<apex:commandButton id="edit_bttn" value="{!$Label.CFSP_PAGE_ACCOUNT_BUTTON_EDIT_ACCOUNT}" action="{!edit}" rendered="{!isEdit == 0}" styleClass="btn btn-primary"/>
+										<apex:commandButton id="save_bttn" value="{!$Label.CFSP_PAGE_ACCOUNT_BUTTON_SAVE}" oncomplete="reload()" action="{!save}" rerender="Allform, pageMessageBox" rendered="{!isEdit == 1}" styleClass="btn btn-primary"/>
+										&nbsp;
+										<apex:commandButton id="cancel_bttn" value="{!$Label.CFSP_PAGE_ACCOUNT_BUTTON_CANCEL}" action="{!cancel}" immediate="true" rendered="{!isEdit == 1}" styleClass="btn btn-primary"/>
+									</div>
+								</div>
+								</apex:outputPanel>
+							</div>
+							<!--/span-->
+						</div>
+						<!--/row-->
+					</div>
+				</div>
+			</apex:form>
+		</apex:define>
+	</apex:composition>
+</apex:page>

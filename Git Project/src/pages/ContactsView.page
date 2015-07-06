@@ -1,0 +1,48 @@
+<apex:page Controller="ContactsListController" tabStyle="Contact" readOnly="true" sidebar="true" title="All Contacts" >           
+    <apex:form >
+        <c:PageBlockTableEnhancerADV targetPbTableIds="pbt"  pageSizeOptions="10,25,50,100" defaultPageSize="25" />
+        <apex:pageBlock mode="maindetail" id="pb" title="All Contacts">  
+        <apex:pageBlockButtons location="top">
+        <apex:commandButton action="{!URLFOR($Action.Contact.NewContact)}" value="New" rendered="{!renderProfile}"/>
+        </apex:pageBlockButtons>                   
+           <apex:pageblocksection columns="1" collapsible="false">
+           
+            <!--   <apex:pageblockTable value="{!contacts}" var="con" id="pbt"  >
+               
+                    <apex:column headerValue="Name">
+                    <apex:outputLink value="/{!con['Id']}">{!con.LastName}, {!con.FirstName}</apex:outputLink>
+                    </apex:column>                    
+                    <apex:column value="{!con.AccountId}"/>
+                   <apex:column headerValue="Record Type" value="{!con.RecordType.Name}"/>
+                    <apex:column value="{!con.Title}"/>
+                    <apex:column value="{!con.Email}"/>
+                    <apex:column value="{!con.LastModifiedDate}"/>
+                </apex:pageblockTable> --> 
+                
+               
+                
+                      
+              <apex:pageblockTable value="{!lstContact }" var="con" id="pbt"  >
+               
+                    <apex:column headerValue="Name">
+                     <apex:outputLink value="/{!con.ContactId}">{!con.LastName}, {!con.FirstName}</apex:outputLink>
+                    </apex:column>              
+                    
+                    
+                    <apex:column headerValue="Hospital">
+                     <apex:outputLink value="/{!con.AccountId}">{!con.AccountName}</apex:outputLink>
+                    </apex:column>  
+                          
+                   
+                   <apex:column headerValue="Record Type" value="{!con.RecordType}"/>
+                    <apex:column headerValue="Title" value="{!con.Title}"/>
+                    <apex:column headerValue="Email" value="{!con.Email}"/>
+                    <apex:column headerValue="LastModifiedDate" value="{!con.LastModifiedDate}"/>
+                </apex:pageblockTable> 
+                
+                
+            </apex:pageblocksection>
+            
+        </apex:pageBlock>
+    </apex:form>
+   </apex:page>

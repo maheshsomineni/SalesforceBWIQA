@@ -1,0 +1,87 @@
+<apex:component controller="lmscons.ConsumerSettingsExt">
+    <apex:attribute name="showHealthCheckTitle" assignTo="{!showTitle}" description="Show the component title" type="Boolean" />
+    <apex:attribute name="showApiDetailsBlock" assignTo="{!showApiDetails}" description="Show the API User Details" type="Boolean" />
+    <apex:attribute name="showConfigDetailsBlock" assignTo="{!showConfig}" description="Show the API User Details" type="Boolean" />
+    <apex:attribute name="showApiResultsBlock" assignTo="{!showApiResults}" description="Show the API User Details" type="Boolean" />
+
+    <apex:actionFunction name="loadStatus" action="{!healthCheck}" rerender="__healthcheck_wrapper" status="__healthcheck_results"/>
+    <apex:sectionHeader title="CFS Health Check" rendered="{!showHealthCheckTitle}"/>
+    <apex:outputPanel id="__healthcheck_wrapper">
+        <apex:pageBlock title="Performing Health Check..." rendered="{!healthCheckComplete == ''}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:actionStatus id="__healthcheck_results">
+                        <apex:facet name="start">
+                            <img src="/img/loading.gif" class="waitingImage" title="{!$Label.Please_wait}"/> {!$Label.Please_wait}
+                        </apex:facet>
+                    </apex:actionStatus>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="CFS Configuration Results" rendered="{!healthCheckComplete != '' && showConfigDetailsBlock}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Consumer Settings: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!consumerSettingsStatusColor}">&nbsp;</div>&nbsp;{!consumerSettingsStatusMessage}
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Custom Settings: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!customSettingsStatusColor}">&nbsp;</div>&nbsp;{!customSettingsStatusMessage}
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="API User Credentials Check" rendered="{!healthCheckComplete != ''}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Test API User: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!apiStatusMessageColor}">&nbsp;</div>&nbsp;{!apiStatusMessage}
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Test API User Results" rendered="{!healthCheckComplete != '' && showApiResultsBlock}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Salesforce Org Id Result: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!orgStatusColor}">&nbsp;</div>&nbsp;{!orgStatusMessage}
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="API User Result: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!userStatusColor}">&nbsp;</div>&nbsp;{!userStatusMessage}
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Sandbox Status Result: " style="font-weight: bold;" />
+                    <div style="display: inline-block; width: 15px; background-color: {!sandboxStatusColor}">&nbsp;</div>&nbsp;{!sandboxStatusMessage}
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Test API User Details" rendered="{!healthCheckComplete != '' && showApiDetailsBlock}">
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Salesforce Org Id: " style="font-weight: bold;" />
+                    <apex:outputText value="{!salesforceOrgId}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Sandbox: " style="font-weight: bold;" />
+                    <apex:outputText value="{!sandbox}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Server URL: " style="font-weight: bold;" />
+                    <apex:outputText value="{!serverUrl}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="API User Id: " style="font-weight: bold;" />
+                    <apex:outputText value="{!userId}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="API Username: " style="font-weight: bold;" />
+                    <apex:outputText value="{!userName}" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="API User email: " style="font-weight: bold;" />
+                    <apex:outputText value="{!userEmail}" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:outputPanel>
+    <script>window.setTimeout(loadStatus,0)</script>
+</apex:component>

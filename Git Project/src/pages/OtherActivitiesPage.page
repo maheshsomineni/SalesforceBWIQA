@@ -1,0 +1,75 @@
+<apex:page standardController="Other_Activity__c" extensions="OtherActivitiesController" sidebar="false" id="thepage">
+  <script>
+  //window.onload =  setFocus();
+      function setFocus()
+      {
+           
+         //   document.getElementById("j_id0:j_id2:pb:j_id30:save.btn").focus();
+          
+      } 
+ 
+    function openPage(page)
+    { 
+        
+       var parentPage = 'OtherActivity';
+       var newWindow = window.open('/apex/' + page+'?comingFrm='+parentPage, page,'height=400,width=800,scrollbars=1,status=0,toolbar=0,menubar=0,location=0');
+       // var newWindow = window.open('/apex/' + pageId , pageId,'height=400,width=800,scrollbars=1,status=0,toolbar=0,menubar=0,location=0');
+        
+        if (window.focus){newWindow.focus()}
+       
+    }
+    function openPage2(pageId){
+    
+        var act = document.getElementById('thepage:theform:pb:pbsNew1:accName').value;
+        var accountId = document.getElementById('thepage:theform:pb:pbsNew1:pbsiNew1:accId').value; 
+     
+       var parentPage = 'OtherActivity';
+        var newWindow = window.open('/apex/' + pageId +'?hospName=' +act +'&accid='+ accountId, pageId,'height=400,width=800,scrollbars=1,status=0,toolbar=0,menubar=0,location=0');
+
+        if (window.focus){newWindow.focus()}
+     }
+    
+  </script>
+  
+<apex:form id="theform">
+
+    <apex:pageMessages ></apex:pageMessages>
+    <apex:pageblock id="pb">
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!save}" value="Confirm" id="save"/>
+            <apex:commandButton action="{!Savenew}" value="Confirm & New" id="saveAndNew" />
+            <apex:commandButton action="{!cancel}" value="Cancel"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection columns="1" id="pbsNew1">
+            <apex:inputField value="{!objActivities.Activity_Report_Date__c}"  onclick="DatePicker.pickDate(false, this.id, true);" onchange="checkDateFormatt(this.id);" required="true"/>
+            <apex:inputField value="{!objActivities.Activity_Time_HRS__c}" required="true"/>
+            <apex:inputField value="{!objActivities.Activity_Type__c}" required="true" >
+              <apex:actionSupport action="{!clearHospitalJDE}" event="onchange" reRender="accName,jde"/>
+            </apex:inputField>
+            <apex:inputField value="{!objActivities.Activity_Sub_Type__c}" id="subtype" required="true" />
+            <apex:inputField value="{!objActivities.Hospital__c}" id="accName" style="width: 38%;">                
+            <apex:commandlink onclick="openPage('HospitalsSearch')" rerender="dummy">
+                <apex:image id="img1" value="{!$Resource.HospitalNew}" width="20" height="18"  title="Hospitals Search"/> 
+            </apex:commandlink>
+            </apex:inputField>
+           
+            <apex:pageBlockSectionItem id="pbscon">
+           <apex:outputLabel >Contact</apex:outputLabel>
+            <apex:inputField value="{!objActivities.Physician__c}" id="conName" style="width: 38%;">
+             <apex:commandlink onclick="openPage2('PhysicianSearch_for_Other_Activities')" rerender="dummy">
+                      <apex:image id="img1" value="{!$Resource.Physicians}" width="20" height="18"  title="Physicians Search"/> 
+                        </apex:commandlink>
+                        </apex:inputField> 
+             </apex:pageBlockSectionItem>
+                        
+            <apex:inputField value="{!objActivities.JDE_JJHCS_Number__c}" id="jde"/>    
+             <apex:inputField value="{!objActivities.Comments__c}" style="width: 38%;"/>
+            <apex:pageBlockSectionItem id="pbsiNew1">
+                <apex:inputField value="{!objActivities.AccountId__c}" style="display:none;" id="accId"/>
+                <apex:inputField value="{!objActivities.PhysicianID__c}" style="display:none;" id="phyId"/>
+                 
+            </apex:pageBlockSectionItem>     
+        </apex:pageBlockSection>
+    </apex:pageblock>   
+</apex:form>
+</apex:page>

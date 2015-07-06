@@ -1,0 +1,1 @@
+<apex:page action="{!URLFOR($Page.CFSP_MyLearning+'?mode=1&sfdc.tabName='+$CurrentPage.parameters.sfdc.tabName)}" controller="cfsp.CFSP_MyLearningController" sidebar="false" showHeader="false" standardStylesheets="false" cache="false" docType="html-5.0"></apex:page>

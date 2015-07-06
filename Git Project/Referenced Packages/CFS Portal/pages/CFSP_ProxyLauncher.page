@@ -1,0 +1,3 @@
+<apex:page controller="cfsp.CFSP_ProxyLauncher" action="{!pageAction}"  standardStylesheets="false" sidebar="false" showheader="false" contentType="application/json">
+		<apex:outputText value="{!HTMLENCODE(result)}" escape="false" />
+</apex:page>

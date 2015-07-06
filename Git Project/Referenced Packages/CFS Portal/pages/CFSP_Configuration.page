@@ -1,0 +1,670 @@
+<apex:page controller="cfsp.CFSP_ConfigurationController" id="page">
+
+	<body>
+	<style>
+		.statusBox-layer {
+			position: fixed;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			z-index: 99999;
+		}
+		.statusBox-msgBox {
+			width: 100%;
+			height: 100%;
+			background-color: #ffffff;
+			opacity:0.4;
+			filter:alpha(opacity=40);
+		}
+		.statusBox-msg {
+			position: fixed;
+			top: 45%;
+			left: 50%;
+			padding: 10px;
+			border: 1px solid #aaaaaa;
+			background-color: white;
+		}
+	</style>
+
+	<apex:actionStatus id="save_spinner" stopText=" ">
+		<apex:facet name="start">
+			<apex:outputPanel layout="block" styleClass="statusBox-layer">
+				<apex:outputPanel layout="block" styleClass="statusBox-msgBox"></apex:outputPanel>
+				<apex:outputPanel layout="block" styleClass="statusBox-msg"><apex:image url="/img/loading.gif"/>&nbsp;&nbsp;Loading...</apex:outputPanel>
+			</apex:outputPanel>
+		</apex:facet>
+	</apex:actionStatus>
+
+	<apex:pageMessages id="pageMessages"/>
+
+	<apex:form id="allForm">
+		<apex:sectionHeader title="CFSP Configuration" subtitle="Manage CFSP Configuration Settings" />
+
+		<apex:pageBlock title="" mode="edit" id="pageBlock">
+
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!Save}" value="Save" rerender="allForm, pageMessages" status="save_spinner" oncomplete="defineSettings();"/>
+				<apex:commandButton action="{!Cancel}" value="Cancel" rerender="allForm" oncomplete="defineSettings();"/>
+				<apex:actionFunction action="{!changeColumnsSequence}" status="save_spinner" name="changeColumnsSequence" rerender="pageBlokSection-columns, pageBlokSection-columns2" oncomplete="defineSettings();"><apex:param name="sequenceTable" value=""/></apex:actionFunction>
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockSection columns="1" showHeader="false" id="pageBlokSection">
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="Configuration Name" for="allConfigs"/>
+					<apex:selectList value="{!selectedConfig}" multiselect="false" size="1" id="allConfigs">
+						<apex:selectOptions value="{!allConfigNames}"/>
+							<apex:actionSupport event="onchange" status="save_spinner" action="{!changeSelectedConfig}" rerender="allForm" oncomplete="defineSettings();"/>
+						</apex:selectList>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+
+				<!-- Columns settings for all pages -->
+				<apex:pageBlockSection title="Column Settings" columns="1" rendered="{!NOT(ISBLANK(columns))}" collapsible="false" id="pageBlokSection-columns">
+					<apex:pageBlockTable value="{!columns}" var="col" id="pageBlockTable-columns">
+
+						<apex:column width="3%" styleClass="sequence-number">
+							<apex:facet name="header">&#8470;</apex:facet>
+							<apex:outputText value="{!col.sequence}"/>
+						</apex:column>
+
+						<apex:column headerValue="Enabled" width="5%">
+							<apex:inputCheckbox value="{!col.enabled}" disabled="{!OR(col.mandatory,isLockedColumnsTable,AND(col.isPrice,isPaymentIntegrationEnabled))}"/>
+						</apex:column>
+
+						<apex:column headerValue="Hide Input" width="5%" rendered="{!selectedConfig == 'FindLearning'}">
+							<apex:inputCheckbox value="{!col.isDisplayInput}" rendered="{!col.isCustom}" disabled="{!isLockedColumnsTable}"/>
+						</apex:column>
+
+						<apex:column headerValue="Hide Column" width="5%" rendered="{!selectedConfig == 'FindLearning'}">
+							<apex:inputCheckbox value="{!col.isDisplayColumn}" rendered="{!col.isCustom}" disabled="{!isLockedColumnsTable}"/>
+						</apex:column>
+
+						<apex:column headerValue="Action" width="5%"  rendered="{!selectedConfig == 'FindLearning'}" >
+							<apex:outputPanel rendered="{!AND(NOT(ISBLANK(col.apiName)),NOT(isLockedColumnsTable))}" >
+								<apex:commandLink action="{!deleteColumn}" value="Delete" style="color:#015ba7;" rerender="allForm" oncomplete="defineSettings();">
+									<apex:param value="{!col.apiName}" name="selectedFieldToRemove" assignTo="{!dynamicFieldFillingWizard.selectedFieldToRemove}"/>
+								</apex:commandLink>
+							</apex:outputPanel>
+						</apex:column>
+
+						<apex:column headerValue="Mandatory" width="5%">
+							<apex:outputText style="color:gray;" value="{!col.mandatory}"/>
+						</apex:column>
+
+						<apex:column headerValue="Column Name">
+							<apex:outputText value="{!col.sourceName}"/>
+						</apex:column>
+					</apex:pageBlockTable>
+
+					<apex:outputPanel id="newColumnWizard" layout="block" rendered="{!AND(!ISBLANK(dynamicFieldFillingWizard), dynamicFieldFillingWizard.showNewColumnSection)}">
+						<table>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<apex:commandButton action="{!dynamicFieldFillingWizard.reset}" value="Cancel" rerender="allForm, newColumnWizard, pageMessages" disabled="{!!dynamicFieldFillingWizard.showCancel}" status="ac_spinner" oncomplete="defineSettings();"/>
+									<apex:commandButton action="{!addNewColumn}" value="Add" rerender="allForm, pageMessages" disabled="{!!dynamicFieldFillingWizard.showSave}" status="ac_spinner" oncomplete="defineSettings();"/>
+									<apex:commandButton action="{!dynamicFieldFillingWizard.step1}" value="New Column" rerender="newColumnWizard, allForm" rendered="{!dynamicFieldFillingWizard.showAddColumn}" disabled="{!dynamicFieldFillingWizard.DisableNewColumn}" status="ac_spinner"/>
+									<apex:commandButton action="{!dynamicFieldFillingWizard.step1merge}" value="Merge Column" rerender="newColumnWizard, allForm" rendered="{!dynamicFieldFillingWizard.showAddColumn}" status="ac_spinner"/>
+									<apex:actionStatus id="ac_spinner">
+										<apex:facet name="start">
+											<apex:image url="/img/loading.gif" style="position: relative; right 10px;"/>
+										</apex:facet>
+									</apex:actionStatus>
+								</td>
+							</tr>
+							<tr>
+								<td><apex:outputLabel value="{!dynamicFieldFillingWizard.NameRow1}" style="font-weight:bold" rendered="{!dynamicFieldFillingWizard.showSObjectSection}"/></td>
+								<td>
+									<apex:selectList value="{!dynamicFieldFillingWizard.selectedItem1}" multiselect="false" size="1" rendered="{!dynamicFieldFillingWizard.showSObjectSection}">
+										<apex:selectOptions value="{!dynamicFieldFillingWizard.SelectOptionsList1}"/>
+										<apex:actionSupport event="onchange" status="ac_spinner" action="{!dynamicFieldFillingWizard.step2}" rerender="newColumnWizard"/>
+									</apex:selectList>
+								</td>
+							</tr>
+							<tr>
+								<td><apex:outputLabel value="{!dynamicFieldFillingWizard.NameRow2}" style="font-weight:bold" rendered="{!dynamicFieldFillingWizard.showFieldsSection}"/></td>
+								<td>
+									<apex:selectList value="{!dynamicFieldFillingWizard.selectedItem2}" multiselect="false" size="1" rendered="{!dynamicFieldFillingWizard.showFieldsSection}">
+										<apex:selectOptions value="{!dynamicFieldFillingWizard.SelectOptionsList2}"/>
+										<apex:actionSupport event="onchange" status="ac_spinner" action="{!dynamicFieldFillingWizard.step3}" rerender="newColumnWizard"/>
+									</apex:selectList>
+								</td>
+							</tr>
+							<tr>
+								<td><apex:outputLabel value="{!dynamicFieldFillingWizard.NameRow3}" style="font-weight:bold" rendered="{!dynamicFieldFillingWizard.showPositionSection}"/></td>
+								<td>
+									<apex:selectList value="{!dynamicFieldFillingWizard.selectedItem3}" multiselect="false" size="1" rendered="{!dynamicFieldFillingWizard.showPositionSection}">
+										<apex:selectOptions value="{!dynamicFieldFillingWizard.SelectOptionsList3}"/>
+										<apex:actionSupport event="onchange" status="ac_spinner" action="{!dynamicFieldFillingWizard.step4}" rerender="newColumnWizard"/>
+									</apex:selectList>
+								</td>
+							</tr>
+						</table>
+
+					</apex:outputPanel>
+				</apex:pageBlockSection>
+
+				<!-- Common settings -->
+				<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(commonSettings))}">
+					<apex:pageBlockSection columns="1" title="Common" collapsible="false">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Template Page"/>
+							<apex:selectList value="{!commonSettings.templatePage}" multiselect="false" size="1" >
+								<apex:selectOptions value="{!templatePagesNamesPicklist}"/>
+							</apex:selectList>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Show Descriptions on Pages:"/>
+							<apex:selectList value="{!selectedPages}" multiselect="true">
+								<apex:selectOptions value="{!PagesForDescriptions}"/>
+							</apex:selectList>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Branding Community ID"/>
+							<apex:inputText value="{!commonSettings.communityId}" size="50"/>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!IS_ILT_INSTALLED}">
+							<apex:outputLabel value="Time in minutes after Session start when Training Unit Usage Status changes from 'Pending' to 'Used'"/>
+							<apex:inputText value="{!commonSettings.timeOffsetToStartChangeEventTrainingUnitUsageStatus}" size="50"/>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+					<apex:pageBlockSection columns="1" title="Registration page" collapsible="false">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Redirect Page after Register"/>
+							<apex:inputText value="{!commonSettings.redirectRegisterPage}" size="50"/>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Show Message to Unregistered User on the Login Page"/>
+							<apex:inputCheckbox value="{!commonSettings.showMessageForUnregisterUser}"/>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+					<apex:pageBlockSection columns="1" title="Learning page" collapsible="false">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Default sub-Tab under Learning Tab"/>
+							<apex:selectRadio value="{!commonSettings.defaultLearningSubTab}">
+								<apex:selectOptions value="{!learningSubTabs}"/>
+							</apex:selectRadio>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+					<apex:pageBlockSection columns="1" title="Find Learning page" collapsible="false">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Enable Searching for Anonymous Users and Launch Content as Anonymous User with no Track Progress"/>
+							<apex:inputCheckbox value="{!commonSettings.anonymousSearching}" disabled="{!commonSettings.enabledAnonymousRedirectUrl}">
+								<apex:actionSupport event="onchange" action="{!changeCommonSettings}" rerender="allForm" status="save_spinner"/>
+							</apex:inputCheckbox>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Redirect to External URL for Anonymous User with return parameters"/>
+							<apex:outputPanel layout="block">
+								<apex:inputCheckbox value="{!commonSettings.enabledAnonymousRedirectUrl}" disabled="{!commonSettings.anonymousSearching}">
+									<apex:actionSupport event="onchange" action="{!changeCommonSettings}" rerender="allForm" status="save_spinner"/>
+								</apex:inputCheckbox>
+								<apex:inputText value="{!commonSettings.anonymousRedirectUrl}" size="50" rendered="{!commonSettings.enabledAnonymousRedirectUrl}"/>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Select All Catalogs By Default"/>
+							<apex:inputCheckbox value="{!commonSettings.selectAllCatalogs}"/>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<!-- Registration settings -->
+				<apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(registrationSettings))}">
+
+					<apex:pageBlockSection title="Settings" columns="1" collapsible="false">
+						<apex:pageBlockSection columns="1">
+							<apex:pageBlockSectionItem >
+								<apex:outputLabel value="Default Account"/>
+								<apex:inputField styleClass="accInput" value="{!selectedDefaultAccount.AccountId}" required="true" html-placeholder="{!SettingsAccountId}"/>
+							</apex:pageBlockSectionItem>
+						</apex:pageBlockSection>
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection columns="1" title="Email Template Settings" collapsible="false" rendered="{!registrationSettings.enableEmailMapping}">
+						<apex:pageBlockSectionItem helpText="Email Notification uses the 'CFSP_EmailNotification' Workflow Rule for sending an email after an existing Contact has been registred on Site">
+							<apex:outputLabel value="Map an existing Contact to the User"/>
+							<apex:inputCheckbox value="{!registrationSettings.enableEmailNotificationNewUser}"/>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem rendered="{!registrationSettings.enableCreateLead}" helpText="Email Notification uses the 'CFSP_EmailNotification' Workflow Rule for sending an email after a Leed has been created for the disallowed Users with the Unknown Domains">
+							<apex:outputLabel value="New Lead"/>
+							<apex:inputCheckbox value="{!registrationSettings.enableEmailNotificationNewLead}"/>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection columns="1" title="User Registration" collapsible="false">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Map Users to Accounts by Domain"/>
+
+							<apex:outputPanel layout="block">
+								<apex:inputCheckbox value="{!registrationSettings.enableEmailMapping}" disabled="{!registrationSettings.limitSelfRegistration}">
+									<apex:actionSupport event="onchange" action="{!changeUserRegistrationSettings}" rerender="allForm" status="save_spinner"/>
+								</apex:inputCheckbox>
+								<apex:outputLink value="{!URLFOR($Action.CFSP_Email_Domain_To_Account__c.List, $ObjectType.CFSP_Email_Domain_To_Account__c)}" style="margin-left: 10px" rendered="{!registrationSettings.enableEmailMapping}">Edit</apex:outputLink>
+							</apex:outputPanel>
+
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Allow Users with Unknown Domains"/>
+							<apex:inputCheckbox value="{!registrationSettings.allowUnknownUsers}" disabled="{!NOT(registrationSettings.enableEmailMapping)}">
+								<apex:actionSupport event="onchange" action="{!changeUserRegistrationSettings}" rerender="allForm" status="save_spinner"/>
+							</apex:inputCheckbox>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Create a Lead for Unknown Users"/>
+							<apex:inputCheckbox value="{!registrationSettings.enableCreateLead}" disabled="{!OR(NOT(registrationSettings.enableEmailMapping),AND(registrationSettings.enableEmailMapping,NOT(registrationSettings.allowUnknownUsers)))}">
+								<apex:actionSupport event="onchange" action="{!changeUserRegistrationSettings}" rerender="allForm" status="save_spinner"/>
+							</apex:inputCheckbox>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Limit Self Registration"/>
+							<apex:outputPanel >
+								<apex:inputCheckbox value="{!registrationSettings.limitSelfRegistration}" disabled="{!registrationSettings.enableEmailMapping}">
+									<apex:actionSupport event="onchange" action="{!changeUserRegistrationSettings}" rerender="allForm" status="save_spinner"/>
+								</apex:inputCheckbox>
+								<apex:outputPanel rendered="{!registrationSettings.limitSelfRegistration}">
+									<br/><br/>
+									<table>
+										<tr>
+											<th>&nbsp;</th>
+											<th>Field</th>
+											<th>Operator</th>
+											<th>Value</th>
+										</tr>
+										<apex:repeat value="{!registrationSettings.logicFields.fields}" var="fieldRow">
+											<tr>
+												<td><apex:outputText value="{!fieldRow.index}. "/></td>
+												<td>
+													<apex:outputPanel >
+														<apex:selectList value="{!fieldRow.field}" multiselect="false" size="1">
+															<apex:selectOptions value="{!contactFields}"/>
+															<apex:actionSupport event="onchange" status="save_spinner" action="{!populateFields}" rerender="allForm"/>
+														</apex:selectList>
+													</apex:outputPanel>
+												</td>
+
+												<td>
+													<apex:selectList value="{!fieldRow.operator}" multiselect="false" size="1">
+														<apex:selectOptions value="{!fieldOperators}"/>
+													</apex:selectList>
+												</td>
+
+												<td>
+													<apex:inputField required="false" value="{!fieldRow.instance.value[fieldRow.instance.field]}" rendered="{!NOT(ISNULL(fieldRow.instance))}"/>
+												</td>
+											</tr>
+										</apex:repeat>
+									</table>
+
+									<br/>
+								</apex:outputPanel>
+
+								<br/>
+
+								<apex:outputPanel rendered="{!registrationSettings.limitSelfRegistration}">
+									<apex:outputLabel value="Filter Logic:" for="filterLogic"/>
+									<apex:inputText value="{!registrationSettings.logicFields.logic}" id="filterLogic" size="50"/>
+								</apex:outputPanel>
+
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<!-- Additional Register fields -->
+				<apex:pageBlockSection title="Selected Contact and User Additional Registration Form Fields" columns="1" id="pageBlokSection-columns2" rendered="{!AND(NOT(ISBLANK(registerSettings)), NOT(ISBLANK(registerSettings.contactFields)))}" collapsible="false">
+					<apex:pageBlockTable value="{!userAndContactAdditionalRegisterFields}" var="row" id="pageBlockTable-columns">
+						<apex:column styleClass="sequence-number">
+							<apex:facet name="header">&#8470;</apex:facet>
+							<apex:outputText value="{!row.sequence}" styleClass="sequence-number"/>
+						</apex:column>
+						<apex:column headerValue="Required">
+							<apex:inputCheckbox value="{!row.required}" disabled="{!!$ObjectType[row.objectName].Fields[row.field].nillable}" />
+						</apex:column>
+						<apex:column headerValue="Field Label" width="30%">
+							<apex:outputText value="{!row.label}"/>
+						</apex:column>
+						<apex:column headerValue="API Name" width="30%">
+							<apex:outputText value="{!row.field}"/>
+						</apex:column>
+						<apex:column headerValue="Data Type" width="30%">
+							<apex:outputText value="{!row.fieldType}"/>
+						</apex:column>
+						<apex:column headerValue="Object Type" width="30%">
+							<apex:outputText value="{!row.objectName}"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Additional Contact Register Fields" columns="1" rendered="{!AND(NOT(ISBLANK(registerSettings)), NOT(ISBLANK(registerSettings.contactFields)))}" collapsible="false">
+					<apex:pageBlockTable value="{!registerSettings.contactFields}" var="row">
+						<apex:column headerValue="Enabled">
+							<apex:inputCheckbox value="{!row.enabled}">
+								<apex:actionSupport event="onchange" status="save_spinner" action="{!enableCheckboxChanged}" oncomplete="defineSettings();processTableSequence();" rerender="pageBlokSection-columns2">
+									<apex:param value="{!row.objectName+row.field}" name="enableCheckbox" assignTo="{!registerFieldMapKey}"/>
+								</apex:actionSupport>
+							</apex:inputCheckbox>
+						</apex:column>
+						<apex:column headerValue="Field Label" width="30%">
+							<apex:outputText value="{!row.label}"/>
+						</apex:column>
+						<apex:column headerValue="API Name" width="30%">
+							<apex:outputText value="{!row.field}"/>
+						</apex:column>
+						<apex:column headerValue="Data Type" width="30%">
+							<apex:outputText value="{!row.fieldType}"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Additional User Register Fields" columns="1" rendered="{!AND(NOT(ISBLANK(registerSettings)), NOT(ISBLANK(registerSettings.userFields)))}" collapsible="false">
+					<apex:pageBlockTable value="{!registerSettings.userFields}" var="row">
+						<apex:column headerValue="Enabled">
+							<apex:inputCheckbox value="{!row.enabled}">
+								<apex:actionSupport event="onchange" status="save_spinner" action="{!enableCheckboxChanged}" oncomplete="defineSettings();processTableSequence();" rerender="pageBlokSection-columns2">
+									<apex:param value="{!row.objectName+row.field}" name="enableCheckbox" assignTo="{!registerFieldMapKey}"/>
+								</apex:actionSupport>
+							</apex:inputCheckbox>
+						</apex:column>
+						<apex:column headerValue="Field Label" width="30%">
+							<apex:outputText value="{!row.label}"/>
+						</apex:column>
+						<apex:column headerValue="API Name" width="30%">
+							<apex:outputText value="{!row.field}"/>
+						</apex:column>
+						<apex:column headerValue="Data Type" width="30%">
+							<apex:outputText value="{!row.fieldType}"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>
+
+	<!-- <apex:includeScript value="{!URLFOR($Resource.CFSP,'CFSP/js/jquery.min.js')}"/> -->
+	<apex:includeScript value="{!URLFOR($Resource.cfsp__CFSP,'js/jquery.min.js')}"/>
+	<script>
+		jQuery.tableDnD = {
+			/** Keep hold of the current table being dragged */
+			currentTable : null,
+			/** Keep hold of the current drag object if any */
+			dragObject: null,
+			/** The current mouse offset */
+			mouseOffset: null,
+			/** Remember the old value of Y so that we don't do too much processing */
+			oldY: 0,
+
+			/** Actually build the structure */
+			build: function(options) {
+				// Make sure options exists
+				options = options || {};
+				// Set up the defaults if any
+
+				this.each(function() {
+					// Remember the options
+					this.tableDnDConfig = {
+						onDragStyle: options.onDragStyle,
+						onDropStyle: options.onDropStyle,
+						// Add in the default class for whileDragging
+						onDragClass: options.onDragClass ? options.onDragClass : "tDnD_whileDrag",
+						onDrop: options.onDrop,
+						onDragStart: options.onDragStart,
+						scrollAmount: options.scrollAmount ? options.scrollAmount : 5
+					};
+					// Now make the rows draggable
+					jQuery.tableDnD.makeDraggable(this);
+				});
+
+				// Now we need to capture the mouse up and mouse move event
+				// We can use bind so that we don't interfere with other event handlers
+				jQuery(document)
+					.bind('mousemove', jQuery.tableDnD.mousemove)
+					.bind('mouseup', jQuery.tableDnD.mouseup);
+
+				// Don't break the chain
+				return this;
+			},
+
+			/** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
+			makeDraggable: function(table) {
+				// Now initialise the rows
+				var rows = table.rows; //getElementsByTagName("tr")
+				var config = table.tableDnDConfig;
+				for (var i=0; i<rows.length; i++) {
+					// To make non-draggable rows, add the nodrag class (eg for Category and Header rows)
+					// inspired by John Tarr and Famic
+					var nodrag = $(rows[i]).hasClass("nodrag");
+					if (! nodrag) { //There is no NoDnD attribute on rows I want to drag
+						jQuery(rows[i]).mousedown(function(ev) {
+							if (ev.target.tagName == "TD") {
+								jQuery.tableDnD.dragObject = this;
+								jQuery.tableDnD.currentTable = table;
+								jQuery.tableDnD.mouseOffset = jQuery.tableDnD.getMouseOffset(this, ev);
+								if (config.onDragStart) {
+									// Call the onDrop method if there is one
+									config.onDragStart(table, this);
+								}
+								return false;
+							}
+						}).css("cursor", "move"); // Store the tableDnD object
+					}
+				}
+			},
+
+			/** Get the mouse coordinates from the event (allowing for browser differences) */
+			mouseCoords: function(ev){
+				if(ev.pageX || ev.pageY){
+					return {x:ev.pageX, y:ev.pageY};
+				}
+				return {
+					x:ev.clientX + document.body.scrollLeft - document.body.clientLeft,
+					y:ev.clientY + document.body.scrollTop  - document.body.clientTop
+				};
+			},
+
+			/** Given a target element and a mouse event, get the mouse offset from that element.
+				To do this we need the element's position and the mouse position */
+			getMouseOffset: function(target, ev) {
+				ev = ev || window.event;
+
+				var docPos	= this.getPosition(target);
+				var mousePos  = this.mouseCoords(ev);
+				return {x:mousePos.x - docPos.x, y:mousePos.y - docPos.y};
+			},
+
+			/** Get the position of an element by going up the DOM tree and adding up all the offsets */
+			getPosition: function(e){
+				var left = 0;
+				var top  = 0;
+				/** Safari fix -- thanks to Luis Chato for this! */
+				if (e.offsetHeight == 0) {
+					/** Safari 2 doesn't correctly grab the offsetTop of a table row
+					this is detailed here:
+					http://jacob.peargrove.com/blog/2006/technical/table-row-offsettop-bug-in-safari/
+					the solution is likewise noted there, grab the offset of a table cell in the row - the firstChild.
+					note that firefox will return a text node as a first child, so designing a more thorough
+					solution may need to take that into account, for now this seems to work in firefox, safari, ie */
+					e = e.firstChild; // a table cell
+				}
+
+				while (e.offsetParent){
+					left += e.offsetLeft;
+					top  += e.offsetTop;
+					e	 = e.offsetParent;
+				}
+
+				left += e.offsetLeft;
+				top  += e.offsetTop;
+
+				return {x:left, y:top};
+			},
+
+			mousemove: function(ev) {
+				if (jQuery.tableDnD.dragObject == null) {
+					return;
+				}
+
+				var dragObj = jQuery(jQuery.tableDnD.dragObject);
+				var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+				var mousePos = jQuery.tableDnD.mouseCoords(ev);
+				var y = mousePos.y - jQuery.tableDnD.mouseOffset.y;
+				//auto scroll the window
+				var yOffset = window.pageYOffset;
+				if (document.all) {
+					// Windows version
+					//yOffset=document.body.scrollTop;
+					if (typeof document.compatMode != 'undefined' &&
+						document.compatMode != 'BackCompat') {
+					yOffset = document.documentElement.scrollTop;
+					}
+					else if (typeof document.body != 'undefined') {
+					yOffset=document.body.scrollTop;
+					}
+
+				}
+
+				if (mousePos.y-yOffset < config.scrollAmount) {
+					window.scrollBy(0, -config.scrollAmount);
+				} else {
+					var windowHeight = window.innerHeight ? window.innerHeight
+							: document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight;
+					if (windowHeight-(mousePos.y-yOffset) < config.scrollAmount) {
+						window.scrollBy(0, config.scrollAmount);
+					}
+				}
+
+
+				if (y != jQuery.tableDnD.oldY) {
+					// work out if we're going up or down...
+					var movingDown = y > jQuery.tableDnD.oldY;
+					// update the old value
+					jQuery.tableDnD.oldY = y;
+					// update the style to show we're dragging
+					if (config.onDragClass) {
+						dragObj.addClass(config.onDragClass);
+					} else {
+						dragObj.css(config.onDragStyle);
+					}
+					// If we're over a row then move the dragged row to there so that the user sees the
+					// effect dynamically
+					var currentRow = jQuery.tableDnD.findDropTargetRow(dragObj, y);
+					if (currentRow) {
+						// TODO worry about what happens when there are multiple TBODIES
+						if (movingDown && jQuery.tableDnD.dragObject != currentRow) {
+							jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow.nextSibling);
+						} else if (! movingDown && jQuery.tableDnD.dragObject != currentRow) {
+							jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject, currentRow);
+						}
+					}
+				}
+
+				return false;
+			},
+
+			/** We're only worried about the y position really, because we can only move rows up and down */
+			findDropTargetRow: function(draggedRow, y) {
+				var rows = jQuery.tableDnD.currentTable.rows;
+				for (var i=0; i<rows.length; i++) {
+					var row = rows[i];
+					var rowY	= this.getPosition(row).y;
+					var rowHeight = parseInt(row.offsetHeight)/2;
+					if (row.offsetHeight == 0) {
+						rowY = this.getPosition(row.firstChild).y;
+						rowHeight = parseInt(row.firstChild.offsetHeight)/2;
+					}
+					// Because we always have to insert before, we need to offset the height a bit
+					if ((y > rowY - rowHeight) && (y < (rowY + rowHeight))) {
+						// that's the row we're over
+						// If it's the same as the current row, ignore it
+						if (row == draggedRow) {return null;}
+						var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+						if (config.onAllowDrop) {
+							if (config.onAllowDrop(draggedRow, row)) {
+								return row;
+							} else {
+								return null;
+							}
+						} else {
+							// If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
+							var nodrop = $(row).hasClass("nodrop");
+							if (! nodrop) {
+								return row;
+							} else {
+								return null;
+							}
+						}
+						return row;
+					}
+				}
+				return null;
+			},
+
+			mouseup: function(e) {
+				if (jQuery.tableDnD.currentTable && jQuery.tableDnD.dragObject) {
+					var droppedRow = jQuery.tableDnD.dragObject;
+					var config = jQuery.tableDnD.currentTable.tableDnDConfig;
+					// If we have a dragObject, then we need to release it,
+					// The row will already have been moved to the right place so we just reset stuff
+					if (config.onDragClass) {
+						jQuery(droppedRow).removeClass(config.onDragClass);
+					} else {
+						jQuery(droppedRow).css(config.onDropStyle);
+					}
+					jQuery.tableDnD.dragObject   = null;
+					if (config.onDrop) {
+						// Call the onDrop method if there is one
+						config.onDrop(jQuery.tableDnD.currentTable, droppedRow);
+					}
+					jQuery.tableDnD.currentTable = null; // let go of the table too
+				}
+			},
+
+			serialize: function() {
+				if (jQuery.tableDnD.currentTable) {
+					var result = "";
+					var tableId = jQuery.tableDnD.currentTable.id;
+					var rows = jQuery.tableDnD.currentTable.rows;
+					for (var i=0; i<rows.length; i++) {
+						if (result.length > 0) result += "&";
+						result += tableId + '[]=' + rows[i].id;
+					}
+					return result;
+				} else {
+					return "Error: No Table id set, you need to set an id on your table and every row";
+				}
+			}
+		}
+
+		jQuery.fn.extend(
+			{
+				tableDnD : jQuery.tableDnD.build
+			}
+		);
+	</script>
+	<script>
+		function defineSettings() {
+			jQuery('input.accInput').val(jQuery('input.accInput').attr('placeHolder'));
+			$("table[id*=pageBlockTable-columns]").tableDnD({
+				onDragClass: "myDragClass",
+				onDrop: function(table, row) {
+					processTableSequence();
+				}
+			});
+		}
+
+		$(document).ready(function() {
+			defineSettings();
+		});
+
+		function processTableSequence() {
+			var result = [];
+			$('table[id*=pageBlockTable-columns] tr td.sequence-number').each(function (i,row){result.push($(row).text());});
+			changeColumnsSequence(JSON.stringify(result));
+		}
+	</script>
+	</body>
+</apex:page>

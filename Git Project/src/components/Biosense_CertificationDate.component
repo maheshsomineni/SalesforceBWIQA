@@ -1,0 +1,18 @@
+<apex:component controller="Biosense_CertificationDateController">
+
+	<apex:attribute name="componentValue" type="Date" description="Date for composing" assignTo="{!certificationDate}"/>
+
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 1}" > <apex:param name="month" value="{!$Label.lmscons__January}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 2}" > <apex:param name="month" value="{!$Label.lmscons__February}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 3}" > <apex:param name="month" value="{!$Label.lmscons__March}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 4}" > <apex:param name="month" value="{!$Label.lmscons__April}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 5}" > <apex:param name="month" value="{!$Label.lmscons__May}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 6}" > <apex:param name="month" value="{!$Label.lmscons__June}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 7}" > <apex:param name="month" value="{!$Label.lmscons__July}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 8}" > <apex:param name="month" value="{!$Label.lmscons__August}"		/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 9}" > <apex:param name="month" value="{!$Label.lmscons__September}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 10}"> <apex:param name="month" value="{!$Label.lmscons__October}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 11}"> <apex:param name="month" value="{!$Label.lmscons__November}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+	<apex:outputText value="{0} {1}" rendered="{!monthNumber == 12}"> <apex:param name="month" value="{!$Label.lmscons__December}"	/>	<apex:param name="date" value="{!certificateDate}"/></apex:outputText>
+
+</apex:component>

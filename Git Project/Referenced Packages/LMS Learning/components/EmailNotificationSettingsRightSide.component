@@ -1,0 +1,24 @@
+<apex:component >
+
+	<apex:attribute name="settingField" type="String" required="true" description="Id from fields settings template"/>
+	<apex:attribute name="settingId" type="String" required="true" description="Setting Id"/>
+	<apex:attribute name="templateType" type="String" required="true" description="Template Type"/>
+	<apex:attribute name="templateName" type="String" required="true" description="Template Name"/>
+
+	<apex:outputPanel rendered="{!ISBLANK(settingField)}">
+		<apex:outputLink value="javascript:select_mail_template_popup('{!settingId}', '{!templateType}')">
+			{!$Label.Select_Email_Template}
+		</apex:outputLink>
+		<apex:outputText value=" | " />
+		<apex:outputLink value="javascript:create_mail_template_popup()">
+			{!$Label.Create_Email_Template}
+		</apex:outputLink>
+	</apex:outputPanel>
+	<apex:outputPanel rendered="{!NOT(ISBLANK(settingField))}">
+		<apex:outputText value="{!templateName}" />
+		<apex:outputText value=" " />
+		<apex:outputLink value="javascript:remove_mail_template('{!settingId}', '{!templateType}')" >
+			{!$Label.ConsumerSettings_value_Delete}
+		</apex:outputLink>
+	</apex:outputPanel>
+</apex:component>

@@ -1,0 +1,2 @@
+<apex:page docType="html-5.0" controller="CustomLandingController" action="{!forwardToCustomAuthPage}" showHeader="false" sidebar="false" standardStylesheets="false"> 
+</apex:page>

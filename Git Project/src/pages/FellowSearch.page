@@ -1,0 +1,93 @@
+<apex:page id="pg" standardController="Call__c" extensions="CallController" sidebar="false" standardStylesheets="true" showHeader="false" action="{!callMe}">
+<apex:form id="phyForm">
+<script>
+  
+     window.onload = new function() {
+     
+      
+     };
+      
+      
+      
+       
+      function close1(a1,id)
+        {
+          
+           var physician = a1;
+           var physicianId =id;
+           
+          top.window.opener.document.getElementById('mypage:myform:pb:pbsFellow:pbsiFellow:fellow').value = physician;  
+          
+          top.window.opener.document.getElementById('mypage:myform:pb:pbs7:pbsFellowId:FId').value = physicianId;
+         
+           parent.window.close();
+          
+        }
+ 
+  </script>
+  <apex:pageBlock id="phypb1">
+      <apex:pageBlockSection id="phypbs1">
+          
+          <apex:pageBlockSectionItem id="phypbis1">
+              <apex:outputLabel >Hospital</apex:outputLabel>
+              <apex:inputText value="{!accName}" disabled="true" id="hospName"/>              
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem id="phypbis2">
+              <apex:outputLabel ></apex:outputLabel>
+              
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem >
+              <apex:outputLabel >Fellow Last Name</apex:outputLabel>
+              <apex:inputText value="{!phyLName}"/>
+          </apex:pageBlockSectionItem>
+          
+          <apex:pageBlockSectionItem id="phypbis3">
+              <apex:outputLabel >Fellow First Name</apex:outputLabel>
+              <apex:inputText value="{!phyFName}"/>
+          </apex:pageBlockSectionItem>
+        
+  
+      </apex:pageBlockSection>
+      <apex:pageBlockSection columns="2">
+          <apex:outputLabel ></apex:outputLabel>
+          <apex:commandButton value="Search" action="{!searchFellows}"/>
+      
+      </apex:pageBlockSection>
+      
+  
+  </apex:pageBlock>
+  
+  <apex:pageBlock rendered="{!showResults1}">
+      <apex:pageBlockTable value="{!physicianList}" var="obj">
+              <apex:column >
+              <apex:facet name="header">Fellow</apex:facet>
+              <apex:outputLink value="" onclick="close1('{!JSENCODE(obj.Physician__r.Name)}','{!obj.Physician__c}')">{!obj.Physician__r.Name}</apex:outputLink>
+            </apex:column>
+            <apex:column >
+            <apex:facet name="header">Record Type</apex:facet>
+              {!obj.Physician__r.RecordType.Name}
+              </apex:column>
+             
+            <apex:column >
+            
+              <apex:facet name="header">Hospital</apex:facet>
+              {!obj.Hospital__r.Name}
+            </apex:column>
+         </apex:pageBlockTable> 
+ 
+  </apex:pageBlock>
+      
+  <apex:pageBlock rendered="{!showError}">
+    <b>No results found</b>
+  </apex:pageBlock>  
+
+
+      <apex:pageBlock rendered="{!IF(isHospSelected,false,true)}">
+        <b>Please select a Hospital before selecting a Fellow</b>
+      </apex:pageBlock>  
+        
+     
+ </apex:form>
+</apex:page>

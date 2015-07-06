@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Available_Training_Units__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Training_Units__c - ( Used_Training_Units__c +  Pending_Training_Units__c )</formula>
+        <label>Available Training Units</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Pending_Training_Units__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Pending Training Units</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Training_Units__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Training Units</label>
+        <precision>10</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Used_Training_Units__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Used Training Units</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <validationRules>
+        <fullName>PendingTU_negative_value_control</fullName>
+        <active>true</active>
+        <description>To prevent a negative value in this field</description>
+        <errorConditionFormula>Pending_Training_Units__c &lt; 0</errorConditionFormula>
+        <errorDisplayField>Pending_Training_Units__c</errorDisplayField>
+        <errorMessage>A negative value is not allowed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>TU_negative_value_control</fullName>
+        <active>true</active>
+        <description>To prevent a negative value in this field</description>
+        <errorConditionFormula>Training_Units__c &lt; 0</errorConditionFormula>
+        <errorDisplayField>Training_Units__c</errorDisplayField>
+        <errorMessage>A negative value is not allowed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>UsedTU_negative_value_control</fullName>
+        <active>true</active>
+        <description>To prevent a negative value in this field</description>
+        <errorConditionFormula>Used_Training_Units__c &lt; 0</errorConditionFormula>
+        <errorDisplayField>Used_Training_Units__c</errorDisplayField>
+        <errorMessage>A negative value is not allowed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>total_is_correct_control</fullName>
+        <active>true</active>
+        <description>&quot;Training Units&quot; value can not be less than &quot;Pending Training Units&quot; + &quot;Used Training Units&quot;</description>
+        <errorConditionFormula>(Pending_Training_Units__c + Used_Training_Units__c) &gt; Training_Units__c</errorConditionFormula>
+        <errorMessage>Entering this value contradicts the total number of Training Units</errorMessage>
+    </validationRules>
+</CustomObject>

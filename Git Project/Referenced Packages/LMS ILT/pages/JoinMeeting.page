@@ -1,0 +1,27 @@
+<apex:page standardController="lmsilt__Session__c" extensions="lmsilt.JoinMeeting" showHeader="false" sidebar="false">
+
+<apex:pageMessages id="msg"/>
+
+<div id = 'loader'>
+	<c:EnhancedActionStatus BackColor="#efefef" 
+										borderColor="#336699" 
+										borderSize="1" 
+										height="50px" 
+										width="120px" 
+										ImageUrl="/img/loading.gif" 
+										Message="{!$Label.Loading}" 
+										messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/>
+</div>
+
+<apex:form >
+
+	<apex:actionFunction name="JoinMeetingInit" action="{!JoinMeetingInit}" rerender="msg"/>
+
+</apex:form>
+
+<script type="text/javascript">
+	JoinMeetingInit();
+</script>
+
+
+</apex:page>

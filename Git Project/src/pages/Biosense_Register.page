@@ -1,0 +1,291 @@
+<apex:page controller="Biosense_RegisterController" showheader="false" standardStylesheets="{!IF(NOT(ISBLANK($CurrentPage.parameters.sss)),'true','false')}" cache="false" docType="html-5.0">
+
+    <apex:composition template="{!DynamicTemplate}">
+        <apex:define name="body">
+            <style>
+                .form-horizontal .control-label {
+                    padding-top: 0px;
+                }
+                .errorMsg {
+                    color: red;
+                }
+                .required-input-field {
+                    border-left: solid 3px red !important;
+                }
+            </style>
+            <script>
+                var labelPlaceholder = '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_LABEL_USERNAME_PLACEHOLDER)}';
+                $(function() {
+                    jQuery('input[id*="username"]').attr('placeholder',labelPlaceholder);
+                });
+                
+                function validationAndErrorHandling() {
+                    var errorString1 = '<table role="alert"><tbody>';
+                    var errorString2 = '<div class="container-fluid"><div class="row-fluid"><div class="alert alert-error span12"><table role="alert"><tbody>';
+                    var hasErrors1 = false;
+                    var hasErrors2 = false;
+                    var counter = 0;
+                    $('.required-input-field').each(function() {
+                        var x = $(this).val().trim();
+                        if (x==null || x=="") {
+                            var labelText = $(this).parent().prev().text();
+                            if (labelText == "") {
+                                labelText = $(this).parent().parent().prev().text()
+                            }
+                            errorString2 += '<tr><td>' + labelText + '</td></tr>';
+                            hasErrors1 = true;
+                        }
+                        else if (counter == 3 && !matcher(x)) {
+                            errorString1 += '<tr><td>' + '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_ERROR_EMAIL_INVALID)}' + '</td></tr>';
+                            hasErrors2 = true;
+                        }
+                        else if (counter == 4 && !matcher(x)) {
+                            errorString1 += '<tr><td>' + '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_ERROR_USERNAME_INVALID)}' + ' ' + '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_LABEL_USERNAME_TITLE)}' + ': ' + '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_LABEL_USERNAME_PLACEHOLDER)}' + '</td></tr>';
+                            hasErrors2 = true;
+                        }
+                        counter++;
+                    });
+                    errorString1 += '</tbody></table>' + (hasErrors1 && hasErrors2 ? '</br>' : '');
+                    errorString2 += '</tbody></table></div></div></div>';
+                    if (hasErrors1 || hasErrors2) {
+                        if (!hasErrors1) {
+                            errorString2 = errorString2.replace('<table role="alert"><tbody></tbody></table>', errorString1);
+                        }
+                        else {
+                            errorString2 = errorString2.replace('<table role="alert"><tbody>', errorString1 + '<table role="alert"><tbody><tr><td>' + '{!JSENCODE($Label.cfsp__CFSP_PAGE_ACCOUNT_ERROR_ADDITIONAL_FIELD_REQUIRED)}' + '</td></tr>');
+                        }
+                        var element = $('div#jsErrorMessage');
+                        if(element.length == 0) {
+                            $('div.container div.container-fluid').parent().prepend('<div id = "jsErrorMessage">'+errorString2 + '</div>');
+                        }
+                        else {
+                            element.html(errorString2);
+                        }
+                        element.next('div.container-fluid').hide();
+                    }
+                    else {
+                        registerUser();
+                    }
+                }
+                function matcher(text) {
+                    return (new RegExp('([a-zA-Z0-9_\\-\\.]+)@((\\[a-z]{1,3}\\.[a-z]{1,3}\\.[a-z]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})')).test(text);
+                }
+            </script>
+            <apex:outputPanel layout="block" styleClass="container pad">
+
+                <!-- ApexMessages Container -->
+                <apex:outputPanel layout="block" styleClass="container-fluid" id="pageMessageBox" style="margin: 15px 0">
+                    <apex:outputPanel layout="block" styleClass="row-fluid">
+                        <apex:outputPanel layout="none" rendered="{!pageHasMessages}">
+                            <apex:outputPanel layout="block" styleClass="alert alert-{!severity} span12">
+                                <apex:messages layout="table" id="pageMessages"/>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <apex:outputPanel layout="block" styleClass="row" rendered="{!NOT(hideAllControls)}">
+                    <apex:outputPanel layout="block" styleClass="">
+                        <apex:form forceSSL="true" styleClass="form">
+                            <apex:actionFunction name="registerUser" action="{!registerUser}" />
+                            <table style = "float:right;"><tbody><tr><td style = "background-color:red; width:1px;"></td><td>&nbsp;= {!$Label.cfsp__CFSP_PAGE_ACCOUNT_REQUIRED_FIELDS}</td></tr></tbody></table>
+                            <apex:outputPanel layout="block" styleClass="form-signin m-register">
+                                <apex:outputPanel layout="block" styleClass="span12">
+                                    <div class="regtitle">
+                                        <h3>
+                                            {!$Label.BIOSENSE_NEW_USER_REGISTRATION}
+                                        </h3>
+                                    </div>
+                                    <apex:outputPanel layout="block" styleClass="span6">
+                                        <!-- FIRST NAME & SUR NAME -->
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_FIRST_NAME}" for="firstname"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!firstName}" id="firstname"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_LAST_NAME}" for="lastname"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!lastName}" id="lastname"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <!-- EMAIL & CONFIRM EMAIL -->
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_EMAIL_ADDRESS}" for="email"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!email}" id="email"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.BIOSENSE_CONFIRM_EMAIL}" for="confirm_email"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!confirmEmail}" id="confirm_email"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_USERNAME}" for="username"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!username}" id="username" title="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_LABEL_USERNAME_TITLE}"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.cfsp__CFSP_PAGE_ACCOUNT_TITLE_COMPANY}" for="company"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level required-input-field" value="{!company}" id="company"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <!-- TELEPHONE -->
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" styleClass="span3">
+                                                <apex:outputLabel styleClass="control-label" value="{!$Label.BIOSENSE_TELEPHONE}" for="telephone"/>
+                                                <apex:outputPanel layout="block" styleClass="controls">
+                                                    <apex:inputText styleClass="input-block-level" value="{!telephone}" id="telephone"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                        <!-- I AM A SELECT -->
+                                        <div class="row">
+                                            <div class="span3">
+                                                <select class="input-block-level">
+                                                    <option>i am a</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!--PRIMARY-->
+                                        <div class="row">
+                                            <div class="span6">
+                                                <label class="ie9" for="">{!$Label.BIOSENSE_PRIMARY_HOSPITAL}</label>
+                                                <input type="text" class="primary input-block-level" />
+                                            </div>
+                                        </div>
+                                        <!-- CITY NAME -->
+                                        <div class="row">
+                                            <div class="span3">
+                                                <label class="ie9" for="">{!$Label.BIOSENSE_CITY_NAME}</label>
+                                                <input class="input-block-level" type="text"/>
+                                            </div>
+                                        </div>
+                                        <!-- COUNTRY -->
+                                        <div class="row">
+                                            <div class="span3">
+                                                <label class="ie9" for="">{!$Label.BIOSENSE_COUNTRY}</label>
+                                                <select class="input-block-level">
+                                                    <option>UK</option>
+                                                    <option>USA</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- POSTAL CODE -->
+                                        <div class="row">
+                                            <div class="span3">
+                                                <label class="ie9" for="">{!$Label.BIOSENSE_POSTAL_CODE}</label>
+                                                <input class="input-block-level" type="text" />
+                                            </div>
+                                        </div>
+                                        <!-- DIGIT -->
+                                        <div class="row">
+                                            <div class="span3">
+                                                <label class="ie9" for="">{!$Label.BIOSENSE_10_DIGIT_NPI_NUMBER}</label>
+                                                <input class="input-block-level" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(registerSettings))}">
+                                                <apex:repeat value="{!registerSettings}" var="field">
+                                                    <apex:outputPanel layout="block" styleClass="span3">
+                                                        <apex:outputLabel styleClass="control-label" value="{!field.label}" for="field-{!field.field}"/>
+                                                        <apex:outputPanel layout="block" styleClass="controls">
+                                                            <apex:inputField styleClass="input-block-level {!IF(field.required, 'required-input-field', '')}" value="{!field.instance.value[field.field]}" />
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </apex:repeat>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+
+                                    <!-- RIGHT SIDE -->
+                                    <apex:outputPanel layout="block" styleClass="span5 regcheckboxes">
+                                        <h2>{!$Label.BIOSENSE_NOTIFICATIONS}</h2>
+                                        <p>{!$Label.BIOSENSE_TO_RECIEVE_UPDATES_ON_LISTED_ITEMS}</p>
+                                        <label class="checkbox">
+                                            <input type="checkbox" />{!$Label.BIOSENSE_EDUCATIONAL_OPPORTUNITIES}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" />{!$Label.BIOSENSE_MARKET_RESEARCH_OPPORTUNITIES}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_NEW_PRODUCT_RELEASES_FEATURES}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_MARKETING_AND_SALES_PROGRAMS}
+                                        </label>
+                                        <h2>{!$Label.BIOSENSE_TELL_US_HOW_TO_REACH_YOU}</h2>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_EMAIL}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_TEXT_MOBILE_MUST_BE_PROVIDED}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_MAIL}
+                                        </label>
+                                        <p></p>
+                                        <p>
+                                            {!$Label.BIOSENSE_BY_CHECKING_THESE_BOXES_I_AGREE} 
+                                            <a target="_blank" href="http://www.biosensewebster.com/legal.php">Legal Notice</a> 
+                                            {!$Label.BIOSENSE_AND}
+                                            <a target="_blank" href="http://www.biosensewebster.com/privacy.php">Privacy Policy</a>
+                                            </p>
+                                        <p></p>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_BY_CLICKING_TO_SUBMIT_REGISTRATION}
+                                        </label>
+                                        <label class="checkbox">
+                                            <input type="checkbox" /> {!$Label.BIOSENSE_BY_CLICKING_YOU_CONSENT}
+                                        </label>
+                                        <div class="span6">
+                                            <!-- Captcha -->
+                                            <div class="span6">
+                                                <apex:outputPanel layout="block" styleClass="" id="cap">
+                                                    <apex:variable var="var" value="{!ImagePath}"/>
+                                                    <apex:image url="{!URLFOR($Resource.CFSP_Biosense_assets, var)}" style="background-color: white; border: 1px solid; margin: 10px 0;"/>
+                                                    <apex:commandLink action="{!resetCaptcha}" styleClass="btn" rerender="code,cap" style="margin-left: 15px"><i class="icon-white icon-refresh"></i></apex:commandLink>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <div class="span2">
+                                                <apex:outputLabel styleClass="control-label" value="Text in the box:" for="inputCaptcha"/>
+                                                <apex:inputText styleClass="input-block-level required-input-field" value="{!inputCaptcha}" id="inputCaptcha"/>
+                                            </div>
+                                            <div class="span2 offset1">
+                                                <!-- <apex:commandButton action="{!resetCaptcha}" styleClass="btn" rerender="code,cap"><i class="icon-refresh"></i></apex:commandButton> -->
+                                                <!-- <apex:commandLink action="{!resetCaptcha}" styleClass="btn" rerender="code,cap"><i class="icon-white icon-refresh"></i></apex:commandLink> -->
+                                            </div>
+                                                <!-- End Captcha -->
+                                            </div>
+                                            <div class="row">
+                                                <div class="span3">
+                                                <apex:commandButton onclick="javasript:registerUser()" styleClass="btn" value="Submit" rerender="none" style="margin-top: 10px"/>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <!-- RIGHT SIDE END -->
+
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:form>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:define>
+    </apex:composition>
+
+</apex:page>

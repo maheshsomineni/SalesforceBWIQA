@@ -1,0 +1,792 @@
+<apex:page extensions="lmsilt.ClassCreateExtension" standardController="lmsilt__Class__c" title="{!$Label.New+' '+$ObjectType.lmsilt__Event__c.Label}">
+	<apex:includeScript value="{!URLFOR($Resource.lmsilt__jquery, 'jquery-1.7.min.js')}" />
+	
+	<apex:stylesheet value="{!URLFOR($Resource.lmsilt__ILTSearch, 'css/lms-lightbox.css')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.lmsilt__ILTSearch, 'js/lightbox.js')}"/>			
+	<apex:sectionHeader title="{!$ObjectType.lmsilt__Class__c.Label} {!$Label.Edit}"  subtitle="{!IF(ISBLANK(lmsilt__Class__c.Name), $Label.New+' '+$ObjectType.lmsilt__Class__c.Label, lmsilt__Class__c.Name)}" />
+
+
+	<style>
+		.dateFormat { display:none }
+		.hideElement { display:none }
+		div.datePicker { position: fixed; }
+		
+		table.sessions{			
+			border-collapse: collapse;  
+			width: 100%;  
+			border-spacing: 20px 50px;
+			margin-bottom: 20px;
+			margin-left: 5px;
+		}
+		
+		table.sessions td:last-of-type{			
+		    font-weight:bold;
+		}
+		
+		table.sessions thead{
+			border-bottom: 1px solid black;
+		}
+		
+		table.sessions .row td {
+		    height: 20px;
+		    vertical-align: bottom;
+		}
+		
+		a.edit-session {
+		    margin-right: 10px;
+		}
+		
+		
+		div.session-actions {
+		    float: right;
+		    margin: 10px;
+		}
+		
+		.b-lightbox .b-content{
+			padding-top: 5px;		
+		}
+		
+		div.errorMsg {
+		    display: none;
+		}
+	</style>
+	
+	<script type="text/javascript">	
+		
+		var SessionLocation = '';
+		var newwindow;
+		var overlay;
+		var lightbox;			
+		var SESSION_CLASSROOM_TYPE = 'ILT';
+		var SESSION_VIRTUAL_TYPE = 'vILT';			
+		var WEBEX_MEETING_TYPE = 'WebEx';
+		var sessionOverlay;
+		var sessionLightbox; 
+		var sessionOpenlightbox;
+		var sessionCloselightbox;				
+		
+		jQuery(document).ready(function() {
+		
+			sessionOverlay = jQuery('#session-b-overlay');
+			sessionLightbox = jQuery('[id*="session-b-lightbox"]');
+			sessionOpenlightbox = jQuery('#session-openlightbox');
+			sessionCloselightbox = jQuery('session-b-close-btn');
+				
+			sessionCloselightbox.click( function() {		
+				sessionLightbox.fadeOut('fast');			
+				sessionOverlay.fadeOut('fast');
+			});
+					
+			overlay = jQuery('#b-overlay');
+			lightbox = jQuery('#b-lightbox');			
+			closelightbox = jQuery('#b-lightbox .b-close-btn');
+			closelightbox.click( function() {
+				lightbox.fadeOut('fast');
+				overlay.fadeOut('fast');
+			});		
+
+						
+			jQuery('#checkCD').click(function () {
+				if (jQuery('#checkCD').attr('checked') == 'checked') {
+					jQuery('[id$=Cancellation_Deadline]').show();
+					jQuery('[id$=Cancellation_DeadlineTxt]').show();
+					jQuery('[id$=RefundPercent]').show();
+				}
+				else {
+					jQuery('[id$=Cancellation_Deadline]').hide();
+					jQuery('[id$=Cancellation_DeadlineTxt]').hide();
+					jQuery('[id$=RefundPercent]').hide();
+				}
+			});			
+		});
+
+		function OpenSessionLocationEdit() {
+			jQuery('#popup_content').html('<iframe id="mytrainingframe" name="mytrainingframe" frameborder="0" height="400" src="{!$Page.SessionLocationEdit}?isPopup=false" width="100%"></iframe>');
+			Lightbox();
+		}
+
+		function enable_button() {
+			jQuery("input[id*=cancel_button]").attr('class', 'btn');
+			jQuery("input[id*=cancel_button]").attr('value', '{!$Label.Cancel}');
+			jQuery('input[id$=saveBTN]').removeClass('hideElement');
+			jQuery('input[id$=CopySaveBTN]').addClass('hideElement');
+
+		}
+
+		function setValueFields() {
+		
+			if (jQuery('#isAnySessionInThePast').val() == "true"){
+				if (!confirm('{!$Label.Session_In_The_Past}')){
+					return false;
+				}
+			}
+			
+			if (jQuery('#isAnyInstructorConflict').val() == "true"){
+				if (!confirm('{!$Label.Instructors_Conflict}')){
+					return false;
+				}
+			}
+			
+		
+			jQuery("input[id*=cancel_button]").attr('class', 'btnDisabled');
+			jQuery("input[id*=cancel_button]").attr('value', '{!$Label.Saving}');
+			jQuery('input[id$=saveBTN]').addClass('hideElement');
+			jQuery('input[id$=CopySaveBTN]').removeClass('hideElement');
+			
+			return true;				
+		}
+		
+			
+
+		var onChangeSessionType = function(o){
+			var selectedValue = jQuery(o).val();			
+			
+			setClassroomGroupVisible(selectedValue == SESSION_CLASSROOM_TYPE);			
+			setVirtualGroupVisible(selectedValue == SESSION_VIRTUAL_TYPE);
+			
+			if (selectedValue != SESSION_VIRTUAL_TYPE){
+				setWebexGroupVisible(false);		
+			} else{
+				onChangeMeetingType(jQuery('select[id*="Meeting_Type"]'));	
+			}					
+		}
+		
+		var onChangeMeetingType = function(o){
+			var selectedValue = jQuery(o).val();
+			
+			setWebexGroupVisible( selectedValue == WEBEX_MEETING_TYPE);											
+		}					
+		
+		var setClassroomGroupVisible = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=ClassroomSessionType]").show();				
+			} else{
+				jQuery("[class*=ClassroomSessionType]").hide();				
+			}					
+		}
+		
+		var setVirtualGroupVisible = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=VirtualSessionType]").show();				
+			} else{
+				jQuery("[class*=VirtualSessionType]").hide();				
+			}					
+		}
+		
+		var setWebexGroupVisible = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=WebexMeetingType]").show();				
+			} else{
+				jQuery("[class*=WebexMeetingType]").hide();				
+			}					
+		}		
+					
+		var onChangeSessionTypePopup = function(o){
+			var selectedValue = jQuery(o).val();			
+			
+			setClassroomGroupVisiblePopup(selectedValue == SESSION_CLASSROOM_TYPE);			
+			setVirtualGroupVisiblePopup(selectedValue == SESSION_VIRTUAL_TYPE);
+			
+			if (selectedValue != SESSION_VIRTUAL_TYPE){
+				setWebexGroupVisiblePopup(false);		
+			} else{
+				onChangeMeetingTypePopup(jQuery('select[id*="Meeting_TypePopup"]'));	
+			}					
+		}
+		
+		var onChangeMeetingTypePopup = function(o){
+			var selectedValue = jQuery(o).val();
+			
+			setWebexGroupVisiblePopup( selectedValue == WEBEX_MEETING_TYPE);											
+		}				
+		
+		var setClassroomGroupVisiblePopup = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=ClassroomSessionTypePopup]").show();				
+			} else{
+				jQuery("[class*=ClassroomSessionTypePopup]").hide();				
+			}					
+		}
+		
+		var setVirtualGroupVisiblePopup = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=VirtualSessionTypePopup]").show();				
+			} else{
+				jQuery("[class*=VirtualSessionTypePopup]").hide();				
+			}					
+		}
+		
+		var setWebexGroupVisiblePopup = function(isVisible){
+			if (isVisible == true){
+				jQuery("[class*=WebexMeetingTypePopup]").show();				
+			} else{
+				jQuery("[class*=WebexMeetingTypePopup]").hide();				
+			}					
+		}						
+				
+		function SessionLightbox() {		
+			clearSessionValidationMessages();
+			onChangeSessionTypePopup(jQuery('select[id*="TypePopup"]'));
+		
+			sessionLightbox.fadeIn('fast');
+			
+			sessionOverlay
+				.height( $(document).height() )
+				.css('opacity','0.6')
+				.fadeIn('fast');																								
+		}
+		
+		function CloseSessionlightbox() {
+			sessionLightbox.fadeOut('fast');
+			sessionOverlay.fadeOut('fast');
+		}
+		
+		function onDatesBlur() {
+			var startDateValue = jQuery('[id$=StartDate]').val();
+			var endDateValue = jQuery('[id$=EndDate]').val();
+			
+			jQuery('[id$=Start_Date_Time]').val(startDateValue+' '+jQuery('[id$=StartDateTime]').val());
+			jQuery('[id$=End_Date_Time]').val(endDateValue+' '+jQuery('[id$=EndDateTime]').val());							
+		}
+		
+		function isSessionValid(){
+			return jQuery('span[id*="validationMessages"]').children().length == 0;
+		}	
+		
+		function clearSessionValidationMessages(){
+			jQuery('span[id*="validationMessages"]').empty();
+		}
+		
+		function toggleEnabled(){			
+			jQuery('div.session-actions').find('input.saveBtn').toggle();
+			jQuery('#session-b-close-btn').toggle();
+		}			
+
+		function Closelightbox() {
+			lightbox.fadeOut('fast');
+			overlay.fadeOut('fast');
+		}			
+
+		
+		function setEndDate(t) {
+			jQuery("[id$='EndDate']").val(t);
+		}
+		
+		function set8AMIfFirst(){
+			if (jQuery('input[id*="StartDate"]').val()==''){
+				jQuery("select[id*='StartDateTime'] option")[32].selected = true;	// 08 AM.
+				jQuery("select[id*='EndDateTime'] option")[36].selected = true;		// 09 AM.
+			}
+		}
+		
+		function setEndTime(t) {													
+			var totalOptions = jQuery("select[id*='EndDateTime'] option").length;			
+			if (totalOptions == 0){
+				return;
+			}
+						
+			var startTimeSelectedIndex = jQuery("select[id*='StartDateTime'] option:selected").index();
+			var endTimeSelectedIndex = jQuery("select[id*='EndDateTime'] option:selected").index();	
+													
+			var endDateIndex = startTimeSelectedIndex + 4; 
+			
+			if (endDateIndex > totalOptions-1){
+				endDateIndex = totalOptions - 1;
+			}
+			
+			jQuery("select[id*='EndDateTime'] option")[endDateIndex].selected = true;					
+		}
+
+		function open_popup(url) {
+			newwindow=window.open(url,'name','height=550,width=1000');
+			if (window.focus) {
+				newwindow.focus()
+			}
+		}
+		
+		function setSelectVisible(){
+			onChangeSessionTypePopup(jQuery('select[id*="TypePopup"]'));
+		}
+		
+		function checkErrors(){
+			if (jQuery('[id*="msg"]').is(':visible')){
+				jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+			}	
+		}
+		
+	</script>
+
+	<!-- light box -->
+	<div class="b-overlay" id='b-overlay'></div>
+	<div class="b-lightbox" id='b-lightbox'>
+	<apex:outputpanel id="lightboxes" layout="block">
+		<div class="b-title-bar">
+			<div class="b-title">{!$Label.New} {!$ObjectType.lmsilt__Session_Location__c.label}</div>
+			<div class="b-close-btn"><a href="javascript:Closelightbox()">{!$Label.Close}</a></div>
+		</div>
+		<apex:outputpanel layout="block" styleclass="b-content">
+			<apex:outputpanel layout="block">
+				<div id="popup_content"></div>
+			</apex:outputpanel>
+		</apex:outputpanel>
+	</apex:outputPanel>
+	</div>
+
+	<apex:actionStatus startText=""  id="busyStatus"
+			onStart="document.body.style.cursor = 'wait';return true;"
+			onStop="document.body.style.cursor = 'default';return true;" >
+	</apex:actionStatus>
+
+
+	<apex:actionStatus id="loadStatus">
+	<apex:facet name="start">
+		<c:EnhancedActionStatus BackColor="#efefef" borderColor="#336699"
+						borderSize="1" height="50px" width="120px" ImageUrl="/img/loading.gif"
+						Message="{!$Label.Loading}..." messageStyle="color:darkred;font-size:11pt;font-weight:bold;"/>
+	</apex:facet>
+	</apex:actionStatus>			
+	
+	
+	<apex:form >		
+		<apex:pageMessages id="msg"/>
+
+		<apex:pageBlock mode="edit" title="{!$ObjectType.lmsilt__Class__c.Label} {!$Label.Edit}">
+			<apex:pageBlockButtons >
+				<!-- after the first time clicked this button will disappear -->
+				<apex:commandButton action="{!Save}"
+					id="saveBTN"
+					status="busyStatus"
+					accesskey="Enter"
+					value="{!$Label.Save}"
+					oncomplete="enable_button(); checkErrors();"
+					onclick="if (!setValueFields()) return;"
+					rerender=" msg, saveDate"/>
+				<!-- and this button will appear instead but you will be not able to click on it -->
+				<apex:commandButton value="{!$Label.Saving}" id="CopySaveBTN" styleClass="hideElement" disabled="true"/>
+
+				<apex:commandButton id="cancel_button" value="{!$Label.Cancel}" onclick="history.go(-1); return false;"/>
+			</apex:pageBlockButtons>
+						
+			<apex:pageBlockSection columns="1" id="ClassSection" title="{!$ObjectType.lmsilt__Class__c.Label}">			
+				<apex:outputField value="{!lmsilt__Class__c.lmsilt__Event__c}" />
+				
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.Name.label}" for="Name"/>
+					<apex:outputPanel >
+						<div class="requiredInput">
+							<div class="requiredBlock"></div>
+							<apex:inputField value="{!classs.Name}" id="Name"/>
+						</div>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+								
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.Time_Zone}" for="tz" />
+					<apex:outputPanel >
+						<div class="requiredInput"><div class="requiredBlock"></div>
+						<apex:selectList value="{!selectedTimezone}" size="1" id="tz">
+							<apex:selectOptions value="{!timeZones}"  />
+							<apex:actionSupport event="onchange" reRender="confirmFlags" action="{!resetInstrutorConflict}"/>
+						</apex:selectList>
+						</div>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>				
+												
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__ILT_vILT__c.label}" for="Type"/>
+					<apex:outputPanel >												
+						<apex:inputField value="{!sessionTemplate.lmsilt__ILT_vILT__c}" id="Type" onChange="onChangeSessionType(this)" />						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="LocationData ClassroomSessionType" labelStyleClass="LocationLabel ClassroomSessionType" dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Location__c.label}" for="Part_Location"/>
+					<apex:outputPanel >
+						<apex:inputField value="{!classs.lmsilt__Location__c}" id="Part_Location"/>
+						<apex:outputLink value="javascript:OpenSessionLocationEdit()" id="ESessionLocationEdit" styleClass="btn" style="text-decoration:none">{!$Label.New} {!$ObjectType.lmsilt__Session_Location__c.label}</apex:outputLink>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="MeetingTypeData VirtualSessionType" labelStyleClass="MeetingTypeLabel VirtualSessionType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Meeting_Type__c.label}" for="Meeting_Type"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__Meeting_Type__c}" id="Meeting_Type" onChange="onChangeMeetingType(this)"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="WebexMeetingType" labelStyleClass="WebexMeetingType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Meeting_Password__c.label}" for="Meeting_Password"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__Meeting_Password__c}" id="Meeting_Password"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="WebexMeetingType" labelStyleClass="WebexMeetingType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Listing_Type__c.label}" for="Listing_Type"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__Listing_Type__c}" id="Listing_Type"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="WebexMeetingType" labelStyleClass="WebexMeetingType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Telephony_Support__c.label}" for="Telephony_Support"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__Telephony_Support__c}" id="Telephony_Support"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="WebexMeetingType" labelStyleClass="WebexMeetingType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__VoIP__c.label}" for="voip"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__VoIP__c}" id="voip"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="WebexMeetingType" labelStyleClass="WebexMeetingType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Entry_Exit_Tone__c.label}" for="exitTone"/>
+					<apex:outputPanel >						
+						<apex:inputField value="{!sessionTemplate.lmsilt__Entry_Exit_Tone__c}" id="exitTone"/>						
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>							
+				
+				<apex:pageBlockSectionItem dataStyleClass="VILTAccountData VirtualSessionType" labelStyleClass="VILTAccountLabel VirtualSessionType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__vILT_Account__c.label}" for="vILT_Account__c"/>
+					<apex:outputPanel >
+						<apex:inputField value="{!sessionTemplate.lmsilt__vILT_Account__c}" id="vILT_Account__c"/>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem dataStyleClass="EnableNotification VirtualSessionType" labelStyleClass="EnableNotificationLabel VirtualSessionType"  dataStyle="display:none" labelStyle="display:none">
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Enable_Notification__c.label}" for="Enable_Notification__c"/>
+					<apex:outputPanel >
+						<apex:inputField value="{!sessionTemplate.lmsilt__Enable_Notification__c}" id="Enable_Notification__c"/>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Instructor__c.fields.lmsilt__Instructor_User__c.label}" for="Instructor"/>
+					<apex:inputField value="{!instructorTemplate.lmsilt__Instructor_User__c}" id="Instructor"/>
+				</apex:pageBlockSectionItem>			
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Minimum_Capacity__c.label}" for="Minimum_Capacity"/>
+					<apex:inputField value="{!classs.lmsilt__Minimum_Capacity__c}" id="Minimum_Capacity"/>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Maximum_Capacity__c.label}" for="Maximum_Capacity"/>
+					<apex:inputField value="{!classs.lmsilt__Maximum_Capacity__c}" id="Maximum_Capacity"/>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Waitlisted__c.label}" for="Waitlisted"/>
+					<apex:inputCheckbox value="{!classs.lmsilt__Waitlist_Enabled__c}" id="Waitlisted" />
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Cancellation_Deadline__c.label}:" for="Cancellation_Deadline"/>
+					<apex:outputPanel >
+						<input type="checkbox" name="checkCD" id="checkCD"/>&nbsp;
+						<apex:inputField value="{!classs.lmsilt__Cancellation_Deadline__c}" id="Cancellation_Deadline" style="display:none"/>
+						<apex:outputText value="{!$Label.days_before_the_Class_begins}"  style="display:none" id="Cancellation_DeadlineTxt"/>
+						<br></br>
+						<apex:panelGrid columns="3" id="RefundPercent" style="display:none">
+							<apex:outputLabel value="{!$Label.Refund_before_deadline}:" for="BeforeDeadline" />
+							<apex:inputField value="{!classs.lmsilt__Percent_Refund_Before_Deadline__c}" style="width:30px" id="BeforeDeadline" />
+							<apex:outputText value="%"/>
+
+							<apex:outputLabel value="{!$Label.Refund_after_deadline}:" for="AfterDeadline"/>
+							<apex:inputField value="{!classs.lmsilt__Percent_Refund_After_Deadline__c}" style="width:30px" id="AfterDeadline"/>
+							<apex:outputText value="%"/>
+						</apex:panelGrid>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Cancellation_Policy_lookup__c.label}" for="Cancellation_Policy"/>
+					<apex:outputPanel >
+						<apex:inputField value="{!classs.lmsilt__Cancellation_Policy_lookup__c}" id="Cancellation_Policy"/>
+						<apex:outputLink value="javascript:open_popup('{!$Page.lmsilt__CancellationPoliciesEdit}');" styleClass="btn" style="text-decoration:none">{!$Label.New} {!$ObjectType.lmsilt__Cancellation_Policy__c.label}</apex:outputLink>
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+			   				
+			</apex:pageBlockSection>
+			
+			
+			
+			
+			<!-- SESSIONS -->										
+			
+			<apex:actionFunction action="{!sessionEdit}"  status="loadStatus" name="sessionEdit" reRender="popup-body" oncomplete="SessionLightbox();">
+		        <apex:param name="sessionId" assignTo="{!sessionId}" value="" />
+		    </apex:actionFunction>
+		    
+		    <apex:actionFunction action="{!sessionDelete}" status="loadStatus" name="sessionDelete" reRender="sessions, confirmFlags">
+		        <apex:param name="sessionId" assignTo="{!sessionId}" value="" />
+		    </apex:actionFunction>		    		   
+			
+			<apex:pageBlockSection columns="1" id="SessionSection" title="{!$ObjectType.lmsilt__Session__c.Label}">
+
+				<apex:pageBlockSectionItem >
+					<apex:outputLabel value="{!$Label.Sessions}" for="addSession"/>
+					<apex:outputPanel >
+						<apex:outputPanel id="sessions">																										
+							<apex:dataTable value="{!sessionsData}" var="sessionData" id="sessions2" rendered="{!NOT(sessionsIsEmpty)}" rowClasses="row" styleClass="sessions">										
+								<apex:facet name="header"></apex:facet>										
+								<apex:column >			
+								        <apex:facet name="header">{!$ObjectType.lmsilt__Session__c.fields.Name.label}</apex:facet>											
+									<apex:outputField value="{!sessionData.session.Name}"/>											
+								</apex:column>
+								<apex:column >			
+								        <apex:facet name="header">{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Start_Date_Time__c.label}</apex:facet>											
+									<apex:outputField value="{!sessionData.session.lmsilt__Start_Date_Time__c}"/>			
+								</apex:column>	
+								<apex:column >			
+								        <apex:facet name="header">{!$ObjectType.lmsilt__Session__c.fields.lmsilt__End_Date_Time__c.label}</apex:facet>											
+									<apex:outputField value="{!sessionData.session.lmsilt__End_Date_Time__c}"/>			
+								</apex:column>	
+								<apex:column >			
+								        <apex:facet name="header">{!$ObjectType.lmsilt__Session__c.fields.lmsilt__ILT_vILT__c.label}</apex:facet>											
+									<apex:outputField value="{!sessionData.session.lmsilt__ILT_vILT__c}"/>			
+								</apex:column>	
+								<apex:column >			
+								        <apex:facet name="header">{!$ObjectType.lmsilt__Instructor__c.label}</apex:facet>											
+									<apex:outputField value="{!sessionData.instructor.lmsilt__Instructor_User__c}"/>			
+								</apex:column>						
+								<apex:column >			
+								    <apex:facet name="header"></apex:facet>
+								    <a href='javascript:void(0);' onclick="sessionEdit({!sessionData.id});" class="edit-session">{!$Label.Edit}</a>						        						    						    
+								    <a href='javascript:void(0);' onclick="if (confirm('{!$Label.Are_You_Shure}')) {sessionDelete({!sessionData.id})}" class="delete-session">{!$Label.Delete}</a>						    													
+								</apex:column>								
+							</apex:dataTable>		
+						</apex:outputPanel>					
+						<apex:commandButton action="{!addSession}" status="loadStatus" value="{!$Label.Add_Session}" id="addSession"  reRender="popup-body" oncomplete="SessionLightbox(); set8AMIfFirst(); setEndTime();"/>																								
+					</apex:outputPanel>																											
+				</apex:pageBlockSectionItem>										        		        
+		       
+		       <apex:outputPanel >		       		       
+				<div class="b-overlay" id='session-b-overlay' style="overflow: hidden;"></div>									
+					<apex:outputPanel id="session-b-lightbox" layout="block" styleClass="b-lightbox" style="position: fixed;">
+						<div class="b-title-bar">
+							<div class="b-title">{!$ObjectType.Session__c.label}</div>
+							<div class="b-close-btn" id='session-b-close-btn'><a href="javascript:CloseSessionlightbox()">{!$Label.Close}</a></div>
+						</div>
+						<apex:outputPanel layout="block" id="popup-body" styleclass="b-content" style="min-height: 320px;">																																		        		       
+					       <!-- POPUP BODY -->					       
+					       <apex:pageBlockSection columns="1">
+					       
+					       		<apex:pageMessages id="validationMessages"/>
+					       
+					       		<apex:outputPanel rendered="{!isVirtualSessionsLimitReached}">					       			
+					       			<span>
+					       				<div role="alert" class="message warningM3">
+					       					<table border="0" cellspacing="0" cellpadding="0" style="padding:0px;margin:0px;" class="messageTable">
+					       						<tbody>
+						       						<tr valign="top">
+						       							<td>
+						       								<img title="{!$Label.warning}" src="/s.gif" class="msgIcon" alt="{!$Label.warning}"/>
+						       							</td>
+						       							<td class="messageCell">
+						       								<div class="messageText">
+						       									<span>
+						       										<h4>{!$Label.warning}:</h4>
+						       									</span>
+						       									{!$Label.add_sessions_limit_warning}
+						       									<br/>
+						       								</div>
+						       							</td>
+						       						</tr>
+						       						<tr>
+						       							<td></td>
+						       							<td></td>
+						       						</tr>
+						       					</tbody>
+						       				</table>
+							       		</div>
+							       	</span>
+					       		</apex:outputPanel>					       					       	   						       	   
+					       
+						       <apex:pageBlockSectionItem >
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.Name.label}" for="SessionNamePopup"/>
+									<apex:outputPanel >
+										<div class="requiredInput">
+											<div class="requiredBlock"></div>
+											<apex:inputField value="{!currentSessionData.session.Name}" id="SessionNamePopup"/>
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Start_Date_Time__c.label}" for="StartDate" />
+									<apex:outputPanel >
+										<div class="requiredInput">
+											<div class="requiredBlock"></div>
+											<apex:outputPanel >
+												<apex:inputField value="{!d1.lmscons__Completed_Date__c}" id="StartDate" onchange="setEndDate(this.value)" onblur="onDatesBlur()"/>
+												<apex:selectList value="{!StartDateTime}" size="1" id="StartDateTime" onchange="setEndTime(this)" onblur="onDatesBlur()">
+													<apex:selectOptions value="{!Times}"/>
+												</apex:selectList>
+											</apex:outputPanel>
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__End_Date_Time__c.label}" for="EndDate" />
+									<apex:outputPanel >
+										<div class="requiredInput">
+											<div class="requiredBlock"></div>
+											<apex:outputPanel >
+												<apex:inputField value="{!d2.lmscons__Completed_Date__c}" id="EndDate" onblur="onDatesBlur()" /> 												
+												<apex:selectList value="{!EndDateTime}" size="1" id="EndDateTime" onblur="onDatesBlur()">
+													<apex:selectOptions value="{!Times}"/>
+												</apex:selectList>
+											</apex:outputPanel>
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>																
+						       
+						       <apex:pageBlockSectionItem >
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__ILT_vILT__c.label}" for="TypePopup"/>
+									<apex:outputPanel >
+										<div class="requiredInput">
+											<div class="requiredBlock"></div>
+											<apex:inputField value="{!currentSessionData.session.lmsilt__ILT_vILT__c}" id="TypePopup" onChange="onChangeSessionTypePopup(this)" />
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="ClassroomSessionTypePopup" labelStyleClass="ClassroomSessionTypePopup" dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Class__c.fields.lmsilt__Location__c.label}" for="Part_LocationPopup"/>
+									<apex:outputPanel >
+										<apex:inputField value="{!currentSessionData.session.lmsilt__Session_Location__c}" id="Part_LocationPopup"/>
+										<!-- <apex:outputLink value="javascript:OpenSessionLocationEdit()" id="ESessionLocationEditPopup" styleClass="btn" style="text-decoration:none">{!$Label.New} {!$ObjectType.lmsilt__Session_Location__c.label}</apex:outputLink> -->
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="VirtualSessionTypePopup" labelStyleClass="VirtualSessionTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Meeting_Type__c.label}" for="Meeting_TypePopup"/>
+									<apex:outputPanel >
+										<div class="requiredInput"><div class="requiredBlock"></div>
+											<apex:inputField value="{!currentSessionData.session.lmsilt__Meeting_Type__c}" id="Meeting_TypePopup" onChange="onChangeMeetingTypePopup(this)"/>
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="WebexMeetingTypePopup" labelStyleClass="WebexMeetingTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Meeting_Password__c.label}" for="Meeting_PasswordPopup"/>
+									<apex:outputPanel >
+										<div class="requiredInput"><div class="requiredBlock"></div>
+											<apex:inputField value="{!currentSessionData.session.lmsilt__Meeting_Password__c}" id="Meeting_PasswordPopup"/>
+										</div>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="WebexMeetingTypePopup" labelStyleClass="WebexMeetingTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Listing_Type__c.label}" for="Listing_TypePopup"/>
+									<apex:outputPanel >						
+										<apex:inputField value="{!currentSessionData.session.lmsilt__Listing_Type__c}" id="Listing_TypePopup"/>						
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="WebexMeetingTypePopup" labelStyleClass="WebexMeetingTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Telephony_Support__c.label}" for="Telephony_SupportPopup"/>
+									<apex:outputPanel >						
+										<apex:inputField value="{!currentSessionData.session.lmsilt__Telephony_Support__c}" id="Telephony_SupportPopup"/>						
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="WebexMeetingTypePopup" labelStyleClass="WebexMeetingTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__VoIP__c.label}" for="voipPopup"/>
+									<apex:outputPanel >						
+										<apex:inputField value="{!currentSessionData.session.lmsilt__VoIP__c}" id="voipPopup"/>						
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="WebexMeetingTypePopup" labelStyleClass="WebexMeetingTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Entry_Exit_Tone__c.label}" for="exitTonePopup"/>
+									<apex:outputPanel >						
+										<apex:inputField value="{!currentSessionData.session.lmsilt__Entry_Exit_Tone__c}" id="exitTonePopup"/>						
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>							
+								
+								<apex:pageBlockSectionItem dataStyleClass="VirtualSessionTypePopup" labelStyleClass="VirtualSessionTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__vILT_Account__c.label}" for="vILT_Account__cPopup"/>
+									<apex:outputPanel >
+										<apex:inputField value="{!currentSessionData.session.lmsilt__vILT_Account__c}" id="vILT_Account__cPopup"/>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem dataStyleClass="VirtualSessionTypePopup" labelStyleClass="VirtualSessionTypePopup"  dataStyle="display:none" labelStyle="display:none">
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Session__c.fields.lmsilt__Enable_Notification__c.label}" for="Enable_Notification__cPopup"/>
+									<apex:outputPanel >
+										<apex:inputField value="{!currentSessionData.session.lmsilt__Enable_Notification__c}" id="Enable_Notification__cPopup"/>
+									</apex:outputPanel>
+								</apex:pageBlockSectionItem>
+								
+								<apex:pageBlockSectionItem >
+									<apex:outputLabel value="{!$ObjectType.lmsilt__Instructor__c.fields.lmsilt__Instructor_User__c.label}" for="InstructorPopup"/>
+									<apex:inputField value="{!currentSessionData.instructor.lmsilt__Instructor_User__c}" id="InstructorPopup"/>
+								</apex:pageBlockSectionItem>
+																								
+							</apex:pageBlockSection>			
+							
+							<div style="display:none">
+								<apex:inputField value="{!currentSessionData.session.lmsilt__Start_Date_Time__c}" id="Start_Date_Time" />
+								<apex:inputField value="{!currentSessionData.session.lmsilt__End_Date_Time__c}" id="End_Date_Time" />
+							</div>
+																																														
+					</apex:outputPanel>
+					
+					<apex:outputPanel layout="block" styleClass="session-actions">					
+						<apex:actionStatus id="loadStatus2">
+							<apex:facet name="start">
+								<apex:image url="/img/loading.gif" />
+							</apex:facet>
+						</apex:actionStatus>
+					
+						<apex:commandButton action="{!saveSession}" value="{!$Label.Save}" styleClass="saveBtn" id="SaveButton" status="loadStatus2" reRender="sessions, validationMessages, confirmFlags" onclick="toggleEnabled();" oncomplete="toggleEnabled(); if (isSessionValid()) {CloseSessionlightbox();}"/>
+						<apex:commandButton value="{!$Label.Save}" styleClass="saveBtn hideElement" disabled="true" />
+						
+						<apex:commandButton action="{!saveSessionAndAddNew}" styleClass="saveBtn" id="SaveAndNewButton" status="loadStatus2" value="{!$Label.Save_New}" reRender="sessions, validationMessages, popup-body, confirmFlags"  onclick="toggleEnabled();" oncomplete="toggleEnabled(); setSelectVisible();"/>
+						<apex:commandButton value="{!$Label.Save_New}" styleClass="saveBtn hideElement" disabled="true" />
+						 
+						<apex:commandButton styleClass="saveBtn" value="{!$Label.Cancel}" onclick="CloseSessionlightbox(); return false;"/>
+						<apex:commandButton value="{!$Label.Cancel}" styleClass="saveBtn hideElement" disabled="true" />
+					</apex:outputPanel>
+					
+				</apex:outputPanel>
+			</apex:outputPanel>
+																				 																
+			</apex:pageBlockSection>	
+		</apex:pageBlock>
+		
+		<apex:outputPanel id="confirmFlags">
+			<input type="hidden" id="isAnySessionInThePast" value="{!isAnySessionInThePast}"/>
+			<input type="hidden" id="isAnyInstructorConflict" value="{!isAnyInstructorConflict}"/>
+		</apex:outputPanel>
+		
+	</apex:form>
+
+	<script type="text/javascript">
+				
+		window.onkeypress = handleKeyPress;
+		function handleKeyPress(e) {
+			var eventInstance = window.event ? event : e;		
+			var keyCode = eventInstance.charCode ? eventInstance.charCode : eventInstance.keyCode;
+			if (keyCode == 13) {
+				var target = eventInstance.target || eventInstance.srcElement;
+				console.log('First condition: ' + !(target.id.indexOf('eventDescription') + 1));
+				console.log('Second condition: ' + !(target.id.indexOf('eventKeywords') + 1));
+				if(!(target.id.indexOf('eventDescription') + 1) && !(target.id.indexOf('eventKeywords') + 1)) {
+				
+					var saveBtn = jQuery('[id$=saveBTN]:first');
+					if (saveBtn.is(':visible')){
+						saveBtn.click();
+					}
+					
+					return false;
+				}
+
+			}
+		}
+	</script>
+ 
+
+</apex:page>

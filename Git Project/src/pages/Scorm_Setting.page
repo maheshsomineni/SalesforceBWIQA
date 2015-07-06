@@ -1,0 +1,118 @@
+<apex:page controller="Scorm_SettingController" name="Scorm Quiz Setting" title="Scorm Quiz Setting">
+<style>
+#DivTable table {
+	overflow:hidden;
+	border:1px solid #d3d3d3;
+	background:#fefefe;
+	width:70%;
+	margin:5% auto 0;
+	-moz-border-radius:5px; /* FF1+ */
+	-webkit-border-radius:5px; /* Saf3-4 */
+	border-radius:5px;
+	-moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+#DivTable #TableMain tr th {
+	padding:8px 18px 8px;
+	text-align:center;
+}
+
+#DivTable #TableMain tr td {
+	padding:8px 18px 8px;
+	text-align:center;
+}
+
+#DivTable #TableMain tr th {
+	padding-top:12px;
+	text-shadow: 1px 1px 1px #fff;
+	background:#e8eaeb;
+}
+
+#DivTable #TableMain tr td {
+	border-top:1px solid #e0e0e0;
+	border-right:1px solid #e0e0e0;
+}
+
+#DivTable #TableMain tr.odd-row td {
+	background:#f6f6f6;
+}
+
+#DivTable #TableMain tr td.first, th.first {
+	text-align:left
+}
+
+#DivTable #TableMain tr td.last {
+	border-right:none;
+}
+
+#DivTable #TableMain tr td {
+	background: -moz-linear-gradient(100% 25% 90deg, #fefefe, #f9f9f9);
+	background: -webkit-gradient(linear, 0% 0%, 0% 25%, from(#f9f9f9), to(#fefefe));
+}
+
+#DivTable #TableMain tr.odd-row td {
+	background: -moz-linear-gradient(100% 25% 90deg, #f6f6f6, #f1f1f1);
+	background: -webkit-gradient(linear, 0% 0%, 0% 25%, from(#f1f1f1), to(#f6f6f6));
+}
+
+#DivTable #TableMain tr th {
+	background: -moz-linear-gradient(100% 20% 90deg, #e8eaeb, #ededed);
+	background: -webkit-gradient(linear, 0% 0%, 0% 20%, from(#ededed), to(#e8eaeb));
+}
+
+#DivTable #TableMain tr:first-child th.first {
+	-moz-border-radius-topleft:5px;
+	-webkit-border-top-left-radius:5px; /* Saf3-4 */
+}
+
+#DivTable #TableMain tr:first-child th.last {
+	-moz-border-radius-topright:5px;
+	-webkit-border-top-right-radius:5px; /* Saf3-4 */
+}
+
+#DivTable #TableMain tr:last-child td.first {
+	-moz-border-radius-bottomleft:5px;
+	-webkit-border-bottom-left-radius:5px; /* Saf3-4 */
+}
+
+#DivTable #TableMain tr:last-child td.last {
+	-moz-border-radius-bottomright:5px;
+	-webkit-border-bottom-right-radius:5px; /* Saf3-4 */
+}
+</style>
+	<apex:form >
+		<apex:pageBlock >
+			<apex:commandButton action="{!startSchedulable}" value="Start Service" disabled="{!Scheduled}"/>
+			<apex:commandButton action="{!stopSchedulable}" value="Stop Service" disabled="{!IF(Scheduled == TRUE, FALSE, TRUE)}"/>
+			<apex:commandButton action="{!startBatch}" value="Launch Now"/>
+			<apex:pageMessages id="state" />
+			<apex:actionPoller action="{!batchStatusMethod}" reRender="state, pageBlockTableId" interval="5" />
+		</apex:pageBlock>
+	</apex:form>
+	<apex:pageBlock id="pageBlockTableId">
+		<div id="DivTable">
+			<table cellspacing="0" id="TableMain">
+				<tr>
+					<th>SCORM Batch Name</th>
+					<th>Launch Time</th>
+					<th>Status</th>
+					<th>Number Of Assignments With Updated Result</th>
+					<th>Number Of Assignments With New Results</th>
+				</tr>
+				<apex:repeat value="{!ScormBatchList}" var="Item">
+					<tr>
+						<td><apex:outputLink value="/{!Item.Id}" target="_blank">{!Item.Name}</apex:outputLink></td>
+						<td><apex:outputText value="{0,date,MM'/'dd'/'yyyy HH:mm:ss}">
+							<apex:param value="{!Item.Date__c}" />
+							</apex:outputText>
+						</td>
+						<td>{!Item.Status__c}</td>
+						<td>{!Item.Number_Update_Results__c}</td>
+						<td>{!Item.Number_New_Results__c}</td>
+					</tr>
+				</apex:repeat>
+			</table>
+		</div>
+	</apex:pageBlock>
+</apex:page>

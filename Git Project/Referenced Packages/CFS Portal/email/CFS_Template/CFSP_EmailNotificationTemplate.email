@@ -1,0 +1,43 @@
+<messaging:emailTemplate subject="{!IF(relatedTo.cfsp__Type__c='NEW_USER_CREATED','New User has been registered','')}{!IF(relatedTo.cfsp__Type__c='NEW_LEAD_CREATED','New Lead has been created','')}" recipientType="User" relatedToType="cfsp__CFSP_EmailNotification__c">
+<messaging:htmlEmailBody >
+
+<!-- New User has been registred. -->
+<apex:outputPanel rendered="{!relatedTo.cfsp__Type__c='NEW_USER_CREATED'}">
+<pre>
+Dear {!relatedTo.Recipient__r.FirstName} {!relatedTo.Recipient__r.LastName},
+    
+New User has been registred.
+
+Name: {!relatedTo.Contact__r.Name}    
+Email: {!relatedTo.Contact__r.Email}
+
+</pre>
+</apex:outputPanel>
+<!-- end -->
+
+
+<!-- New Lead has been created -->
+<apex:outputPanel rendered="{!relatedTo.cfsp__Type__c='NEW_LEAD_CREATED'}">
+<pre>
+Dear {!relatedTo.Recipient__r.FirstName} {!relatedTo.Recipient__r.LastName},
+
+New Lead has been created.
+    
+Name: {!relatedTo.Lead__r.Name}
+Company: {!relatedTo.Lead__r.Company}
+Email: {!relatedTo.Lead__r.Email}
+
+</pre>  
+</apex:outputPanel>
+<!-- end -->
+
+<!-- New Lead has been created -->
+<apex:outputPanel rendered="{!relatedTo.cfsp__Type__c='INSUFFICIENT_TRAINING_UNITS'}">
+<pre>
+User {!relatedTo.User__r.FirstName} {!relatedTo.User__r.LastName} tried to purchase a Learning Object, but has insufficient Training Units available.
+</pre>  
+</apex:outputPanel>
+<!-- end -->
+
+</messaging:htmlEmailBody>
+</messaging:emailTemplate>
